@@ -20,18 +20,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.marvinformatics</groupId>
-  <artifactId>${name}</artifactId>
+  <artifactId>link-dependencies-maven-plugin</artifactId>
   <version>0.1-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <coveralls.token></coveralls.token>
+    <coveralls.token>Hzq5VeuJTPoaAgudWb2iftm1ziqe4l96L</coveralls.token>
     <java.version>1.8</java.version>
   </properties>
 
-  <dependencies>
-  </dependencies>
+  <dependencies></dependencies>
 
   <build>
     <pluginManagement>
@@ -220,9 +219,9 @@
     </plugins>
   </build>
 
-  <url>https://github.com/${owner}/${name}/</url>
+  <url>https://github.com/velo/link-dependencies-maven-plugin/</url>
 
-  <inceptionYear>${year}</inceptionYear>
+  <inceptionYear>2017</inceptionYear>
 
   <licenses>
     <license>
@@ -242,9 +241,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:${owner}/${name}.git</connection>
-    <developerConnection>scm:git:git@github.com:${owner}/${name}.git</developerConnection>
-    <url>https://github.com/${owner}/${name}/</url>
+    <connection>scm:git:git@github.com:velo/link-dependencies-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:velo/link-dependencies-maven-plugin.git</developerConnection>
+    <url>https://github.com/velo/link-dependencies-maven-plugin/</url>
   </scm>
 
   <distributionManagement>
