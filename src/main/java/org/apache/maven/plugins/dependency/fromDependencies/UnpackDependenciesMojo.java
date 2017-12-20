@@ -41,11 +41,10 @@ import java.io.File;
  * @since 1.0
  */
 //CHECKSTYLE_OFF: LineLength
-@Mojo( name = "unpack-dependencies", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.PROCESS_SOURCES, threadSafe = true )
+@Mojo(name = "unpack-dependencies", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.PROCESS_SOURCES, threadSafe = true)
 //CHECKSTYLE_ON: LineLength
 public class UnpackDependenciesMojo
-    extends AbstractFromDependenciesMojo
-{
+        extends AbstractFromDependenciesMojo {
     /**
      * A comma separated list of file patterns to include when unpacking the artifact. i.e.
      * <code>**&#47;*.xml,**&#47;*.properties</code> NOTE: Excludes patterns override the includes. (component code =
@@ -53,7 +52,7 @@ public class UnpackDependenciesMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "mdep.unpack.includes" )
+    @Parameter(property = "mdep.unpack.includes")
     private String includes;
 
     /**
@@ -63,7 +62,7 @@ public class UnpackDependenciesMojo
      *
      * @since 2.0
      */
-    @Parameter( property = "mdep.unpack.excludes" )
+    @Parameter(property = "mdep.unpack.excludes")
     private String excludes;
 
     /**
@@ -71,7 +70,7 @@ public class UnpackDependenciesMojo
      * 
      * @since 3.0
      */
-    @Parameter( property = "mdep.unpack.encoding" )
+    @Parameter(property = "mdep.unpack.encoding")
     private String encoding;
 
     /**
@@ -84,63 +83,55 @@ public class UnpackDependenciesMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException
-    {
-        DependencyStatusSets dss = getDependencySets( this.failOnMissingClassifierArtifact );
+            throws MojoExecutionException {
+        DependencyStatusSets dss = getDependencySets(this.failOnMissingClassifierArtifact);
 
-        for ( Artifact artifact : dss.getResolvedDependencies() )
-        {
+        for (Artifact artifact : dss.getResolvedDependencies()) {
             File destDir;
-            destDir = DependencyUtil.getFormattedOutputDirectory( useSubDirectoryPerScope, useSubDirectoryPerType,
-                                                                  useSubDirectoryPerArtifact, useRepositoryLayout,
-                                                                  stripVersion, outputDirectory, artifact );
-            unpack( artifact, destDir, getIncludes(), getExcludes(), getEncoding() );
-            DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler( artifact, this.markersDirectory );
+            destDir = DependencyUtil.getFormattedOutputDirectory(useSubDirectoryPerScope, useSubDirectoryPerType,
+                    useSubDirectoryPerArtifact, useRepositoryLayout,
+                    stripVersion, outputDirectory, artifact);
+            unpack(artifact, destDir, getIncludes(), getExcludes(), getEncoding());
+            DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler(artifact, this.markersDirectory);
             handler.setMarker();
         }
 
-        for ( Artifact artifact : dss.getSkippedDependencies() )
-        {
-            getLog().info( artifact.getId() + " already exists in destination." );
+        for (Artifact artifact : dss.getSkippedDependencies()) {
+            getLog().info(artifact.getId() + " already exists in destination.");
         }
     }
 
     @Override
-    protected ArtifactsFilter getMarkedArtifactFilter()
-    {
-        return new MarkerFileFilter( this.overWriteReleases, this.overWriteSnapshots, this.overWriteIfNewer,
-                                     new DefaultFileMarkerHandler( this.markersDirectory ) );
+    protected ArtifactsFilter getMarkedArtifactFilter() {
+        return new MarkerFileFilter(this.overWriteReleases, this.overWriteSnapshots, this.overWriteIfNewer,
+                new DefaultFileMarkerHandler(this.markersDirectory));
     }
 
     /**
      * @return Returns a comma separated list of excluded items
      */
-    public String getExcludes()
-    {
-        return DependencyUtil.cleanToBeTokenizedString( this.excludes );
+    public String getExcludes() {
+        return DependencyUtil.cleanToBeTokenizedString(this.excludes);
     }
 
     /**
      * @param excludes A comma separated list of items to exclude i.e. <code>**\/*.xml, **\/*.properties</code>
      */
-    public void setExcludes( String excludes )
-    {
+    public void setExcludes(String excludes) {
         this.excludes = excludes;
     }
 
     /**
      * @return Returns a comma separated list of included items
      */
-    public String getIncludes()
-    {
-        return DependencyUtil.cleanToBeTokenizedString( this.includes );
+    public String getIncludes() {
+        return DependencyUtil.cleanToBeTokenizedString(this.includes);
     }
 
     /**
      * @param includes A comma separated list of items to include i.e. <code>**\/*.xml, **\/*.properties</code>
      */
-    public void setIncludes( String includes )
-    {
+    public void setIncludes(String includes) {
         this.includes = includes;
     }
 
@@ -148,8 +139,7 @@ public class UnpackDependenciesMojo
      * @param encoding The encoding to set.
      * @since 3.0
      */
-    public void setEncoding( String encoding )
-    {
+    public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
@@ -157,8 +147,7 @@ public class UnpackDependenciesMojo
      * @return Returns the encoding.
      * @since 3.0
      */
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return this.encoding;
     }
 }

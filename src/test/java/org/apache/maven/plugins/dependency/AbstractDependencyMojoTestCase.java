@@ -28,52 +28,43 @@ import org.apache.maven.plugins.dependency.testUtils.DependencyTestUtils;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
 public abstract class AbstractDependencyMojoTestCase
-    extends AbstractMojoTestCase
-{
+        extends AbstractMojoTestCase {
 
     protected File testDir;
 
     protected DependencyArtifactStubFactory stubFactory;
 
-    public AbstractDependencyMojoTestCase()
-    {
+    public AbstractDependencyMojoTestCase() {
         super();
     }
 
-    protected void setUp( String testDirStr, boolean createFiles )
-        throws Exception
-    {
-        setUp( testDirStr, createFiles, true );
+    protected void setUp(String testDirStr, boolean createFiles)
+            throws Exception {
+        setUp(testDirStr, createFiles, true);
     }
 
-    protected void setUp( String testDirStr, boolean createFiles, boolean flattenedPath )
-        throws Exception
-    {
+    protected void setUp(String testDirStr, boolean createFiles, boolean flattenedPath)
+            throws Exception {
         // required for mojo lookups to work
         super.setUp();
-        testDir = new File( getBasedir(), "target" + File.separatorChar + "unit-tests" + File.separatorChar + testDirStr
-            + File.separatorChar );
-        DependencyTestUtils.removeDirectory( testDir );
-        assertFalse( testDir.exists() );
+        testDir = new File(getBasedir(), "target" + File.separatorChar + "unit-tests" + File.separatorChar + testDirStr
+                + File.separatorChar);
+        DependencyTestUtils.removeDirectory(testDir);
+        assertFalse(testDir.exists());
 
-        stubFactory = new DependencyArtifactStubFactory( this.testDir, createFiles, flattenedPath );
+        stubFactory = new DependencyArtifactStubFactory(this.testDir, createFiles, flattenedPath);
     }
 
-    protected void tearDown()
-    {
-        if ( testDir != null )
-        {
-            try
-            {
-                DependencyTestUtils.removeDirectory( testDir );
-            }
-            catch ( IOException e )
-            {
+    protected void tearDown() {
+        if (testDir != null) {
+            try {
+                DependencyTestUtils.removeDirectory(testDir);
+            } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                fail( "Trying to remove directory:" + testDir + "\r\n" + e.toString() );
+                fail("Trying to remove directory:" + testDir + "\r\n" + e.toString());
             }
-            assertFalse( testDir.exists() );
+            assertFalse(testDir.exists());
 
             testDir = null;
         }
@@ -81,9 +72,8 @@ public abstract class AbstractDependencyMojoTestCase
         stubFactory = null;
     }
 
-    protected void copyFile( AbstractDependencyMojo mojo, File artifact, File destFile )
-        throws MojoExecutionException
-    {
-        mojo.copyFile( artifact, destFile );
+    protected void copyFile(AbstractDependencyMojo mojo, File artifact, File destFile)
+            throws MojoExecutionException {
+        mojo.copyFile(artifact, destFile);
     }
 }

@@ -40,8 +40,7 @@ import org.codehaus.plexus.util.StringUtils;
  * @author brianf
  */
 public class TestDependencyUtil
-    extends TestCase
-{
+        extends TestCase {
     List<Artifact> artifacts = new ArrayList<Artifact>();
 
     Log log = new SilentLog();
@@ -57,262 +56,243 @@ public class TestDependencyUtil
     Artifact sources;
 
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         super.setUp();
 
-        ArtifactHandler ah = new DefaultArtifactHandlerStub( "jar", null );
-        VersionRange vr = VersionRange.createFromVersion( "1.1" );
-        release = new DefaultArtifact( "test", "one", vr, Artifact.SCOPE_COMPILE, "jar", "sources", ah, false );
-        artifacts.add( release );
+        ArtifactHandler ah = new DefaultArtifactHandlerStub("jar", null);
+        VersionRange vr = VersionRange.createFromVersion("1.1");
+        release = new DefaultArtifact("test", "one", vr, Artifact.SCOPE_COMPILE, "jar", "sources", ah, false);
+        artifacts.add(release);
 
-        ah = new DefaultArtifactHandlerStub( "war", null );
-        vr = VersionRange.createFromVersion( "1.1-SNAPSHOT" );
-        snap = new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "war", null, ah, false );
-        artifacts.add( snap );
+        ah = new DefaultArtifactHandlerStub("war", null);
+        vr = VersionRange.createFromVersion("1.1-SNAPSHOT");
+        snap = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "war", null, ah, false);
+        artifacts.add(snap);
 
-        ah = new DefaultArtifactHandlerStub( "war", null );
-        vr = VersionRange.createFromVersion( "1.1-SNAPSHOT" );
-        snapResolvedVersion =
-            new DefaultArtifact( "test", "three", vr, Artifact.SCOPE_PROVIDED, "war", null, ah, false );
-        snapResolvedVersion.setResolvedVersion( "1.1-20121003.035531-117" );
-        artifacts.add( snapResolvedVersion );
+        ah = new DefaultArtifactHandlerStub("war", null);
+        vr = VersionRange.createFromVersion("1.1-SNAPSHOT");
+        snapResolvedVersion = new DefaultArtifact("test", "three", vr, Artifact.SCOPE_PROVIDED, "war", null, ah, false);
+        snapResolvedVersion.setResolvedVersion("1.1-20121003.035531-117");
+        artifacts.add(snapResolvedVersion);
 
-        ah = new DefaultArtifactHandlerStub( "war", null );
-        vr = VersionRange.createFromVersion( "1.1-SNAPSHOT" );
-        sources = new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "sources", "sources", ah, false );
+        ah = new DefaultArtifactHandlerStub("war", null);
+        vr = VersionRange.createFromVersion("1.1-SNAPSHOT");
+        sources = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "sources", "sources", ah, false);
 
         // pick random output location
         Random a = new Random();
-        outputFolder = new File( "target/copy" + a.nextLong() + "/" );
+        outputFolder = new File("target/copy" + a.nextLong() + "/");
         outputFolder.delete();
-        assertFalse( outputFolder.exists() );
+        assertFalse(outputFolder.exists());
     }
 
-    protected void tearDown()
-    {
+    protected void tearDown() {
 
     }
 
     public void testDirectoryName()
-        throws MojoExecutionException
-    {
-        File folder = new File( "target/a" );
-        final Artifact artifact = artifacts.get( 0 );
-        File name = DependencyUtil.getFormattedOutputDirectory( false, false, false, false, false, folder, artifact );
+            throws MojoExecutionException {
+        File folder = new File("target/a");
+        final Artifact artifact = artifacts.get(0);
+        File name = DependencyUtil.getFormattedOutputDirectory(false, false, false, false, false, folder, artifact);
         // object is the same.
-        assertEquals( folder, name );
+        assertEquals(folder, name);
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, false, false, true, false, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, false, false, true, false, folder, artifact);
         String expectedResult = folder.getAbsolutePath() + File.separatorChar + "test" + File.separatorChar + "one"
-            + File.separatorChar + "1.1";
-        assertTrue( expectedResult.equalsIgnoreCase( name.getAbsolutePath() ) );
+                + File.separatorChar + "1.1";
+        assertTrue(expectedResult.equalsIgnoreCase(name.getAbsolutePath()));
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, true, false, false, false, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, true, false, false, false, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "jars";
-        assertTrue( expectedResult.equalsIgnoreCase( name.getAbsolutePath() ) );
+        assertTrue(expectedResult.equalsIgnoreCase(name.getAbsolutePath()));
 
-        name = DependencyUtil.getFormattedOutputDirectory( true, false, false, false, false, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(true, false, false, false, false, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "compile";
-        assertEquals( expectedResult, name.getAbsolutePath() );
-        assertTrue( expectedResult.equalsIgnoreCase( name.getAbsolutePath() ) );
+        assertEquals(expectedResult, name.getAbsolutePath());
+        assertTrue(expectedResult.equalsIgnoreCase(name.getAbsolutePath()));
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, false, true, false, false, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, false, true, false, false, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "one-1.1-sources-jar";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, false, true, false, true, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, false, true, false, true, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "one-sources-jar";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, true, true, false, false, folder, artifact );
-        expectedResult =
-            folder.getAbsolutePath() + File.separatorChar + "jars" + File.separatorChar + "one-1.1-sources-jar";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        name = DependencyUtil.getFormattedOutputDirectory(false, true, true, false, false, folder, artifact);
+        expectedResult = folder.getAbsolutePath() + File.separatorChar + "jars" + File.separatorChar + "one-1.1-sources-jar";
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, true, true, false, true, folder, artifact );
-        expectedResult =
-            folder.getAbsolutePath() + File.separatorChar + "jars" + File.separatorChar + "one-sources-jar";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        name = DependencyUtil.getFormattedOutputDirectory(false, true, true, false, true, folder, artifact);
+        expectedResult = folder.getAbsolutePath() + File.separatorChar + "jars" + File.separatorChar + "one-sources-jar";
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( true, false, true, false, true, folder, artifact );
-        expectedResult =
-            folder.getAbsolutePath() + File.separatorChar + "compile" + File.separatorChar + "one-sources-jar";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        name = DependencyUtil.getFormattedOutputDirectory(true, false, true, false, true, folder, artifact);
+        expectedResult = folder.getAbsolutePath() + File.separatorChar + "compile" + File.separatorChar + "one-sources-jar";
+        assertEquals(expectedResult, name.getAbsolutePath());
     }
 
     public void testDirectoryName2()
-        throws MojoExecutionException
-    {
-        File folder = new File( "target/a" );
-        final Artifact artifact = artifacts.get( 1 );
-        File name = DependencyUtil.getFormattedOutputDirectory( false, false, false, false, false, folder, artifact );
+            throws MojoExecutionException {
+        File folder = new File("target/a");
+        final Artifact artifact = artifacts.get(1);
+        File name = DependencyUtil.getFormattedOutputDirectory(false, false, false, false, false, folder, artifact);
         // object is the same.
-        assertEquals( folder, name );
+        assertEquals(folder, name);
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, true, false, false, false, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, true, false, false, false, folder, artifact);
         String expectedResult = folder.getAbsolutePath() + File.separatorChar + "wars";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, false, false, true, false, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, false, false, true, false, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "test" + File.separatorChar + "two"
-            + File.separatorChar + "1.1-SNAPSHOT";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+                + File.separatorChar + "1.1-SNAPSHOT";
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, false, true, false, false, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, false, true, false, false, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "two-1.1-SNAPSHOT-war";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, true, true, false, false, folder, artifact );
-        expectedResult =
-            folder.getAbsolutePath() + File.separatorChar + "wars" + File.separatorChar + "two-1.1-SNAPSHOT-war";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        name = DependencyUtil.getFormattedOutputDirectory(false, true, true, false, false, folder, artifact);
+        expectedResult = folder.getAbsolutePath() + File.separatorChar + "wars" + File.separatorChar + "two-1.1-SNAPSHOT-war";
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, false, true, false, true, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, false, true, false, true, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "two-war";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, true, true, false, true, folder, artifact );
+        name = DependencyUtil.getFormattedOutputDirectory(false, true, true, false, true, folder, artifact);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "wars" + File.separatorChar + "two-war";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
     }
 
     public void testDirectoryNameSources()
-        throws MojoExecutionException
-    {
-        File folder = new File( "target/a" );
-        File name = DependencyUtil.getFormattedOutputDirectory( false, false, true, false, true, folder, sources );
+            throws MojoExecutionException {
+        File folder = new File("target/a");
+        File name = DependencyUtil.getFormattedOutputDirectory(false, false, true, false, true, folder, sources);
         String expectedResult = folder.getAbsolutePath() + File.separatorChar + "two-sources";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
 
-        name = DependencyUtil.getFormattedOutputDirectory( false, false, true, false, false, folder, sources );
+        name = DependencyUtil.getFormattedOutputDirectory(false, false, true, false, false, folder, sources);
         expectedResult = folder.getAbsolutePath() + File.separatorChar + "two-1.1-SNAPSHOT-sources";
-        assertEquals( expectedResult, name.getAbsolutePath() );
+        assertEquals(expectedResult, name.getAbsolutePath());
     }
 
     public void testFileName()
-        throws MojoExecutionException
-    {
-        Artifact artifact = artifacts.get( 0 );
+            throws MojoExecutionException {
+        Artifact artifact = artifacts.get(0);
 
-        String name = DependencyUtil.getFormattedFileName( artifact, false );
+        String name = DependencyUtil.getFormattedFileName(artifact, false);
         String expectedResult = "one-1.1-sources.jar";
-        assertEquals( expectedResult, name );
-        name = DependencyUtil.getFormattedFileName( artifact, true );
+        assertEquals(expectedResult, name);
+        name = DependencyUtil.getFormattedFileName(artifact, true);
         expectedResult = "one-sources.jar";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
     }
 
     public void testFileNameUseBaseVersion()
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         Artifact artifact = snapResolvedVersion;
 
-        String name = DependencyUtil.getFormattedFileName( artifact, false, false, true );
+        String name = DependencyUtil.getFormattedFileName(artifact, false, false, true);
         String expectedResult = "three-1.1-SNAPSHOT.war";
-        assertEquals( expectedResult, name );
-        name = DependencyUtil.getFormattedFileName( artifact, false, false, false );
+        assertEquals(expectedResult, name);
+        name = DependencyUtil.getFormattedFileName(artifact, false, false, false);
         expectedResult = "three-1.1-20121003.035531-117.war";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
     }
 
-    public void testTestJar()
-    {
-        ArtifactHandler ah = new DefaultArtifactHandlerStub( "test-jar", null );
-        VersionRange vr = VersionRange.createFromVersion( "1.1-SNAPSHOT" );
-        Artifact artifact =
-            new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "test-jar", null, ah, false );
+    public void testTestJar() {
+        ArtifactHandler ah = new DefaultArtifactHandlerStub("test-jar", null);
+        VersionRange vr = VersionRange.createFromVersion("1.1-SNAPSHOT");
+        Artifact artifact = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "test-jar", null, ah, false);
 
-        String name = DependencyUtil.getFormattedFileName( artifact, false );
+        String name = DependencyUtil.getFormattedFileName(artifact, false);
         String expectedResult = "two-1.1-SNAPSHOT.jar";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
     }
 
     public void testFileNameClassifier()
-        throws MojoExecutionException
-    {
-        ArtifactHandler ah = new DefaultArtifactHandlerStub( "jar", "sources" );
-        VersionRange vr = VersionRange.createFromVersion( "1.1-SNAPSHOT" );
-        Artifact artifact =
-            new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "jar", "sources", ah, false );
+            throws MojoExecutionException {
+        ArtifactHandler ah = new DefaultArtifactHandlerStub("jar", "sources");
+        VersionRange vr = VersionRange.createFromVersion("1.1-SNAPSHOT");
+        Artifact artifact = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "jar", "sources", ah, false);
 
-        String name = DependencyUtil.getFormattedFileName( artifact, false );
+        String name = DependencyUtil.getFormattedFileName(artifact, false);
         String expectedResult = "two-1.1-SNAPSHOT-sources.jar";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
-        name = DependencyUtil.getFormattedFileName( artifact, true );
+        name = DependencyUtil.getFormattedFileName(artifact, true);
         expectedResult = "two-sources.jar";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
-        name = DependencyUtil.getFormattedFileName( artifact, false, false, false, true );
+        name = DependencyUtil.getFormattedFileName(artifact, false, false, false, true);
         expectedResult = "two-1.1-SNAPSHOT.jar";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
-        ah = new DefaultArtifactHandlerStub( "war", null );
-        artifact = new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "", ah, false );
-        name = DependencyUtil.getFormattedFileName( artifact, true );
+        ah = new DefaultArtifactHandlerStub("war", null);
+        artifact = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "", ah, false);
+        name = DependencyUtil.getFormattedFileName(artifact, true);
         expectedResult = "two.war";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
     }
 
     public void testFileNameClassifierWithFile()
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         // specifically testing the default operation that getFormattedFileName
         // returns
         // the actual name of the file if available unless remove version is
         // set.
-        ArtifactHandler ah = new DefaultArtifactHandlerStub( "war", "sources" );
-        VersionRange vr = VersionRange.createFromVersion( "1.1-SNAPSHOT" );
-        Artifact artifact =
-            new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "sources", ah, false );
-        File file = new File( "/target", "test-file-name.jar" );
-        artifact.setFile( file );
+        ArtifactHandler ah = new DefaultArtifactHandlerStub("war", "sources");
+        VersionRange vr = VersionRange.createFromVersion("1.1-SNAPSHOT");
+        Artifact artifact = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "sources", ah, false);
+        File file = new File("/target", "test-file-name.jar");
+        artifact.setFile(file);
 
-        String name = DependencyUtil.getFormattedFileName( artifact, false );
+        String name = DependencyUtil.getFormattedFileName(artifact, false);
         String expectedResult = "two-1.1-SNAPSHOT-sources.war";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
-        name = DependencyUtil.getFormattedFileName( artifact, false, false, false, true );
+        name = DependencyUtil.getFormattedFileName(artifact, false, false, false, true);
         expectedResult = "two-1.1-SNAPSHOT.war";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
-        name = DependencyUtil.getFormattedFileName( artifact, true );
+        name = DependencyUtil.getFormattedFileName(artifact, true);
         expectedResult = "two-sources.war";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
-        artifact = new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "", ah, false );
-        name = DependencyUtil.getFormattedFileName( artifact, true );
+        artifact = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "", ah, false);
+        name = DependencyUtil.getFormattedFileName(artifact, true);
         expectedResult = "two.war";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
         // test that we pickup the correct extension in the file name if set.
-        ah = new DefaultArtifactHandlerStub( "jar", null );
-        artifact = new DefaultArtifact( "test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "", ah, false );
-        name = DependencyUtil.getFormattedFileName( artifact, true );
+        ah = new DefaultArtifactHandlerStub("jar", null);
+        artifact = new DefaultArtifact("test", "two", vr, Artifact.SCOPE_PROVIDED, "war", "", ah, false);
+        name = DependencyUtil.getFormattedFileName(artifact, true);
         expectedResult = "two.jar";
-        assertEquals( expectedResult, name );
+        assertEquals(expectedResult, name);
 
     }
 
-    public void testTokenizer()
-    {
-        String[] tokens = DependencyUtil.tokenizer( " alpha,bravo, charlie , delta kappa, theta" );
+    public void testTokenizer() {
+        String[] tokens = DependencyUtil.tokenizer(" alpha,bravo, charlie , delta kappa, theta");
         String[] expected = new String[] { "alpha", "bravo", "charlie", "delta kappa", "theta" };
         // easier to see in the JUnit reports
-        assertEquals( StringUtils.join( expected, ", " ), StringUtils.join( tokens, ", " ) );
-        assertEquals( expected.length, tokens.length );
+        assertEquals(StringUtils.join(expected, ", "), StringUtils.join(tokens, ", "));
+        assertEquals(expected.length, tokens.length);
 
-        tokens = DependencyUtil.tokenizer( " \r\n a, \t \n \r b \t \n \r" );
-        assertEquals( 2, tokens.length );
-        assertEquals( "a", tokens[0] );
-        assertEquals( "b", tokens[1] );
+        tokens = DependencyUtil.tokenizer(" \r\n a, \t \n \r b \t \n \r");
+        assertEquals(2, tokens.length);
+        assertEquals("a", tokens[0]);
+        assertEquals("b", tokens[1]);
 
-        tokens = DependencyUtil.tokenizer( null );
-        assertEquals( 0, tokens.length );
+        tokens = DependencyUtil.tokenizer(null);
+        assertEquals(0, tokens.length);
 
-        tokens = DependencyUtil.tokenizer( "  " );
-        assertEquals( 0, tokens.length );
+        tokens = DependencyUtil.tokenizer("  ");
+        assertEquals(0, tokens.length);
     }
 }

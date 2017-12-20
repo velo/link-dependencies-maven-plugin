@@ -26,13 +26,11 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 
 public class TestPropertiesMojo
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         // required for mojo lookups to work
-        super.setUp( "markers", true );
+        super.setUp("markers", true);
     }
 
     /**
@@ -41,30 +39,28 @@ public class TestPropertiesMojo
      * @throws Exception in case of errors
      */
     public void testSetProperties()
-        throws Exception
-    {
-        File testPom = new File( getBasedir(), "target/test-classes/unit/properties-test/plugin-config.xml" );
-        PropertiesMojo mojo = (PropertiesMojo) lookupMojo( "properties", testPom );
+            throws Exception {
+        File testPom = new File(getBasedir(), "target/test-classes/unit/properties-test/plugin-config.xml");
+        PropertiesMojo mojo = (PropertiesMojo) lookupMojo("properties", testPom);
 
-        assertNotNull( mojo );
-        MavenProject project = (MavenProject) getVariableValueFromObject( mojo, "project" );
-        assertNotNull( project );
+        assertNotNull(mojo);
+        MavenProject project = (MavenProject) getVariableValueFromObject(mojo, "project");
+        assertNotNull(project);
 
         Set<Artifact> artifacts = this.stubFactory.getScopedArtifacts();
         Set<Artifact> directArtifacts = this.stubFactory.getReleaseAndSnapshotArtifacts();
-        artifacts.addAll( directArtifacts );
+        artifacts.addAll(directArtifacts);
 
-        project.setArtifacts( artifacts );
-        project.setDependencyArtifacts( directArtifacts );
+        project.setArtifacts(artifacts);
+        project.setDependencyArtifacts(directArtifacts);
 
         // this.assertNull( project.getProperties().getProperty( "org.apacha ) )
         mojo.execute();
 
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
             File artifactFile = artifact.getFile();
-            assertNotNull( artifact.getDependencyConflictId() );
-            assertTrue( artifactFile.isFile() );
+            assertNotNull(artifact.getDependencyConflictId());
+            assertTrue(artifactFile.isFile());
 
         }
 

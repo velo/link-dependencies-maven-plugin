@@ -37,21 +37,20 @@ import java.util.List;
  * @version $Id$
  * @since 1.0
  */
-@Mojo( name = "copy", defaultPhase = LifecyclePhase.PROCESS_SOURCES, requiresProject = false, threadSafe = true )
+@Mojo(name = "copy", defaultPhase = LifecyclePhase.PROCESS_SOURCES, requiresProject = false, threadSafe = true)
 public class CopyMojo
-    extends AbstractFromConfigurationMojo
-{
+        extends AbstractFromConfigurationMojo {
 
     /**
      * Strip artifact version during copy
      */
-    @Parameter( property = "mdep.stripVersion", defaultValue = "false" )
+    @Parameter(property = "mdep.stripVersion", defaultValue = "false")
     private boolean stripVersion = false;
 
     /**
      * Strip artifact classifier during copy
      */
-    @Parameter( property = "mdep.stripClassifier", defaultValue = "false" )
+    @Parameter(property = "mdep.stripClassifier", defaultValue = "false")
     private boolean stripClassifier = false;
 
     /**
@@ -59,7 +58,7 @@ public class CopyMojo
      * 
      * @since 2.7
      */
-    @Parameter( property = "mdep.prependGroupId", defaultValue = "false" )
+    @Parameter(property = "mdep.prependGroupId", defaultValue = "false")
     private boolean prependGroupId = false;
 
     /**
@@ -67,15 +66,15 @@ public class CopyMojo
      * 
      * @since 2.7
      */
-    @Parameter( property = "mdep.useBaseVersion", defaultValue = "false" )
+    @Parameter(property = "mdep.useBaseVersion", defaultValue = "false")
     private boolean useBaseVersion = false;
 
     /**
      * The artifact to copy from command line. A string of the form groupId:artifactId:version[:packaging[:classifier]].
      * Use {@link #artifactItems} within the POM configuration.
      */
-    @SuppressWarnings( "unused" ) // marker-field, setArtifact(String) does the magic
-    @Parameter( property = "artifact" )
+    @SuppressWarnings("unused") // marker-field, setArtifact(String) does the magic
+    @Parameter(property = "artifact")
     private String artifact;
 
     /**
@@ -101,22 +100,16 @@ public class CopyMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException, MojoFailureException
-    {
+            throws MojoExecutionException, MojoFailureException {
         verifyRequirements();
 
-        List<ArtifactItem> theArtifactItems =
-            getProcessedArtifactItems( new ProcessArtifactItemsRequest( stripVersion, prependGroupId, useBaseVersion,
-                                                                        stripClassifier ) );
-        for ( ArtifactItem artifactItem : theArtifactItems )
-        {
-            if ( artifactItem.isNeedsProcessing() )
-            {
-                copyArtifact( artifactItem );
-            }
-            else
-            {
-                this.getLog().info( artifactItem + " already exists in " + artifactItem.getOutputDirectory() );
+        List<ArtifactItem> theArtifactItems = getProcessedArtifactItems(new ProcessArtifactItemsRequest(stripVersion, prependGroupId, useBaseVersion,
+                stripClassifier));
+        for (ArtifactItem artifactItem : theArtifactItems) {
+            if (artifactItem.isNeedsProcessing()) {
+                copyArtifact(artifactItem);
+            } else {
+                this.getLog().info(artifactItem + " already exists in " + artifactItem.getOutputDirectory());
             }
         }
     }
@@ -128,61 +121,53 @@ public class CopyMojo
      * @throws MojoExecutionException with a message if an error occurs.
      * @see #copyFile(File, File)
      */
-    protected void copyArtifact( ArtifactItem artifactItem )
-        throws MojoExecutionException
-    {
-        File destFile = new File( artifactItem.getOutputDirectory(), artifactItem.getDestFileName() );
+    protected void copyArtifact(ArtifactItem artifactItem)
+            throws MojoExecutionException {
+        File destFile = new File(artifactItem.getOutputDirectory(), artifactItem.getDestFileName());
 
-        copyFile( artifactItem.getArtifact().getFile(), destFile );
+        copyFile(artifactItem.getArtifact().getFile(), destFile);
     }
 
     @Override
-    protected ArtifactItemFilter getMarkedArtifactFilter( ArtifactItem item )
-    {
-        ArtifactItemFilter destinationNameOverrideFilter =
-            new DestFileFilter( this.isOverWriteReleases(), this.isOverWriteSnapshots(), this.isOverWriteIfNewer(),
-                                false, false, false, false, this.stripVersion, prependGroupId, useBaseVersion,
-                                item.getOutputDirectory() );
+    protected ArtifactItemFilter getMarkedArtifactFilter(ArtifactItem item) {
+        ArtifactItemFilter destinationNameOverrideFilter = new DestFileFilter(this.isOverWriteReleases(), this.isOverWriteSnapshots(), this.isOverWriteIfNewer(),
+                false, false, false, false, this.stripVersion, prependGroupId, useBaseVersion,
+                item.getOutputDirectory());
         return destinationNameOverrideFilter;
     }
 
     /**
      * @return Returns the stripVersion.
      */
-    public boolean isStripVersion()
-    {
+    public boolean isStripVersion() {
         return this.stripVersion;
     }
 
     /**
      * @param stripVersion The stripVersion to set.
      */
-    public void setStripVersion( boolean stripVersion )
-    {
+    public void setStripVersion(boolean stripVersion) {
         this.stripVersion = stripVersion;
     }
 
     /**
      * @return Returns the stripClassifier.
      */
-    public boolean isStripClassifier()
-    {
+    public boolean isStripClassifier() {
         return this.stripClassifier;
     }
 
     /**
      * @param stripClassifier The stripClassifier to set.
      */
-    public void setStripClassifier( boolean stripClassifier )
-    {
+    public void setStripClassifier(boolean stripClassifier) {
         this.stripClassifier = stripClassifier;
     }
 
     /**
      * @param useBaseVersion The useBaseVersion to set.
      */
-    public void setUseBaseVersion( boolean useBaseVersion )
-    {
+    public void setUseBaseVersion(boolean useBaseVersion) {
         this.useBaseVersion = useBaseVersion;
     }
 }

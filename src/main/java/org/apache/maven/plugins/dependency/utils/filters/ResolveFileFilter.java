@@ -29,26 +29,20 @@ import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterExceptio
  * @version $Id$
  */
 public class ResolveFileFilter
-    extends MarkerFileFilter
-{
+        extends MarkerFileFilter {
 
-    public ResolveFileFilter( MarkerHandler handler )
-    {
-        super( true, true, true, handler );
+    public ResolveFileFilter(MarkerHandler handler) {
+        super(true, true, true, handler);
     }
 
     @Override
-    public boolean isArtifactIncluded( ArtifactItem item )
-        throws ArtifactFilterException
-    {
-        handler.setArtifact( item.getArtifact() );
-        try
-        {
-            return ( !handler.isMarkerSet() );
-        }
-        catch ( MojoExecutionException e )
-        {
-            throw new ArtifactFilterException( e.getMessage(), e );
+    public boolean isArtifactIncluded(ArtifactItem item)
+            throws ArtifactFilterException {
+        handler.setArtifact(item.getArtifact());
+        try {
+            return (!handler.isMarkerSet());
+        } catch (MojoExecutionException e) {
+            throw new ArtifactFilterException(e.getMessage(), e);
         }
     }
 }

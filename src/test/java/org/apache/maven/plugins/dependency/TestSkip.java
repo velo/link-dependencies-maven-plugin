@@ -27,241 +27,204 @@ import java.io.StringWriter;
  */
 
 public class TestSkip
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
     public void testSkipAnalyze()
-        throws Exception
-    {
-        doTest( "analyze" );
+            throws Exception {
+        doTest("analyze");
     }
 
     public void testSkipAnalyzeDepMgt()
-        throws Exception
-    {
-        doTest( "analyze-dep-mgt" );
+            throws Exception {
+        doTest("analyze-dep-mgt");
     }
 
     public void testSkipAnalyzeOnly()
-        throws Exception
-    {
-        doTest( "analyze-only" );
+            throws Exception {
+        doTest("analyze-only");
     }
 
     public void testSkipAnalyzeReport()
-        throws Exception
-    {
-        doSpecialTest( "analyze-report" );
+            throws Exception {
+        doSpecialTest("analyze-report");
     }
 
     public void testSkipAnalyzeDuplicate()
-        throws Exception
-    {
-        doTest( "analyze-duplicate" );
+            throws Exception {
+        doTest("analyze-duplicate");
     }
 
     public void testSkipBuildClasspath()
-        throws Exception
-    {
-        doTest( "build-classpath" );
+            throws Exception {
+        doTest("build-classpath");
     }
 
     public void testSkipCopy()
-        throws Exception
-    {
-        doTest( "copy" );
+            throws Exception {
+        doTest("copy");
     }
 
     public void testSkipCopyDependencies()
-        throws Exception
-    {
-        doTest( "copy-dependencies" );
+            throws Exception {
+        doTest("copy-dependencies");
     }
 
     public void testSkipGet()
-        throws Exception
-    {
-        doSpecialTest( "get" );
+            throws Exception {
+        doSpecialTest("get");
     }
 
     public void testSkipGoOffline()
-        throws Exception
-    {
-        doTest( "go-offline" );
+            throws Exception {
+        doTest("go-offline");
     }
 
     public void testSkipList()
-        throws Exception
-    {
-        doTest( "list" );
+            throws Exception {
+        doTest("list");
     }
 
     public void testSkipProperties()
-        throws Exception
-    {
-        doTest( "properties" );
+            throws Exception {
+        doTest("properties");
     }
 
     public void testSkipPurgeLocalRepository()
-        throws Exception
-    {
-        doSpecialTest( "purge-local-repository" );
+            throws Exception {
+        doSpecialTest("purge-local-repository");
     }
 
     public void testSkipResolve()
-        throws Exception
-    {
-        doTest( "resolve" );
+            throws Exception {
+        doTest("resolve");
     }
 
     public void testSkipResolvePlugins()
-        throws Exception
-    {
-        doTest( "resolve-plugins" );
+            throws Exception {
+        doTest("resolve-plugins");
     }
 
     public void testSkipSources()
-        throws Exception
-    {
-        doTest( "sources" );
+            throws Exception {
+        doTest("sources");
     }
 
     public void testSkipTree()
-        throws Exception
-    {
-        doTest( "tree" );
+            throws Exception {
+        doTest("tree");
     }
 
     public void testSkipUnpack()
-        throws Exception
-    {
-        doTest( "unpack" );
+            throws Exception {
+        doTest("unpack");
     }
 
     public void testSkipUnpackDependencies()
-        throws Exception
-    {
-        doTest( "unpack-dependencies" );
+            throws Exception {
+        doTest("unpack-dependencies");
     }
 
-    protected void doTest( String mojoName )
-        throws Exception
-    {
-        doConfigTest( mojoName, "plugin-config.xml" );
+    protected void doTest(String mojoName)
+            throws Exception {
+        doConfigTest(mojoName, "plugin-config.xml");
     }
 
-    protected void doSpecialTest( String mojoName )
-        throws Exception
-    {
-        doConfigTest( mojoName, "plugin-" + mojoName + "-config.xml" );
+    protected void doSpecialTest(String mojoName)
+            throws Exception {
+        doConfigTest(mojoName, "plugin-" + mojoName + "-config.xml");
     }
 
-    private void doConfigTest( String mojoName, String configFile )
-        throws Exception
-    {
-        File testPom = new File( getBasedir(), "target/test-classes/unit/skip-test/" + configFile );
-        Mojo mojo = lookupMojo( mojoName, testPom );
-        assertNotNull( mojo );
+    private void doConfigTest(String mojoName, String configFile)
+            throws Exception {
+        File testPom = new File(getBasedir(), "target/test-classes/unit/skip-test/" + configFile);
+        Mojo mojo = lookupMojo(mojoName, testPom);
+        assertNotNull(mojo);
         CapturingLog log = new CapturingLog();
-        mojo.setLog( log );
+        mojo.setLog(log);
         mojo.execute();
 
-        assertTrue( log.getContent().contains( "Skipping plugin execution" ) );
+        assertTrue(log.getContent().contains("Skipping plugin execution"));
     }
 
     class CapturingLog
-        implements Log
-    {
+            implements Log {
         StringBuilder sb = new StringBuilder();
 
         /** {@inheritDoc} */
-        public void debug( CharSequence content )
-        {
-            print( "debug", content );
+        public void debug(CharSequence content) {
+            print("debug", content);
         }
 
         /** {@inheritDoc} */
-        public void debug( CharSequence content, Throwable error )
-        {
-            print( "debug", content, error );
+        public void debug(CharSequence content, Throwable error) {
+            print("debug", content, error);
         }
 
         /** {@inheritDoc} */
-        public void debug( Throwable error )
-        {
-            print( "debug", error );
+        public void debug(Throwable error) {
+            print("debug", error);
         }
 
         /** {@inheritDoc} */
-        public void info( CharSequence content )
-        {
-            print( "info", content );
+        public void info(CharSequence content) {
+            print("info", content);
         }
 
         /** {@inheritDoc} */
-        public void info( CharSequence content, Throwable error )
-        {
-            print( "info", content, error );
+        public void info(CharSequence content, Throwable error) {
+            print("info", content, error);
         }
 
         /** {@inheritDoc} */
-        public void info( Throwable error )
-        {
-            print( "info", error );
+        public void info(Throwable error) {
+            print("info", error);
         }
 
         /** {@inheritDoc} */
-        public void warn( CharSequence content )
-        {
-            print( "warn", content );
+        public void warn(CharSequence content) {
+            print("warn", content);
         }
 
         /** {@inheritDoc} */
-        public void warn( CharSequence content, Throwable error )
-        {
-            print( "warn", content, error );
+        public void warn(CharSequence content, Throwable error) {
+            print("warn", content, error);
         }
 
         /** {@inheritDoc} */
-        public void warn( Throwable error )
-        {
-            print( "warn", error );
+        public void warn(Throwable error) {
+            print("warn", error);
         }
 
         /** {@inheritDoc} */
-        public void error( CharSequence content )
-        {
-            System.err.println( "[error] " + content.toString() );
+        public void error(CharSequence content) {
+            System.err.println("[error] " + content.toString());
         }
 
         /** {@inheritDoc} */
-        public void error( CharSequence content, Throwable error )
-        {
+        public void error(CharSequence content, Throwable error) {
             StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter( sWriter );
+            PrintWriter pWriter = new PrintWriter(sWriter);
 
-            error.printStackTrace( pWriter );
+            error.printStackTrace(pWriter);
 
-            System.err.println( "[error] " + content.toString() + "\n\n" + sWriter.toString() );
+            System.err.println("[error] " + content.toString() + "\n\n" + sWriter.toString());
         }
 
         /**
          * @see org.apache.maven.plugin.logging.Log#error(java.lang.Throwable)
          */
-        public void error( Throwable error )
-        {
+        public void error(Throwable error) {
             StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter( sWriter );
+            PrintWriter pWriter = new PrintWriter(sWriter);
 
-            error.printStackTrace( pWriter );
+            error.printStackTrace(pWriter);
 
-            System.err.println( "[error] " + sWriter.toString() );
+            System.err.println("[error] " + sWriter.toString());
         }
 
         /**
          * @see org.apache.maven.plugin.logging.Log#isDebugEnabled()
          */
-        public boolean isDebugEnabled()
-        {
+        public boolean isDebugEnabled() {
             // TODO: Not sure how best to set these for this implementation...
             return false;
         }
@@ -269,54 +232,47 @@ public class TestSkip
         /**
          * @see org.apache.maven.plugin.logging.Log#isInfoEnabled()
          */
-        public boolean isInfoEnabled()
-        {
+        public boolean isInfoEnabled() {
             return true;
         }
 
         /**
          * @see org.apache.maven.plugin.logging.Log#isWarnEnabled()
          */
-        public boolean isWarnEnabled()
-        {
+        public boolean isWarnEnabled() {
             return true;
         }
 
         /**
          * @see org.apache.maven.plugin.logging.Log#isErrorEnabled()
          */
-        public boolean isErrorEnabled()
-        {
+        public boolean isErrorEnabled() {
             return true;
         }
 
-        private void print( String prefix, CharSequence content )
-        {
-            sb.append( "[" ).append( prefix ).append( "] " ).append( content.toString() ).append( "\n" );
+        private void print(String prefix, CharSequence content) {
+            sb.append("[").append(prefix).append("] ").append(content.toString()).append("\n");
         }
 
-        private void print( String prefix, Throwable error )
-        {
+        private void print(String prefix, Throwable error) {
             StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter( sWriter );
+            PrintWriter pWriter = new PrintWriter(sWriter);
 
-            error.printStackTrace( pWriter );
+            error.printStackTrace(pWriter);
 
-            sb.append( "[" ).append( prefix ).append( "] " ).append( sWriter.toString() ).append( "\n" );
+            sb.append("[").append(prefix).append("] ").append(sWriter.toString()).append("\n");
         }
 
-        private void print( String prefix, CharSequence content, Throwable error )
-        {
+        private void print(String prefix, CharSequence content, Throwable error) {
             StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter( sWriter );
+            PrintWriter pWriter = new PrintWriter(sWriter);
 
-            error.printStackTrace( pWriter );
+            error.printStackTrace(pWriter);
 
-            sb.append( "[" ).append( prefix ).append( "] " ).append( content.toString() ).append( "\n\n" ).append( sWriter.toString() ).append( "\n" );
+            sb.append("[").append(prefix).append("] ").append(content.toString()).append("\n\n").append(sWriter.toString()).append("\n");
         }
 
-        protected String getContent()
-        {
+        protected String getContent() {
             return sb.toString();
         }
     }

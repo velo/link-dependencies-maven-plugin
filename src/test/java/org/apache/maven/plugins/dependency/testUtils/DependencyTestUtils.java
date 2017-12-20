@@ -36,8 +36,7 @@ import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import org.codehaus.plexus.util.ReflectionUtils;
 import static junit.framework.Assert.assertTrue;
 
-public class DependencyTestUtils
-{
+public class DependencyTestUtils {
 
     /**
      * Deletes a directory and its contents.
@@ -45,31 +44,28 @@ public class DependencyTestUtils
      * @param dir {@link File} The base directory of the included and excluded files.
      * @throws IOException in case of an error. When a directory failed to get deleted.
      */
-    public static void removeDirectory( File dir )
-        throws IOException
-    {
-        if ( dir != null )
-        {
+    public static void removeDirectory(File dir)
+            throws IOException {
+        if (dir != null) {
             Log log = new SilentLog();
-            FileSetManager fileSetManager = new FileSetManager( log, false );
+            FileSetManager fileSetManager = new FileSetManager(log, false);
 
             FileSet fs = new FileSet();
-            fs.setDirectory( dir.getPath() );
-            fs.addInclude( "**/**" );
-            fileSetManager.delete( fs );
+            fs.setDirectory(dir.getPath());
+            fs.addInclude("**/**");
+            fileSetManager.delete(fs);
 
         }
     }
 
     public static ArtifactFactory getArtifactFactory()
-        throws IllegalAccessException
-    {
+            throws IllegalAccessException {
         ArtifactFactory artifactFactory;
         ArtifactHandlerManager manager = new DefaultArtifactHandlerManager();
-        setVariableValueToObject( manager, "artifactHandlers", new HashMap() );
+        setVariableValueToObject(manager, "artifactHandlers", new HashMap());
 
         artifactFactory = new DefaultArtifactFactory();
-        setVariableValueToObject( artifactFactory, "artifactHandlerManager", manager );
+        setVariableValueToObject(artifactFactory, "artifactHandlerManager", manager);
 
         return artifactFactory;
     }
@@ -82,29 +78,27 @@ public class DependencyTestUtils
      * @param value The value to be set.
      * @throws IllegalAccessException in case of an error.
      */
-    public static void setVariableValueToObject( Object object, String variable, Object value )
-        throws IllegalAccessException
-    {
-        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses( variable, object.getClass() );
+    public static void setVariableValueToObject(Object object, String variable, Object value)
+            throws IllegalAccessException {
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
 
-        field.setAccessible( true );
+        field.setAccessible(true);
 
-        field.set( object, value );
+        field.set(object, value);
     }
 
-    public static void setFileModifiedTime( File file )
-        throws InterruptedException
-    {
-        Thread.sleep( 100 );
+    public static void setFileModifiedTime(File file)
+            throws InterruptedException {
+        Thread.sleep(100);
         // round down to the last second
         long time = System.currentTimeMillis();
-        time = time - ( time % 1000 );
-        assertTrue( "Updating last modification time of marker file " + file.getAbsolutePath()
-            + " failed unexpectedly.", file.setLastModified( time ) );
+        time = time - (time % 1000);
+        assertTrue("Updating last modification time of marker file " + file.getAbsolutePath()
+                + " failed unexpectedly.", file.setLastModified(time));
 
         // wait at least a second for filesystems that only record to the
         // nearest second.
-        Thread.sleep( 1000 );
+        Thread.sleep(1000);
     }
 
 }

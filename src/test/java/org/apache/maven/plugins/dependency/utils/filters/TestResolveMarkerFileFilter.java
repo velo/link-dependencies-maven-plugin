@@ -42,8 +42,7 @@ import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterExceptio
  * @author brianf
  */
 public class TestResolveMarkerFileFilter
-    extends TestCase
-{
+        extends TestCase {
     Set<Artifact> artifacts = new HashSet<Artifact>();
 
     Log log = new SilentLog();
@@ -53,37 +52,34 @@ public class TestResolveMarkerFileFilter
     DependencyArtifactStubFactory fact;
 
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         super.setUp();
 
-        outputFolder = new File( "target/markers/" );
-        DependencyTestUtils.removeDirectory( outputFolder );
-        assertFalse( outputFolder.exists() );
+        outputFolder = new File("target/markers/");
+        DependencyTestUtils.removeDirectory(outputFolder);
+        assertFalse(outputFolder.exists());
 
-        this.fact = new DependencyArtifactStubFactory( outputFolder, false );
+        this.fact = new DependencyArtifactStubFactory(outputFolder, false);
         artifacts = fact.getReleaseAndSnapshotArtifacts();
     }
 
     protected void tearDown()
-        throws IOException
-    {
-        DependencyTestUtils.removeDirectory( outputFolder );
+            throws IOException {
+        DependencyTestUtils.removeDirectory(outputFolder);
     }
 
     public void testResolveFile()
-        throws IOException, ArtifactFilterException, MojoExecutionException
-    {
-        SourcesFileMarkerHandler handler = new SourcesFileMarkerHandler( outputFolder );
+            throws IOException, ArtifactFilterException, MojoExecutionException {
+        SourcesFileMarkerHandler handler = new SourcesFileMarkerHandler(outputFolder);
 
         Artifact artifact = fact.getReleaseArtifact();
-        handler.setArtifact( artifact );
+        handler.setArtifact(artifact);
 
-        ResolveFileFilter filter = new ResolveFileFilter( handler );
+        ResolveFileFilter filter = new ResolveFileFilter(handler);
 
-        assertTrue( filter.isArtifactIncluded( artifact ) );
+        assertTrue(filter.isArtifactIncluded(artifact));
         handler.setMarker();
-        assertFalse( filter.isArtifactIncluded( artifact ) );
+        assertFalse(filter.isArtifactIncluded(artifact));
     }
 
 }

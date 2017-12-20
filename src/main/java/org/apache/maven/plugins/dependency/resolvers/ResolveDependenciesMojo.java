@@ -55,18 +55,17 @@ import java.util.jar.Manifest;
  * @since 2.0
  */
 //CHECKSTYLE_OFF: LineLength
-@Mojo( name = "resolve", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true )
+@Mojo(name = "resolve", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 //CHECKSTYLE_ON: LineLength
 public class ResolveDependenciesMojo
-    extends AbstractResolveMojo
-{
+        extends AbstractResolveMojo {
 
     /**
      * If we should display the scope when resolving
      *
      * @since 2.0-alpha-2
      */
-    @Parameter( property = "mdep.outputScope", defaultValue = "true" )
+    @Parameter(property = "mdep.outputScope", defaultValue = "true")
     protected boolean outputScope;
 
     /**
@@ -79,7 +78,7 @@ public class ResolveDependenciesMojo
      * 
      * @since 2.8
      */
-    @Parameter( property = "sort", defaultValue = "false" )
+    @Parameter(property = "sort", defaultValue = "false")
     boolean sort;
 
     /**
@@ -87,7 +86,7 @@ public class ResolveDependenciesMojo
      * 
      * @since 2.8
      */
-    @Parameter( property = "includeParents", defaultValue = "false" )
+    @Parameter(property = "includeParents", defaultValue = "false")
     boolean includeParents;
 
     /**
@@ -97,224 +96,174 @@ public class ResolveDependenciesMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         // get sets of dependencies
-        results = this.getDependencySets( false, includeParents );
+        results = this.getDependencySets(false, includeParents);
 
-        String output = getOutput( outputAbsoluteArtifactFilename, outputScope, sort );
-        try
-        {
-            if ( outputFile == null )
-            {
-                DependencyUtil.log( output, getLog() );
+        String output = getOutput(outputAbsoluteArtifactFilename, outputScope, sort);
+        try {
+            if (outputFile == null) {
+                DependencyUtil.log(output, getLog());
+            } else {
+                DependencyUtil.write(output, outputFile, appendOutput, getLog());
             }
-            else
-            {
-                DependencyUtil.write( output, outputFile, appendOutput, getLog() );
-            }
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        } catch (IOException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
     /**
      * @return Returns the results.
      */
-    public DependencyStatusSets getResults()
-    {
+    public DependencyStatusSets getResults() {
         return this.results;
     }
 
     @Override
-    protected ArtifactsFilter getMarkedArtifactFilter()
-    {
-        return new ResolveFileFilter( new SourcesFileMarkerHandler( this.markersDirectory ) );
+    protected ArtifactsFilter getMarkedArtifactFilter() {
+        return new ResolveFileFilter(new SourcesFileMarkerHandler(this.markersDirectory));
     }
 
-    public String getOutput( boolean outputAbsoluteArtifactFilename, boolean outputScope, boolean sort )
-    {
+    public String getOutput(boolean outputAbsoluteArtifactFilename, boolean outputScope, boolean sort) {
         StringBuilder sb = new StringBuilder();
-        sb.append( "\n" );
-        sb.append( "The following files have been resolved:\n" );
-        if ( results.getResolvedDependencies() == null || results.getResolvedDependencies().isEmpty() )
-        {
-            sb.append( "   none\n" );
-        }
-        else
-        {
-            sb.append( buildArtifactListOutput( results.getResolvedDependencies(), outputAbsoluteArtifactFilename,
-                                                outputScope, sort ) );
+        sb.append("\n");
+        sb.append("The following files have been resolved:\n");
+        if (results.getResolvedDependencies() == null || results.getResolvedDependencies().isEmpty()) {
+            sb.append("   none\n");
+        } else {
+            sb.append(buildArtifactListOutput(results.getResolvedDependencies(), outputAbsoluteArtifactFilename,
+                    outputScope, sort));
         }
 
-        if ( results.getSkippedDependencies() != null && !results.getSkippedDependencies().isEmpty() )
-        {
-            sb.append( "\n" );
-            sb.append( "The following files were skipped:\n" );
+        if (results.getSkippedDependencies() != null && !results.getSkippedDependencies().isEmpty()) {
+            sb.append("\n");
+            sb.append("The following files were skipped:\n");
             Set<Artifact> skippedDependencies = new LinkedHashSet<Artifact>();
-            skippedDependencies.addAll( results.getSkippedDependencies() );
-            sb.append( buildArtifactListOutput( skippedDependencies, outputAbsoluteArtifactFilename, outputScope,
-                                                sort ) );
+            skippedDependencies.addAll(results.getSkippedDependencies());
+            sb.append(buildArtifactListOutput(skippedDependencies, outputAbsoluteArtifactFilename, outputScope,
+                    sort));
         }
 
-        if ( results.getUnResolvedDependencies() != null && !results.getUnResolvedDependencies().isEmpty() )
-        {
-            sb.append( "\n" );
-            sb.append( "The following files have NOT been resolved:\n" );
+        if (results.getUnResolvedDependencies() != null && !results.getUnResolvedDependencies().isEmpty()) {
+            sb.append("\n");
+            sb.append("The following files have NOT been resolved:\n");
             Set<Artifact> unResolvedDependencies = new LinkedHashSet<Artifact>();
-            unResolvedDependencies.addAll( results.getUnResolvedDependencies() );
-            sb.append( buildArtifactListOutput( unResolvedDependencies, outputAbsoluteArtifactFilename, outputScope,
-                                                sort ) );
+            unResolvedDependencies.addAll(results.getUnResolvedDependencies());
+            sb.append(buildArtifactListOutput(unResolvedDependencies, outputAbsoluteArtifactFilename, outputScope,
+                    sort));
         }
-        sb.append( "\n" );
+        sb.append("\n");
 
         return sb.toString();
     }
 
-    private StringBuilder buildArtifactListOutput( Set<Artifact> artifacts, boolean outputAbsoluteArtifactFilename,
-                                                   boolean outputScope, boolean sort )
-    {
+    private StringBuilder buildArtifactListOutput(Set<Artifact> artifacts, boolean outputAbsoluteArtifactFilename,
+            boolean outputScope, boolean sort) {
         StringBuilder sb = new StringBuilder();
         List<String> artifactStringList = new ArrayList<String>();
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
             MessageBuilder messageBuilder = MessageUtils.buffer();
 
-            messageBuilder.a( "   " );
+            messageBuilder.a("   ");
 
-            if ( outputScope )
-            {
-                messageBuilder.a( artifact.toString() );
-            }
-            else
-            {
-                messageBuilder.a( artifact.getId() );
+            if (outputScope) {
+                messageBuilder.a(artifact.toString());
+            } else {
+                messageBuilder.a(artifact.getId());
             }
 
-            if ( outputAbsoluteArtifactFilename )
-            {
-                try
-                {
+            if (outputAbsoluteArtifactFilename) {
+                try {
                     // we want to print the absolute file name here
                     String artifactFilename = artifact.getFile().getAbsoluteFile().getPath();
 
-                    messageBuilder.a( ':' ).a( artifactFilename );
-                }
-                catch ( NullPointerException e )
-                {
+                    messageBuilder.a(':').a(artifactFilename);
+                } catch (NullPointerException e) {
                     // ignore the null pointer, we'll output a null string
                 }
             }
 
-            if ( outputScope && artifact.isOptional() )
-            {
-                messageBuilder.a( " (optional) " );
+            if (outputScope && artifact.isOptional()) {
+                messageBuilder.a(" (optional) ");
             }
 
             // dependencies:collect won't download jars
-            if ( artifact.getFile() != null )
-            {
-                ModuleDescriptor moduleDescriptor = getModuleDescriptor( artifact.getFile() );
-                if ( moduleDescriptor != null )
-                {
-                    messageBuilder.project( " -- module " + moduleDescriptor.name );
+            if (artifact.getFile() != null) {
+                ModuleDescriptor moduleDescriptor = getModuleDescriptor(artifact.getFile());
+                if (moduleDescriptor != null) {
+                    messageBuilder.project(" -- module " + moduleDescriptor.name);
 
-                    if ( moduleDescriptor.automatic )
-                    {
-                        if ( "MANIFEST".equals( moduleDescriptor.moduleNameSource ) )
-                        {
-                            messageBuilder.strong( " [auto]" );
-                        }
-                        else
-                        {
-                            messageBuilder.warning( " (auto)" );
+                    if (moduleDescriptor.automatic) {
+                        if ("MANIFEST".equals(moduleDescriptor.moduleNameSource)) {
+                            messageBuilder.strong(" [auto]");
+                        } else {
+                            messageBuilder.warning(" (auto)");
                         }
                     }
                 }
             }
-            artifactStringList.add( messageBuilder.toString() + "\n" );
+            artifactStringList.add(messageBuilder.toString() + "\n");
         }
-        if ( sort )
-        {
-            Collections.sort( artifactStringList );
+        if (sort) {
+            Collections.sort(artifactStringList);
         }
-        for ( String artifactString : artifactStringList )
-        {
-            sb.append( artifactString );
+        for (String artifactString : artifactStringList) {
+            sb.append(artifactString);
         }
         return sb;
     }
 
-    private ModuleDescriptor getModuleDescriptor( File artifactFile )
-    {
+    private ModuleDescriptor getModuleDescriptor(File artifactFile) {
         ModuleDescriptor moduleDescriptor = null;
-        try
-        {
+        try {
             // Use Java9 code to get moduleName, don't try to do it better with own implementation
-            Class<?> moduleFinderClass = Class.forName( "java.lang.module.ModuleFinder" );
+            Class<?> moduleFinderClass = Class.forName("java.lang.module.ModuleFinder");
 
             java.nio.file.Path path = artifactFile.toPath();
 
-            Method ofMethod = moduleFinderClass.getMethod( "of", java.nio.file.Path[].class );
-            Object moduleFinderInstance = ofMethod.invoke( null, new Object[] { new java.nio.file.Path[] { path } } );
+            Method ofMethod = moduleFinderClass.getMethod("of", java.nio.file.Path[].class);
+            Object moduleFinderInstance = ofMethod.invoke(null, new Object[] { new java.nio.file.Path[] { path } });
 
-            Method findAllMethod = moduleFinderClass.getMethod( "findAll" );
-            @SuppressWarnings( "unchecked" )
-            Set<Object> moduleReferences = (Set<Object>) findAllMethod.invoke( moduleFinderInstance );
+            Method findAllMethod = moduleFinderClass.getMethod("findAll");
+            @SuppressWarnings("unchecked")
+            Set<Object> moduleReferences = (Set<Object>) findAllMethod.invoke(moduleFinderInstance);
 
             // moduleReferences can be empty when referring to target/classes without module-info.class
-            if ( !moduleReferences.isEmpty() )
-            {
+            if (!moduleReferences.isEmpty()) {
                 Object moduleReference = moduleReferences.iterator().next();
-                Method descriptorMethod = moduleReference.getClass().getMethod( "descriptor" );
-                Object moduleDescriptorInstance = descriptorMethod.invoke( moduleReference );
+                Method descriptorMethod = moduleReference.getClass().getMethod("descriptor");
+                Object moduleDescriptorInstance = descriptorMethod.invoke(moduleReference);
 
-                Method nameMethod = moduleDescriptorInstance.getClass().getMethod( "name" );
-                String name = (String) nameMethod.invoke( moduleDescriptorInstance );
+                Method nameMethod = moduleDescriptorInstance.getClass().getMethod("name");
+                String name = (String) nameMethod.invoke(moduleDescriptorInstance);
 
                 moduleDescriptor = new ModuleDescriptor();
                 moduleDescriptor.name = name;
 
-                Method isAutomaticMethod = moduleDescriptorInstance.getClass().getMethod( "isAutomatic" );
-                moduleDescriptor.automatic = (Boolean) isAutomaticMethod.invoke( moduleDescriptorInstance );
+                Method isAutomaticMethod = moduleDescriptorInstance.getClass().getMethod("isAutomatic");
+                moduleDescriptor.automatic = (Boolean) isAutomaticMethod.invoke(moduleDescriptorInstance);
 
-                if ( moduleDescriptor.automatic )
-                {
-                    if ( artifactFile.isFile() )
-                    {
+                if (moduleDescriptor.automatic) {
+                    if (artifactFile.isFile()) {
                         JarFile jarFile = null;
-                        try
-                        {
-                            jarFile = new JarFile( artifactFile );
+                        try {
+                            jarFile = new JarFile(artifactFile);
 
                             Manifest manifest = jarFile.getManifest();
 
-                            if ( manifest != null
-                                && manifest.getMainAttributes().getValue( "Automatic-Module-Name" ) != null )
-                            {
+                            if (manifest != null
+                                    && manifest.getMainAttributes().getValue("Automatic-Module-Name") != null) {
                                 moduleDescriptor.moduleNameSource = "MANIFEST";
-                            }
-                            else
-                            {
+                            } else {
                                 moduleDescriptor.moduleNameSource = "FILENAME";
                             }
-                        }
-                        catch ( IOException e )
-                        {
+                        } catch (IOException e) {
                             // noop
-                        }
-                        finally
-                        {
-                            if ( jarFile != null )
-                            {
-                                try
-                                {
+                        } finally {
+                            if (jarFile != null) {
+                                try {
                                     jarFile.close();
-                                }
-                                catch ( IOException e )
-                                {
+                                } catch (IOException e) {
                                     // noop
                                 }
                             }
@@ -322,41 +271,27 @@ public class ResolveDependenciesMojo
                     }
                 }
             }
-        }
-        catch ( ClassNotFoundException e )
-        {
+        } catch (ClassNotFoundException e) {
             // do nothing
-        }
-        catch ( NoSuchMethodException e )
-        {
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
-        }
-        catch ( SecurityException e )
-        {
+        } catch (SecurityException e) {
             // do nothing
-        }
-        catch ( IllegalAccessException e )
-        {
+        } catch (IllegalAccessException e) {
             // do nothing
-        }
-        catch ( IllegalArgumentException e )
-        {
+        } catch (IllegalArgumentException e) {
             // do nothing
-        }
-        catch ( InvocationTargetException e )
-        {
+        } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
-            while ( cause.getCause() != null )
-            {
+            while (cause.getCause() != null) {
                 cause = cause.getCause();
             }
-            getLog().info( "Can't extract module name from " + artifactFile.getName() + ": " + cause.getMessage() );
+            getLog().info("Can't extract module name from " + artifactFile.getName() + ": " + cause.getMessage());
         }
         return moduleDescriptor;
     }
 
-    private class ModuleDescriptor
-    {
+    private class ModuleDescriptor {
         String name;
 
         boolean automatic = true;

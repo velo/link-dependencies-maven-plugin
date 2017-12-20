@@ -35,8 +35,7 @@ import org.codehaus.plexus.util.StringUtils;
  * @version $Id$
  */
 public class ClassifierTypeTranslator
-    implements ArtifactTranslator
-{
+        implements ArtifactTranslator {
     private ArtifactHandlerManager artifactHandlerManager;
 
     private String classifier;
@@ -48,9 +47,8 @@ public class ClassifierTypeTranslator
      * @param theClassifier The classifier to use.
      * @param theType The type.
      */
-    public ClassifierTypeTranslator( ArtifactHandlerManager artifactHanderManager, String theClassifier,
-                                     String theType )
-    {
+    public ClassifierTypeTranslator(ArtifactHandlerManager artifactHanderManager, String theClassifier,
+            String theType) {
         this.artifactHandlerManager = artifactHanderManager;
         this.classifier = theClassifier;
         this.type = theType;
@@ -62,55 +60,44 @@ public class ClassifierTypeTranslator
      * org.apache.maven.plugin.logging.Log)
      */
     @Override
-    public Set<ArtifactCoordinate> translate( Set<Artifact> artifacts, Log log )
-    {
+    public Set<ArtifactCoordinate> translate(Set<Artifact> artifacts, Log log) {
         Set<ArtifactCoordinate> results;
 
-        log.debug( "Translating Artifacts using Classifier: " + this.classifier + " and Type: " + this.type );
+        log.debug("Translating Artifacts using Classifier: " + this.classifier + " and Type: " + this.type);
         results = new LinkedHashSet<ArtifactCoordinate>();
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
             // this translator must pass both type and classifier here so we
             // will use the
             // base artifact value if null comes in
             final String useType;
-            if ( StringUtils.isNotEmpty( this.type ) )
-            {
+            if (StringUtils.isNotEmpty(this.type)) {
                 useType = this.type;
-            }
-            else
-            {
+            } else {
                 useType = artifact.getType();
             }
 
-            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler( useType );
+            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler(useType);
 
             final String extension;
-            if ( artifactHandler != null )
-            {
+            if (artifactHandler != null) {
                 extension = artifactHandler.getExtension();
-            }
-            else
-            {
+            } else {
                 extension = this.type;
             }
 
             String useClassifier;
-            if ( StringUtils.isNotEmpty( this.classifier ) )
-            {
+            if (StringUtils.isNotEmpty(this.classifier)) {
                 useClassifier = this.classifier;
-            }
-            else
-            {
+            } else {
                 useClassifier = artifact.getClassifier();
             }
 
             DefaultArtifactCoordinate coordinate = new DefaultArtifactCoordinate();
-            coordinate.setGroupId( artifact.getGroupId() );
-            coordinate.setArtifactId( artifact.getArtifactId() );
-            coordinate.setVersion( artifact.getVersion() );
-            coordinate.setClassifier( useClassifier );
-            coordinate.setExtension( extension );
+            coordinate.setGroupId(artifact.getGroupId());
+            coordinate.setArtifactId(artifact.getArtifactId());
+            coordinate.setVersion(artifact.getVersion());
+            coordinate.setClassifier(useClassifier);
+            coordinate.setExtension(extension);
 
             // // Create a new artifact
             // Artifact newArtifact = factory.createArtifactWithClassifier( artifact.getGroupId(), artifact
@@ -128,7 +115,7 @@ public class ClassifierTypeTranslator
             // newArtifact.setFile( new File( baseDir, path ) );
             // }
 
-            results.add( coordinate );
+            results.add(coordinate);
         }
 
         return results;
@@ -137,32 +124,28 @@ public class ClassifierTypeTranslator
     /**
      * @return Returns the type.
      */
-    public String getType()
-    {
+    public String getType() {
         return this.type;
     }
 
     /**
      * @param theType The type to set.
      */
-    public void setType( String theType )
-    {
+    public void setType(String theType) {
         this.type = theType;
     }
 
     /**
      * @return Returns the classifier.
      */
-    public String getClassifier()
-    {
+    public String getClassifier() {
         return this.classifier;
     }
 
     /**
      * @param theClassifier The classifier to set.
      */
-    public void setClassifier( String theClassifier )
-    {
+    public void setClassifier(String theClassifier) {
         this.classifier = theClassifier;
     }
 

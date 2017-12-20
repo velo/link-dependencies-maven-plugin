@@ -26,38 +26,29 @@ import org.apache.maven.plugins.dependency.utils.markers.UnpackFileMarkerHandler
 import org.codehaus.plexus.util.StringUtils;
 
 public class StubUnpackFileMarkerHandler
-    extends UnpackFileMarkerHandler
-{
-    public StubUnpackFileMarkerHandler( ArtifactItem artifactItem, File markerFilesDirectory )
-    {
-        super( artifactItem, markerFilesDirectory );
+        extends UnpackFileMarkerHandler {
+    public StubUnpackFileMarkerHandler(ArtifactItem artifactItem, File markerFilesDirectory) {
+        super(artifactItem, markerFilesDirectory);
     }
 
-    protected File getMarkerFile()
-    {
+    protected File getMarkerFile() {
         File markerFile;
-        if ( this.artifactItem == null || ( StringUtils.isEmpty( this.artifactItem.getIncludes() )
-            && StringUtils.isEmpty( this.artifactItem.getExcludes() ) ) )
-        {
-            markerFile =
-                new StubMarkerFile( this.markerFilesDirectory, this.artifact.getId().replace( ':', '-' ) + ".marker" );
-        }
-        else
-        {
+        if (this.artifactItem == null || (StringUtils.isEmpty(this.artifactItem.getIncludes())
+                && StringUtils.isEmpty(this.artifactItem.getExcludes()))) {
+            markerFile = new StubMarkerFile(this.markerFilesDirectory, this.artifact.getId().replace(':', '-') + ".marker");
+        } else {
             int includeExcludeHash = 0;
 
-            if ( StringUtils.isNotEmpty( this.artifactItem.getIncludes() ) )
-            {
+            if (StringUtils.isNotEmpty(this.artifactItem.getIncludes())) {
                 includeExcludeHash += this.artifactItem.getIncludes().hashCode();
             }
 
-            if ( StringUtils.isNotEmpty( this.artifactItem.getExcludes() ) )
-            {
+            if (StringUtils.isNotEmpty(this.artifactItem.getExcludes())) {
                 includeExcludeHash += this.artifactItem.getExcludes().hashCode();
             }
 
-            markerFile = new StubMarkerFile( this.markerFilesDirectory,
-                                             this.artifact.getId().replace( ':', '-' ) + includeExcludeHash );
+            markerFile = new StubMarkerFile(this.markerFilesDirectory,
+                    this.artifact.getId().replace(':', '-') + includeExcludeHash);
         }
 
         return markerFile;

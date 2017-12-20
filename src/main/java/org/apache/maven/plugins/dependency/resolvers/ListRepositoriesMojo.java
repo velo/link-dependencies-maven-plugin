@@ -37,14 +37,13 @@ import org.apache.maven.shared.dependencies.collect.DependencyCollectorException
  * @version $Id: GoOfflineMojo.java 728546 2008-12-21 22:56:51Z bentmann $
  * @since 2.2
  */
-@Mojo( name = "list-repositories", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
+@Mojo(name = "list-repositories", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
 public class ListRepositoriesMojo
-    extends AbstractDependencyMojo
-{
+        extends AbstractDependencyMojo {
     /**
      * Dependency collector, needed to resolve dependencies.
      */
-    @Component( role = DependencyCollector.class )
+    @Component(role = DependencyCollector.class)
     private DependencyCollector dependencyCollector;
 
     /**
@@ -54,23 +53,17 @@ public class ListRepositoriesMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException
-    {
-        try
-        {
-            CollectorResult collectResult =
-                dependencyCollector.collectDependencies( session.getProjectBuildingRequest(), getProject().getModel() );
+            throws MojoExecutionException {
+        try {
+            CollectorResult collectResult = dependencyCollector.collectDependencies(session.getProjectBuildingRequest(), getProject().getModel());
 
-            this.getLog().info( "Repositories used by this build:" );
+            this.getLog().info("Repositories used by this build:");
 
-            for ( ArtifactRepository repo : collectResult.getRemoteRepositories() )
-            {
-                this.getLog().info( repo.toString() );
+            for (ArtifactRepository repo : collectResult.getRemoteRepositories()) {
+                this.getLog().info(repo.toString());
             }
-        }
-        catch ( DependencyCollectorException e )
-        {
-            throw new MojoExecutionException( "Unable to resolve artifacts", e );
+        } catch (DependencyCollectorException e) {
+            throw new MojoExecutionException("Unable to resolve artifacts", e);
         }
     }
 

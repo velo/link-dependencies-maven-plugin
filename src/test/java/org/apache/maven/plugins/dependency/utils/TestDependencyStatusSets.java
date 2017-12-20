@@ -22,18 +22,15 @@ package org.apache.maven.plugins.dependency.utils;
 import org.apache.maven.plugins.dependency.AbstractDependencyMojoTestCase;
 
 public class TestDependencyStatusSets
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
 
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         // required for mojo lookups to work
-        super.setUp( "dss", true );
+        super.setUp("dss", true);
     }
 
-    public void testDependencyStatusSettersGetters()
-    {
+    public void testDependencyStatusSettersGetters() {
         /*
          * DependencyStatusSets dss = new DependencyStatusSets(); Set set = new HashSet(); dss.setResolvedDependencies(
          * set ); assertSame( set, dss.getResolvedDependencies() ); set = new HashSet(); dss.setUnResolvedDependencies(
@@ -44,8 +41,7 @@ public class TestDependencyStatusSets
          */
     }
 
-    public void testDependencyStatusConstructor()
-    {
+    public void testDependencyStatusConstructor() {
         /*
          * Set r = new HashSet(); Set u = new HashSet(); Set s = new HashSet(); DependencyStatusSets dss = new
          * DependencyStatusSets( r, u, s ); assertSame( r, dss.getResolvedDependencies() ); assertSame( u,

@@ -29,9 +29,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @version $Id$
  * @since 2.0-alpha-5
  */
-@Mojo( name = "list", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
+@Mojo(name = "list", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
 public class ListMojo
-    extends ResolveDependenciesMojo
-{
+        extends ResolveDependenciesMojo {
     // alias for dependency:resolve
 }

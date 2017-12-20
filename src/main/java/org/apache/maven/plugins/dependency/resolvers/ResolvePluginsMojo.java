@@ -47,15 +47,14 @@ import org.apache.maven.shared.dependencies.resolve.DependencyResolverException;
  * @version $Id$
  * @since 2.0
  */
-@Mojo( name = "resolve-plugins", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true )
+@Mojo(name = "resolve-plugins", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class ResolvePluginsMojo
-    extends AbstractResolveMojo
-{
+        extends AbstractResolveMojo {
 
     /**
      * Remote repositories which will be searched for plugins.
      */
-    @Parameter( defaultValue = "${project.pluginArtifactRepositories}", readonly = true, required = true )
+    @Parameter(defaultValue = "${project.pluginArtifactRepositories}", readonly = true, required = true)
     private List<ArtifactRepository> remotePluginRepositories;
 
     /**
@@ -65,100 +64,73 @@ public class ResolvePluginsMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException
-    {
-        try
-        {
+            throws MojoExecutionException {
+        try {
             // ideally this should either be DependencyCoordinates or DependencyNode
             final Set<Artifact> plugins = resolvePluginArtifacts();
 
             StringBuilder sb = new StringBuilder();
-            sb.append( "\n" );
-            sb.append( "The following plugins have been resolved:\n" );
-            if ( plugins == null || plugins.isEmpty() )
-            {
-                sb.append( "   none\n" );
-            }
-            else
-            {
-                for ( Artifact plugin : plugins )
-                {
+            sb.append("\n");
+            sb.append("The following plugins have been resolved:\n");
+            if (plugins == null || plugins.isEmpty()) {
+                sb.append("   none\n");
+            } else {
+                for (Artifact plugin : plugins) {
                     String artifactFilename = null;
-                    if ( outputAbsoluteArtifactFilename )
-                    {
-                        try
-                        {
+                    if (outputAbsoluteArtifactFilename) {
+                        try {
                             // we want to print the absolute file name here
                             artifactFilename = plugin.getFile().getAbsoluteFile().getPath();
-                        }
-                        catch ( NullPointerException e )
-                        {
+                        } catch (NullPointerException e) {
                             // ignore the null pointer, we'll output a null string
                             artifactFilename = null;
                         }
                     }
 
                     String id = plugin.toString();
-                    sb.append( "   " + id + ( outputAbsoluteArtifactFilename ? ":" + artifactFilename : "" ) + "\n" );
+                    sb.append("   " + id + (outputAbsoluteArtifactFilename ? ":" + artifactFilename : "") + "\n");
 
-                    if ( !excludeTransitive )
-                    {
+                    if (!excludeTransitive) {
                         DefaultDependableCoordinate pluginCoordinate = new DefaultDependableCoordinate();
-                        pluginCoordinate.setGroupId( plugin.getGroupId() );
-                        pluginCoordinate.setArtifactId( plugin.getArtifactId() );
-                        pluginCoordinate.setVersion( plugin.getVersion() );
+                        pluginCoordinate.setGroupId(plugin.getGroupId());
+                        pluginCoordinate.setArtifactId(plugin.getArtifactId());
+                        pluginCoordinate.setVersion(plugin.getVersion());
 
-                        for ( final Artifact artifact : resolveArtifactDependencies( pluginCoordinate ) )
-                        {
+                        for (final Artifact artifact : resolveArtifactDependencies(pluginCoordinate)) {
                             artifactFilename = null;
-                            if ( outputAbsoluteArtifactFilename )
-                            {
-                                try
-                                {
+                            if (outputAbsoluteArtifactFilename) {
+                                try {
                                     // we want to print the absolute file name here
                                     artifactFilename = artifact.getFile().getAbsoluteFile().getPath();
-                                }
-                                catch ( NullPointerException e )
-                                {
+                                } catch (NullPointerException e) {
                                     // ignore the null pointer, we'll output a null string
                                     artifactFilename = null;
                                 }
                             }
 
                             id = artifact.toString();
-                            sb.append( "      " + id + ( outputAbsoluteArtifactFilename ? ":" + artifactFilename : "" )
-                                + "\n" );
+                            sb.append("      " + id + (outputAbsoluteArtifactFilename ? ":" + artifactFilename : "")
+                                    + "\n");
                         }
                     }
                 }
-                sb.append( "\n" );
+                sb.append("\n");
 
                 String output = sb.toString();
-                if ( outputFile == null )
-                {
-                    DependencyUtil.log( output, getLog() );
-                }
-                else
-                {
-                    DependencyUtil.write( output, outputFile, appendOutput, getLog() );
+                if (outputFile == null) {
+                    DependencyUtil.log(output, getLog());
+                } else {
+                    DependencyUtil.write(output, outputFile, appendOutput, getLog());
                 }
             }
-        }
-        catch ( final IOException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( final ArtifactFilterException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( ArtifactResolverException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( DependencyResolverException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+        } catch (final IOException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        } catch (final ArtifactFilterException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        } catch (ArtifactResolverException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        } catch (DependencyResolverException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
@@ -170,22 +142,20 @@ public class ResolvePluginsMojo
      * @throws ArtifactResolverException in case of an error.
      */
     protected Set<Artifact> resolvePluginArtifacts()
-        throws ArtifactFilterException, ArtifactResolverException
-    {
+            throws ArtifactFilterException, ArtifactResolverException {
         final Set<Artifact> plugins = getProject().getPluginArtifacts();
         final Set<Artifact> reports = getProject().getReportArtifacts();
 
         Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
-        artifacts.addAll( reports );
-        artifacts.addAll( plugins );
+        artifacts.addAll(reports);
+        artifacts.addAll(plugins);
 
         final FilterArtifacts filter = getPluginArtifactsFilter();
-        artifacts = filter.filter( artifacts );
+        artifacts = filter.filter(artifacts);
 
-        Set<Artifact> resolvedArtifacts = new LinkedHashSet<Artifact>( artifacts.size() );
+        Set<Artifact> resolvedArtifacts = new LinkedHashSet<Artifact>(artifacts.size());
         // final ArtifactFilter filter = getPluginFilter();
-        for ( final Artifact artifact : new LinkedHashSet<Artifact>( artifacts ) )
-        {
+        for (final Artifact artifact : new LinkedHashSet<Artifact>(artifacts)) {
             // if ( !filter.include( artifact ) )
             // {
             // final String logStr =
@@ -200,20 +170,18 @@ public class ResolvePluginsMojo
             // continue;
             // }
 
-            ProjectBuildingRequest buildingRequest =
-                new DefaultProjectBuildingRequest( session.getProjectBuildingRequest() );
+            ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
 
-            buildingRequest.setRemoteRepositories( this.remotePluginRepositories );
+            buildingRequest.setRemoteRepositories(this.remotePluginRepositories);
 
             // resolve the new artifact
-            resolvedArtifacts.add( getArtifactResolver().resolveArtifact( buildingRequest, artifact ).getArtifact() );
+            resolvedArtifacts.add(getArtifactResolver().resolveArtifact(buildingRequest, artifact).getArtifact());
         }
         return artifacts;
     }
 
     @Override
-    protected ArtifactsFilter getMarkedArtifactFilter()
-    {
+    protected ArtifactsFilter getMarkedArtifactFilter() {
         return null;
     }
 }

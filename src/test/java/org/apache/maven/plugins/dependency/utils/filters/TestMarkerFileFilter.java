@@ -39,8 +39,7 @@ import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterExceptio
  * @author brianf
  */
 public class TestMarkerFileFilter
-    extends TestCase
-{
+        extends TestCase {
     Set<Artifact> artifacts = new HashSet<Artifact>();
 
     Log log = new SilentLog();
@@ -50,132 +49,122 @@ public class TestMarkerFileFilter
     DependencyArtifactStubFactory fact;
 
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         super.setUp();
 
-        outputFolder = new File( "target/markers/" );
-        DependencyTestUtils.removeDirectory( outputFolder );
-        assertFalse( outputFolder.exists() );
+        outputFolder = new File("target/markers/");
+        DependencyTestUtils.removeDirectory(outputFolder);
+        assertFalse(outputFolder.exists());
 
-        this.fact = new DependencyArtifactStubFactory( outputFolder, false );
+        this.fact = new DependencyArtifactStubFactory(outputFolder, false);
         artifacts = fact.getReleaseAndSnapshotArtifacts();
     }
 
     protected void tearDown()
-        throws IOException
-    {
-        DependencyTestUtils.removeDirectory( outputFolder );
+            throws IOException {
+        DependencyTestUtils.removeDirectory(outputFolder);
     }
 
     public void testMarkerFile()
-        throws ArtifactFilterException
+            throws ArtifactFilterException
 
     {
-        MarkerFileFilter filter =
-            new MarkerFileFilter( true, true, false, new DefaultFileMarkerHandler( outputFolder ) );
-        Set<Artifact> result = filter.filter( artifacts );
-        assertEquals( 2, result.size() );
+        MarkerFileFilter filter = new MarkerFileFilter(true, true, false, new DefaultFileMarkerHandler(outputFolder));
+        Set<Artifact> result = filter.filter(artifacts);
+        assertEquals(2, result.size());
 
-        filter.setOverWriteReleases( false );
-        filter.setOverWriteSnapshots( false );
-        result = filter.filter( artifacts );
-        assertEquals( 2, result.size() );
+        filter.setOverWriteReleases(false);
+        filter.setOverWriteSnapshots(false);
+        result = filter.filter(artifacts);
+        assertEquals(2, result.size());
     }
 
     public void testMarkerSnapshots()
-        throws ArtifactFilterException, MojoExecutionException, IOException
+            throws ArtifactFilterException, MojoExecutionException, IOException
 
     {
-        DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler( fact.getSnapshotArtifact(), outputFolder );
+        DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler(fact.getSnapshotArtifact(), outputFolder);
         handler.setMarker();
 
-        MarkerFileFilter filter =
-            new MarkerFileFilter( true, false, false, new DefaultFileMarkerHandler( outputFolder ) );
-        Set<Artifact> result = filter.filter( artifacts );
-        assertEquals( 1, result.size() );
+        MarkerFileFilter filter = new MarkerFileFilter(true, false, false, new DefaultFileMarkerHandler(outputFolder));
+        Set<Artifact> result = filter.filter(artifacts);
+        assertEquals(1, result.size());
 
-        filter.setOverWriteSnapshots( true );
-        result = filter.filter( artifacts );
-        assertEquals( 2, result.size() );
-        assertTrue( handler.clearMarker() );
-        DependencyTestUtils.removeDirectory( outputFolder );
-        assertFalse( outputFolder.exists() );
+        filter.setOverWriteSnapshots(true);
+        result = filter.filter(artifacts);
+        assertEquals(2, result.size());
+        assertTrue(handler.clearMarker());
+        DependencyTestUtils.removeDirectory(outputFolder);
+        assertFalse(outputFolder.exists());
     }
 
     public void testMarkerRelease()
-        throws IOException, ArtifactFilterException, MojoExecutionException
-    {
-        DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler( fact.getReleaseArtifact(), outputFolder );
+            throws IOException, ArtifactFilterException, MojoExecutionException {
+        DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler(fact.getReleaseArtifact(), outputFolder);
         handler.setMarker();
 
-        MarkerFileFilter filter =
-            new MarkerFileFilter( false, false, false, new DefaultFileMarkerHandler( outputFolder ) );
-        Set<Artifact> result = filter.filter( artifacts );
-        assertEquals( 1, result.size() );
+        MarkerFileFilter filter = new MarkerFileFilter(false, false, false, new DefaultFileMarkerHandler(outputFolder));
+        Set<Artifact> result = filter.filter(artifacts);
+        assertEquals(1, result.size());
 
-        filter.setOverWriteReleases( true );
-        result = filter.filter( artifacts );
-        assertEquals( 2, result.size() );
+        filter.setOverWriteReleases(true);
+        result = filter.filter(artifacts);
+        assertEquals(2, result.size());
 
-        assertTrue( handler.clearMarker() );
-        DependencyTestUtils.removeDirectory( outputFolder );
-        assertFalse( outputFolder.exists() );
+        assertTrue(handler.clearMarker());
+        DependencyTestUtils.removeDirectory(outputFolder);
+        assertFalse(outputFolder.exists());
     }
 
     public void testMarkerTimestamp()
-        throws IOException, MojoExecutionException, ArtifactFilterException
-    {
+            throws IOException, MojoExecutionException, ArtifactFilterException {
         // filter includes release artifact because no marker present
         // filter includes snapshot artifact becaues it is newer than marker
-        DependencyArtifactStubFactory fileFact = new DependencyArtifactStubFactory( outputFolder, true );
+        DependencyArtifactStubFactory fileFact = new DependencyArtifactStubFactory(outputFolder, true);
         Artifact snap = fileFact.getSnapshotArtifact();
         Artifact release = fileFact.getReleaseArtifact();
         Set<Artifact> tempArtifacts = new HashSet<Artifact>();
-        tempArtifacts.add( snap );
-        tempArtifacts.add( release );
-        DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler( snap, outputFolder );
+        tempArtifacts.add(snap);
+        tempArtifacts.add(release);
+        DefaultFileMarkerHandler handler = new DefaultFileMarkerHandler(snap, outputFolder);
         handler.setMarker();
-        assertTrue( snap.getFile().setLastModified( snap.getFile().lastModified() + 1500 ) );
-        MarkerFileFilter filter =
-            new MarkerFileFilter( false, false, true, new DefaultFileMarkerHandler( outputFolder ) );
-        Set<Artifact> result = filter.filter( tempArtifacts );
-        assertEquals( 2, result.size() );
+        assertTrue(snap.getFile().setLastModified(snap.getFile().lastModified() + 1500));
+        MarkerFileFilter filter = new MarkerFileFilter(false, false, true, new DefaultFileMarkerHandler(outputFolder));
+        Set<Artifact> result = filter.filter(tempArtifacts);
+        assertEquals(2, result.size());
 
         // update marker; filter won't include snapshot because timestamps equal
         handler.setMarker();
-        result = filter.filter( tempArtifacts );
-        assertEquals( 1, result.size() );
+        result = filter.filter(tempArtifacts);
+        assertEquals(1, result.size());
 
         // filter won't include snapshot because it is older than marker
-        assertTrue( snap.getFile().setLastModified( snap.getFile().lastModified() - 10000 ) );
+        assertTrue(snap.getFile().setLastModified(snap.getFile().lastModified() - 10000));
 
-        result = filter.filter( tempArtifacts );
-        assertEquals( 1, result.size() );
+        result = filter.filter(tempArtifacts);
+        assertEquals(1, result.size());
 
-        assertTrue( handler.clearMarker() );
-        assertFalse( handler.isMarkerSet() );
+        assertTrue(handler.clearMarker());
+        assertFalse(handler.isMarkerSet());
         snap.getFile().delete();
         release.getFile().delete();
-        DependencyTestUtils.removeDirectory( outputFolder );
-        assertFalse( outputFolder.exists() );
+        DependencyTestUtils.removeDirectory(outputFolder);
+        assertFalse(outputFolder.exists());
     }
 
-    public void testGettersSetters()
-    {
-        MarkerFileFilter filter =
-            new MarkerFileFilter( true, false, true, new DefaultFileMarkerHandler( outputFolder ) );
-        assertEquals( true, filter.isOverWriteReleases() );
-        assertEquals( false, filter.isOverWriteSnapshots() );
-        assertEquals( true, filter.isOverWriteIfNewer() );
+    public void testGettersSetters() {
+        MarkerFileFilter filter = new MarkerFileFilter(true, false, true, new DefaultFileMarkerHandler(outputFolder));
+        assertEquals(true, filter.isOverWriteReleases());
+        assertEquals(false, filter.isOverWriteSnapshots());
+        assertEquals(true, filter.isOverWriteIfNewer());
 
-        filter.setOverWriteReleases( false );
-        filter.setOverWriteSnapshots( true );
-        filter.setOverWriteIfNewer( false );
+        filter.setOverWriteReleases(false);
+        filter.setOverWriteSnapshots(true);
+        filter.setOverWriteIfNewer(false);
 
-        assertEquals( false, filter.isOverWriteReleases() );
-        assertEquals( true, filter.isOverWriteSnapshots() );
-        assertEquals( false, filter.isOverWriteIfNewer() );
+        assertEquals(false, filter.isOverWriteReleases());
+        assertEquals(true, filter.isOverWriteSnapshots());
+        assertEquals(false, filter.isOverWriteIfNewer());
 
     }
 

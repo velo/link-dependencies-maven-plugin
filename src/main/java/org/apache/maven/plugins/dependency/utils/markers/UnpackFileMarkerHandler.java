@@ -29,68 +29,55 @@ import java.io.File;
  * @version $Id$
  */
 public class UnpackFileMarkerHandler
-    extends DefaultFileMarkerHandler
-{
+        extends DefaultFileMarkerHandler {
     protected ArtifactItem artifactItem;
 
-    public UnpackFileMarkerHandler( File markerFilesDirectory )
-    {
-        super( markerFilesDirectory );
+    public UnpackFileMarkerHandler(File markerFilesDirectory) {
+        super(markerFilesDirectory);
     }
 
-    public UnpackFileMarkerHandler( ArtifactItem artifactItem, File markerFilesDirectory )
-    {
-        this( markerFilesDirectory );
-        setArtifactItem( artifactItem );
+    public UnpackFileMarkerHandler(ArtifactItem artifactItem, File markerFilesDirectory) {
+        this(markerFilesDirectory);
+        setArtifactItem(artifactItem);
     }
 
     @Override
-    protected File getMarkerFile()
-    {
+    protected File getMarkerFile() {
         /**
          * Build a hash of all include/exclude strings, to determine if an artifactItem has been unpacked using the
          * include/exclude parameters, this will allow an artifact to be included multiple times with different
          * include/exclude parameters
          */
         File markerFile;
-        if ( this.artifactItem == null || ( StringUtils.isEmpty( this.artifactItem.getIncludes() )
-            && StringUtils.isEmpty( this.artifactItem.getExcludes() ) ) )
-        {
+        if (this.artifactItem == null || (StringUtils.isEmpty(this.artifactItem.getIncludes())
+                && StringUtils.isEmpty(this.artifactItem.getExcludes()))) {
             markerFile = super.getMarkerFile();
-        }
-        else
-        {
+        } else {
             int includeExcludeHash = 0;
 
-            if ( StringUtils.isNotEmpty( this.artifactItem.getIncludes() ) )
-            {
+            if (StringUtils.isNotEmpty(this.artifactItem.getIncludes())) {
                 includeExcludeHash += this.artifactItem.getIncludes().hashCode();
             }
 
-            if ( StringUtils.isNotEmpty( this.artifactItem.getExcludes() ) )
-            {
+            if (StringUtils.isNotEmpty(this.artifactItem.getExcludes())) {
                 includeExcludeHash += this.artifactItem.getExcludes().hashCode();
             }
 
-            markerFile =
-                new File( this.markerFilesDirectory, this.artifact.getId().replace( ':', '-' ) + includeExcludeHash );
+            markerFile = new File(this.markerFilesDirectory, this.artifact.getId().replace(':', '-') + includeExcludeHash);
         }
 
         return markerFile;
     }
 
-    public void setArtifactItem( ArtifactItem artifactItem )
-    {
+    public void setArtifactItem(ArtifactItem artifactItem) {
         this.artifactItem = artifactItem;
 
-        if ( this.artifactItem != null )
-        {
-            setArtifact( this.artifactItem.getArtifact() );
+        if (this.artifactItem != null) {
+            setArtifact(this.artifactItem.getArtifact());
         }
     }
 
-    public ArtifactItem getArtifactItem()
-    {
+    public ArtifactItem getArtifactItem() {
         return this.artifactItem;
     }
 }

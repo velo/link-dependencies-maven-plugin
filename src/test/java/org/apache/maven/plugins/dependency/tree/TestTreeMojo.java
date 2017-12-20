@@ -40,24 +40,21 @@ import org.apache.maven.shared.dependency.graph.DependencyNode;
  * @since 2.0
  */
 public class TestTreeMojo
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
     // TestCase methods -------------------------------------------------------
 
     /*
      * @see org.apache.maven.plugin.testing.AbstractMojoTestCase#setUp()
      */
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         // required for mojo lookups to work
-        super.setUp( "tree", false );
+        super.setUp("tree", false);
     }
 
     // tests ------------------------------------------------------------------
 
-    public void testVoid()
-    {
+    public void testVoid() {
         // TODO: tests disabled during MDEP-339 work, to be reactivated
     }
 
@@ -67,30 +64,29 @@ public class TestTreeMojo
      * @throws Exception in case of an error.
      */
     public void _testTreeTestEnvironment()
-        throws Exception
-    {
-        File testPom = new File( getBasedir(), "target/test-classes/unit/tree-test/plugin-config.xml" );
-        TreeMojo mojo = (TreeMojo) lookupMojo( "tree", testPom );
+            throws Exception {
+        File testPom = new File(getBasedir(), "target/test-classes/unit/tree-test/plugin-config.xml");
+        TreeMojo mojo = (TreeMojo) lookupMojo("tree", testPom);
 
-        assertNotNull( mojo );
-        assertNotNull( mojo.getProject() );
+        assertNotNull(mojo);
+        assertNotNull(mojo.getProject());
         MavenProject project = mojo.getProject();
-        project.setArtifact( this.stubFactory.createArtifact( "testGroupId", "project", "1.0" ) );
+        project.setArtifact(this.stubFactory.createArtifact("testGroupId", "project", "1.0"));
 
         Set<Artifact> artifacts = this.stubFactory.getScopedArtifacts();
         Set<Artifact> directArtifacts = this.stubFactory.getReleaseAndSnapshotArtifacts();
-        artifacts.addAll( directArtifacts );
+        artifacts.addAll(directArtifacts);
 
-        project.setArtifacts( artifacts );
-        project.setDependencyArtifacts( directArtifacts );
+        project.setArtifacts(artifacts);
+        project.setDependencyArtifacts(directArtifacts);
 
         mojo.execute();
 
         DependencyNode rootNode = mojo.getDependencyGraph();
-        assertNodeEquals( "testGroupId:project:jar:1.0:compile", rootNode );
-        assertEquals( 2, rootNode.getChildren().size() );
-        assertChildNodeEquals( "testGroupId:snapshot:jar:2.0-SNAPSHOT:compile", rootNode, 0 );
-        assertChildNodeEquals( "testGroupId:release:jar:1.0:compile", rootNode, 1 );
+        assertNodeEquals("testGroupId:project:jar:1.0:compile", rootNode);
+        assertEquals(2, rootNode.getChildren().size());
+        assertChildNodeEquals("testGroupId:snapshot:jar:2.0-SNAPSHOT:compile", rootNode, 0);
+        assertChildNodeEquals("testGroupId:release:jar:1.0:compile", rootNode, 1);
     }
 
     /**
@@ -99,14 +95,13 @@ public class TestTreeMojo
      * @throws Exception in case of an error.
      */
     public void _testTreeDotSerializing()
-        throws Exception
-    {
-        List<String> contents = runTreeMojo( "tree1.dot", "dot" );
-        assertTrue( findString( contents, "digraph \"testGroupId:project:jar:1.0:compile\" {" ) );
-        assertTrue( findString( contents,
-                                "\"testGroupId:project:jar:1.0:compile\" -> \"testGroupId:snapshot:jar:2.0-SNAPSHOT:compile\"" ) );
-        assertTrue( findString( contents,
-                                "\"testGroupId:project:jar:1.0:compile\" -> \"testGroupId:release:jar:1.0:compile\"" ) );
+            throws Exception {
+        List<String> contents = runTreeMojo("tree1.dot", "dot");
+        assertTrue(findString(contents, "digraph \"testGroupId:project:jar:1.0:compile\" {"));
+        assertTrue(findString(contents,
+                "\"testGroupId:project:jar:1.0:compile\" -> \"testGroupId:snapshot:jar:2.0-SNAPSHOT:compile\""));
+        assertTrue(findString(contents,
+                "\"testGroupId:project:jar:1.0:compile\" -> \"testGroupId:release:jar:1.0:compile\""));
     }
 
     /**
@@ -115,17 +110,16 @@ public class TestTreeMojo
      * @throws Exception in case of an error.
      */
     public void _testTreeGraphMLSerializing()
-        throws Exception
-    {
-        List<String> contents = runTreeMojo( "tree1.graphml", "graphml" );
+            throws Exception {
+        List<String> contents = runTreeMojo("tree1.graphml", "graphml");
 
-        assertTrue( findString( contents, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" ) );
-        assertTrue( findString( contents, "<y:NodeLabel>testGroupId:project:jar:1.0:compile</y:NodeLabel>" ) );
-        assertTrue( findString( contents,
-                                "<y:NodeLabel>testGroupId:snapshot:jar:2.0-SNAPSHOT:compile</y:NodeLabel>" ) );
-        assertTrue( findString( contents, "<y:NodeLabel>testGroupId:release:jar:1.0:compile</y:NodeLabel>" ) );
-        assertTrue( findString( contents, "<key for=\"node\" id=\"d0\" yfiles.type=\"nodegraphics\"/>" ) );
-        assertTrue( findString( contents, "<key for=\"edge\" id=\"d1\" yfiles.type=\"edgegraphics\"/>" ) );
+        assertTrue(findString(contents, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+        assertTrue(findString(contents, "<y:NodeLabel>testGroupId:project:jar:1.0:compile</y:NodeLabel>"));
+        assertTrue(findString(contents,
+                "<y:NodeLabel>testGroupId:snapshot:jar:2.0-SNAPSHOT:compile</y:NodeLabel>"));
+        assertTrue(findString(contents, "<y:NodeLabel>testGroupId:release:jar:1.0:compile</y:NodeLabel>"));
+        assertTrue(findString(contents, "<key for=\"node\" id=\"d0\" yfiles.type=\"nodegraphics\"/>"));
+        assertTrue(findString(contents, "<key for=\"edge\" id=\"d1\" yfiles.type=\"edgegraphics\"/>"));
     }
 
     /**
@@ -134,12 +128,11 @@ public class TestTreeMojo
      * @throws Exception in case of an error.
      */
     public void _testTreeTGFSerializing()
-        throws Exception
-    {
-        List<String> contents = runTreeMojo( "tree1.tgf", "tgf" );
-        assertTrue( findString( contents, "testGroupId:project:jar:1.0:compile" ) );
-        assertTrue( findString( contents, "testGroupId:snapshot:jar:2.0-SNAPSHOT:compile" ) );
-        assertTrue( findString( contents, "testGroupId:release:jar:1.0:compile" ) );
+            throws Exception {
+        List<String> contents = runTreeMojo("tree1.tgf", "tgf");
+        assertTrue(findString(contents, "testGroupId:project:jar:1.0:compile"));
+        assertTrue(findString(contents, "testGroupId:snapshot:jar:2.0-SNAPSHOT:compile"));
+        assertTrue(findString(contents, "testGroupId:release:jar:1.0:compile"));
     }
 
     /**
@@ -150,36 +143,34 @@ public class TestTreeMojo
      * @throws Exception in case of an error.
      * @return list of strings in the output file
      */
-    private List<String> runTreeMojo( String outputFile, String format )
-        throws Exception
-    {
-        File testPom = new File( getBasedir(), "target/test-classes/unit/tree-test/plugin-config.xml" );
+    private List<String> runTreeMojo(String outputFile, String format)
+            throws Exception {
+        File testPom = new File(getBasedir(), "target/test-classes/unit/tree-test/plugin-config.xml");
         String outputFileName = testDir.getAbsolutePath() + outputFile;
-        TreeMojo mojo = (TreeMojo) lookupMojo( "tree", testPom );
-        setVariableValueToObject( mojo, "outputType", format );
-        setVariableValueToObject( mojo, "outputFile", new File( outputFileName ) );
+        TreeMojo mojo = (TreeMojo) lookupMojo("tree", testPom);
+        setVariableValueToObject(mojo, "outputType", format);
+        setVariableValueToObject(mojo, "outputFile", new File(outputFileName));
 
-        assertNotNull( mojo );
-        assertNotNull( mojo.getProject() );
+        assertNotNull(mojo);
+        assertNotNull(mojo.getProject());
         MavenProject project = mojo.getProject();
-        project.setArtifact( this.stubFactory.createArtifact( "testGroupId", "project", "1.0" ) );
+        project.setArtifact(this.stubFactory.createArtifact("testGroupId", "project", "1.0"));
 
         Set<Artifact> artifacts = this.stubFactory.getScopedArtifacts();
         Set<Artifact> directArtifacts = this.stubFactory.getReleaseAndSnapshotArtifacts();
-        artifacts.addAll( directArtifacts );
+        artifacts.addAll(directArtifacts);
 
-        project.setArtifacts( artifacts );
-        project.setDependencyArtifacts( directArtifacts );
+        project.setArtifacts(artifacts);
+        project.setDependencyArtifacts(directArtifacts);
 
         mojo.execute();
 
-        BufferedReader fp1 = new BufferedReader( new FileReader( outputFileName ) );
+        BufferedReader fp1 = new BufferedReader(new FileReader(outputFileName));
         List<String> contents = new ArrayList<String>();
 
         String line;
-        while ( ( line = fp1.readLine() ) != null )
-        {
-            contents.add( line );
+        while ((line = fp1.readLine()) != null) {
+            contents.add(line);
         }
         fp1.close();
 
@@ -192,12 +183,9 @@ public class TestTreeMojo
      * @param contents The contents.
      * @param str The content which should be checked for.
      */
-    private boolean findString( List<String> contents, String str )
-    {
-        for ( String line : contents )
-        {
-            if ( line.contains( str ) )
-            {
+    private boolean findString(List<String> contents, String str) {
+        for (String line : contents) {
+            if (line.contains(str)) {
                 // if match then return here
                 return true;
             }
@@ -209,29 +197,26 @@ public class TestTreeMojo
 
     // private methods --------------------------------------------------------
 
-    private void assertChildNodeEquals( String expectedNode, DependencyNode actualParentNode, int actualChildIndex )
-    {
-        DependencyNode actualNode = actualParentNode.getChildren().get( actualChildIndex );
+    private void assertChildNodeEquals(String expectedNode, DependencyNode actualParentNode, int actualChildIndex) {
+        DependencyNode actualNode = actualParentNode.getChildren().get(actualChildIndex);
 
-        assertNodeEquals( expectedNode, actualNode );
+        assertNodeEquals(expectedNode, actualNode);
     }
 
-    private void assertNodeEquals( String expectedNode, DependencyNode actualNode )
-    {
-        String[] tokens = expectedNode.split( ":" );
+    private void assertNodeEquals(String expectedNode, DependencyNode actualNode) {
+        String[] tokens = expectedNode.split(":");
 
-        assertNodeEquals( tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], actualNode );
+        assertNodeEquals(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], actualNode);
     }
 
-    private void assertNodeEquals( String expectedGroupId, String expectedArtifactId, String expectedType,
-                                   String expectedVersion, String expectedScope, DependencyNode actualNode )
-    {
+    private void assertNodeEquals(String expectedGroupId, String expectedArtifactId, String expectedType,
+            String expectedVersion, String expectedScope, DependencyNode actualNode) {
         Artifact actualArtifact = actualNode.getArtifact();
 
-        assertEquals( "group id", expectedGroupId, actualArtifact.getGroupId() );
-        assertEquals( "artifact id", expectedArtifactId, actualArtifact.getArtifactId() );
-        assertEquals( "type", expectedType, actualArtifact.getType() );
-        assertEquals( "version", expectedVersion, actualArtifact.getVersion() );
-        assertEquals( "scope", expectedScope, actualArtifact.getScope() );
+        assertEquals("group id", expectedGroupId, actualArtifact.getGroupId());
+        assertEquals("artifact id", expectedArtifactId, actualArtifact.getArtifactId());
+        assertEquals("type", expectedType, actualArtifact.getType());
+        assertEquals("version", expectedVersion, actualArtifact.getVersion());
+        assertEquals("scope", expectedScope, actualArtifact.getScope());
     }
 }

@@ -32,38 +32,33 @@ import java.util.List;
  * @since 2.1
  */
 public class DOTDependencyNodeVisitor
-    extends AbstractSerializingVisitor
-    implements DependencyNodeVisitor
-{
+        extends AbstractSerializingVisitor
+        implements DependencyNodeVisitor {
 
     /**
      * Constructor.
      *
      * @param writer the writer to write to.
      */
-    public DOTDependencyNodeVisitor( Writer writer )
-    {
-        super( writer );
+    public DOTDependencyNodeVisitor(Writer writer) {
+        super(writer);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean visit( DependencyNode node )
-    {
-        if ( node.getParent() == null || node.getParent() == node )
-        {
-            writer.write( "digraph \"" + node.toNodeString() + "\" { \n" );
+    public boolean visit(DependencyNode node) {
+        if (node.getParent() == null || node.getParent() == node) {
+            writer.write("digraph \"" + node.toNodeString() + "\" { \n");
         }
 
         // Generate "currentNode -> Child" lines
 
         List<DependencyNode> children = node.getChildren();
 
-        for ( DependencyNode child : children )
-        {
-            writer.println( "\t\"" + node.toNodeString() + "\" -> \"" + child.toNodeString() + "\" ; " );
+        for (DependencyNode child : children) {
+            writer.println("\t\"" + node.toNodeString() + "\" -> \"" + child.toNodeString() + "\" ; ");
         }
 
         return true;
@@ -73,11 +68,9 @@ public class DOTDependencyNodeVisitor
      * {@inheritDoc}
      */
     @Override
-    public boolean endVisit( DependencyNode node )
-    {
-        if ( node.getParent() == null || node.getParent() == node )
-        {
-            writer.write( " } " );
+    public boolean endVisit(DependencyNode node) {
+        if (node.getParent() == null || node.getParent() == node) {
+            writer.write(" } ");
         }
         return true;
     }

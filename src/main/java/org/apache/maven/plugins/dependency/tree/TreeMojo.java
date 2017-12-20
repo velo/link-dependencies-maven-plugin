@@ -67,31 +67,30 @@ import org.apache.maven.shared.dependency.graph.traversal.SerializingDependencyN
  * @version $Id$
  * @since 2.0-alpha-5
  */
-@Mojo( name = "tree", requiresDependencyCollection = ResolutionScope.TEST, threadSafe = true )
+@Mojo(name = "tree", requiresDependencyCollection = ResolutionScope.TEST, threadSafe = true)
 public class TreeMojo
-    extends AbstractMojo
-{
+        extends AbstractMojo {
     // fields -----------------------------------------------------------------
 
     /**
      * The Maven project.
      */
-    @Parameter( defaultValue = "${project}", readonly = true, required = true )
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
-    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
     private MavenSession session;
 
     /**
      * Contains the full list of projects in the reactor.
      */
-    @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
+    @Parameter(defaultValue = "${reactorProjects}", readonly = true, required = true)
     private List<MavenProject> reactorProjects;
 
     /**
      * The dependency tree builder to use.
      */
-    @Component( hint = "default" )
+    @Component(hint = "default")
     private DependencyGraphBuilder dependencyGraphBuilder;
 
     /**
@@ -100,7 +99,7 @@ public class TreeMojo
      *
      * @since 2.0-alpha-5
      */
-    @Parameter( property = "outputFile" )
+    @Parameter(property = "outputFile")
     private File outputFile;
 
     /**
@@ -112,7 +111,7 @@ public class TreeMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "outputType", defaultValue = "text" )
+    @Parameter(property = "outputType", defaultValue = "text")
     private String outputType;
 
     /**
@@ -122,7 +121,7 @@ public class TreeMojo
      * @see <a href="https://issues.apache.org/jira/browse/MSHARED-4">MSHARED-4</a>
      * @since 2.0-alpha-5
      */
-    @Parameter( property = "scope" )
+    @Parameter(property = "scope")
     private String scope;
 
     /**
@@ -132,7 +131,7 @@ public class TreeMojo
      *
      * @since 2.0-alpha-6
      */
-    @Parameter( property = "verbose", defaultValue = "false" )
+    @Parameter(property = "verbose", defaultValue = "false")
     private boolean verbose;
 
     /**
@@ -142,7 +141,7 @@ public class TreeMojo
      *
      * @since 2.0-alpha-6
      */
-    @Parameter( property = "tokens", defaultValue = "standard" )
+    @Parameter(property = "tokens", defaultValue = "standard")
     private String tokens;
 
     /**
@@ -163,7 +162,7 @@ public class TreeMojo
      * @see StrictPatternIncludesArtifactFilter
      * @since 2.0-alpha-6
      */
-    @Parameter( property = "includes" )
+    @Parameter(property = "includes")
     private String includes;
 
     /**
@@ -184,7 +183,7 @@ public class TreeMojo
      * @see StrictPatternExcludesArtifactFilter
      * @since 2.0-alpha-6
      */
-    @Parameter( property = "excludes" )
+    @Parameter(property = "excludes")
     private String excludes;
 
     /**
@@ -197,7 +196,7 @@ public class TreeMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "appendOutput", defaultValue = "false" )
+    @Parameter(property = "appendOutput", defaultValue = "false")
     private boolean appendOutput;
 
     /**
@@ -205,7 +204,7 @@ public class TreeMojo
      *
      * @since 2.7
      */
-    @Parameter( property = "skip", defaultValue = "false" )
+    @Parameter(property = "skip", defaultValue = "false")
     private boolean skip;
 
     // Mojo methods -----------------------------------------------------------
@@ -215,57 +214,45 @@ public class TreeMojo
      */
     @Override
     public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( isSkip() )
-        {
-            getLog().info( "Skipping plugin execution" );
+            throws MojoExecutionException, MojoFailureException {
+        if (isSkip()) {
+            getLog().info("Skipping plugin execution");
             return;
         }
 
-        try
-        {
+        try {
             String dependencyTreeString;
 
             // TODO: note that filter does not get applied due to MSHARED-4
             ArtifactFilter artifactFilter = createResolvingArtifactFilter();
 
-            if ( verbose )
-            {
+            if (verbose) {
                 // To fix we probably need a different DependencyCollector in Aether, which doesn't remove nodes which
                 // have already been resolved.
-                getLog().info( "Verbose not supported since maven-dependency-plugin 3.0" );
+                getLog().info("Verbose not supported since maven-dependency-plugin 3.0");
             }
 
-            ProjectBuildingRequest buildingRequest =
-                new DefaultProjectBuildingRequest( session.getProjectBuildingRequest() );
+            ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
 
-            buildingRequest.setProject( project );
+            buildingRequest.setProject(project);
 
             // non-verbose mode use dependency graph component, which gives consistent results with Maven version
             // running
-            rootNode = dependencyGraphBuilder.buildDependencyGraph( buildingRequest, artifactFilter, reactorProjects );
+            rootNode = dependencyGraphBuilder.buildDependencyGraph(buildingRequest, artifactFilter, reactorProjects);
 
-            dependencyTreeString = serializeDependencyTree( rootNode );
+            dependencyTreeString = serializeDependencyTree(rootNode);
 
-            if ( outputFile != null )
-            {
-                DependencyUtil.write( dependencyTreeString, outputFile, this.appendOutput, getLog() );
+            if (outputFile != null) {
+                DependencyUtil.write(dependencyTreeString, outputFile, this.appendOutput, getLog());
 
-                getLog().info( "Wrote dependency tree to: " + outputFile );
+                getLog().info("Wrote dependency tree to: " + outputFile);
+            } else {
+                DependencyUtil.log(dependencyTreeString, getLog());
             }
-            else
-            {
-                DependencyUtil.log( dependencyTreeString, getLog() );
-            }
-        }
-        catch ( DependencyGraphBuilderException exception )
-        {
-            throw new MojoExecutionException( "Cannot build project dependency graph", exception );
-        }
-        catch ( IOException exception )
-        {
-            throw new MojoExecutionException( "Cannot serialise project dependency graph", exception );
+        } catch (DependencyGraphBuilderException exception) {
+            throw new MojoExecutionException("Cannot build project dependency graph", exception);
+        } catch (IOException exception) {
+            throw new MojoExecutionException("Cannot serialise project dependency graph", exception);
         }
     }
 
@@ -276,8 +263,7 @@ public class TreeMojo
      *
      * @return the Maven project
      */
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 
@@ -286,18 +272,15 @@ public class TreeMojo
      *
      * @return the dependency tree root node
      */
-    public DependencyNode getDependencyGraph()
-    {
+    public DependencyNode getDependencyGraph() {
         return rootNode;
     }
 
-    public boolean isSkip()
-    {
+    public boolean isSkip() {
         return skip;
     }
 
-    public void setSkip( boolean skip )
-    {
+    public void setSkip(boolean skip) {
         this.skip = skip;
     }
 
@@ -308,19 +291,15 @@ public class TreeMojo
      *
      * @return the artifact filter
      */
-    private ArtifactFilter createResolvingArtifactFilter()
-    {
+    private ArtifactFilter createResolvingArtifactFilter() {
         ArtifactFilter filter;
 
         // filter scope
-        if ( scope != null )
-        {
-            getLog().debug( "+ Resolving dependency tree for scope '" + scope + "'" );
+        if (scope != null) {
+            getLog().debug("+ Resolving dependency tree for scope '" + scope + "'");
 
-            filter = new ScopeArtifactFilter( scope );
-        }
-        else
-        {
+            filter = new ScopeArtifactFilter(scope);
+        } else {
             filter = null;
         }
 
@@ -333,50 +312,39 @@ public class TreeMojo
      * @param rootNode the dependency tree root node to serialize
      * @return the serialized dependency tree
      */
-    private String serializeDependencyTree( DependencyNode rootNode )
-    {
+    private String serializeDependencyTree(DependencyNode rootNode) {
         StringWriter writer = new StringWriter();
 
-        DependencyNodeVisitor visitor = getSerializingDependencyNodeVisitor( writer );
+        DependencyNodeVisitor visitor = getSerializingDependencyNodeVisitor(writer);
 
         // TODO: remove the need for this when the serializer can calculate last nodes from visitor calls only
-        visitor = new BuildingDependencyNodeVisitor( visitor );
+        visitor = new BuildingDependencyNodeVisitor(visitor);
 
         DependencyNodeFilter filter = createDependencyNodeFilter();
 
-        if ( filter != null )
-        {
+        if (filter != null) {
             CollectingDependencyNodeVisitor collectingVisitor = new CollectingDependencyNodeVisitor();
-            DependencyNodeVisitor firstPassVisitor = new FilteringDependencyNodeVisitor( collectingVisitor, filter );
-            rootNode.accept( firstPassVisitor );
+            DependencyNodeVisitor firstPassVisitor = new FilteringDependencyNodeVisitor(collectingVisitor, filter);
+            rootNode.accept(firstPassVisitor);
 
-            DependencyNodeFilter secondPassFilter =
-                new AncestorOrSelfDependencyNodeFilter( collectingVisitor.getNodes() );
-            visitor = new FilteringDependencyNodeVisitor( visitor, secondPassFilter );
+            DependencyNodeFilter secondPassFilter = new AncestorOrSelfDependencyNodeFilter(collectingVisitor.getNodes());
+            visitor = new FilteringDependencyNodeVisitor(visitor, secondPassFilter);
         }
 
-        rootNode.accept( visitor );
+        rootNode.accept(visitor);
 
         return writer.toString();
     }
 
-    public DependencyNodeVisitor getSerializingDependencyNodeVisitor( Writer writer )
-    {
-        if ( "graphml".equals( outputType ) )
-        {
-            return new GraphmlDependencyNodeVisitor( writer );
-        }
-        else if ( "tgf".equals( outputType ) )
-        {
-            return new TGFDependencyNodeVisitor( writer );
-        }
-        else if ( "dot".equals( outputType ) )
-        {
-            return new DOTDependencyNodeVisitor( writer );
-        }
-        else
-        {
-            return new SerializingDependencyNodeVisitor( writer, toGraphTokens( tokens ) );
+    public DependencyNodeVisitor getSerializingDependencyNodeVisitor(Writer writer) {
+        if ("graphml".equals(outputType)) {
+            return new GraphmlDependencyNodeVisitor(writer);
+        } else if ("tgf".equals(outputType)) {
+            return new TGFDependencyNodeVisitor(writer);
+        } else if ("dot".equals(outputType)) {
+            return new DOTDependencyNodeVisitor(writer);
+        } else {
+            return new SerializingDependencyNodeVisitor(writer, toGraphTokens(tokens));
         }
     }
 
@@ -386,24 +354,18 @@ public class TreeMojo
      * @param tokens the graph tokens name
      * @return the <code>GraphTokens</code> instance
      */
-    private GraphTokens toGraphTokens( String tokens )
-    {
+    private GraphTokens toGraphTokens(String tokens) {
         GraphTokens graphTokens;
 
-        if ( "whitespace".equals( tokens ) )
-        {
-            getLog().debug( "+ Using whitespace tree tokens" );
+        if ("whitespace".equals(tokens)) {
+            getLog().debug("+ Using whitespace tree tokens");
 
             graphTokens = SerializingDependencyNodeVisitor.WHITESPACE_TOKENS;
-        }
-        else if ( "extended".equals( tokens ) )
-        {
-            getLog().debug( "+ Using extended tree tokens" );
+        } else if ("extended".equals(tokens)) {
+            getLog().debug("+ Using extended tree tokens");
 
             graphTokens = SerializingDependencyNodeVisitor.EXTENDED_TOKENS;
-        }
-        else
-        {
+        } else {
             graphTokens = SerializingDependencyNodeVisitor.STANDARD_TOKENS;
         }
 
@@ -415,33 +377,30 @@ public class TreeMojo
      *
      * @return the dependency node filter, or <code>null</code> if none required
      */
-    private DependencyNodeFilter createDependencyNodeFilter()
-    {
+    private DependencyNodeFilter createDependencyNodeFilter() {
         List<DependencyNodeFilter> filters = new ArrayList<DependencyNodeFilter>();
 
         // filter includes
-        if ( includes != null )
-        {
-            List<String> patterns = Arrays.asList( includes.split( "," ) );
+        if (includes != null) {
+            List<String> patterns = Arrays.asList(includes.split(","));
 
-            getLog().debug( "+ Filtering dependency tree by artifact include patterns: " + patterns );
+            getLog().debug("+ Filtering dependency tree by artifact include patterns: " + patterns);
 
-            ArtifactFilter artifactFilter = new StrictPatternIncludesArtifactFilter( patterns );
-            filters.add( new ArtifactDependencyNodeFilter( artifactFilter ) );
+            ArtifactFilter artifactFilter = new StrictPatternIncludesArtifactFilter(patterns);
+            filters.add(new ArtifactDependencyNodeFilter(artifactFilter));
         }
 
         // filter excludes
-        if ( excludes != null )
-        {
-            List<String> patterns = Arrays.asList( excludes.split( "," ) );
+        if (excludes != null) {
+            List<String> patterns = Arrays.asList(excludes.split(","));
 
-            getLog().debug( "+ Filtering dependency tree by artifact exclude patterns: " + patterns );
+            getLog().debug("+ Filtering dependency tree by artifact exclude patterns: " + patterns);
 
-            ArtifactFilter artifactFilter = new StrictPatternExcludesArtifactFilter( patterns );
-            filters.add( new ArtifactDependencyNodeFilter( artifactFilter ) );
+            ArtifactFilter artifactFilter = new StrictPatternExcludesArtifactFilter(patterns);
+            filters.add(new ArtifactDependencyNodeFilter(artifactFilter));
         }
 
-        return filters.isEmpty() ? null : new AndDependencyNodeFilter( filters );
+        return filters.isEmpty() ? null : new AndDependencyNodeFilter(filters);
     }
 
     // following is required because the version handling in maven code
@@ -456,22 +415,18 @@ public class TreeMojo
      * @param theVersion the version to be checked.
      * @return true if the version is contained by the range.
      */
-    public static boolean containsVersion( VersionRange allowedRange, ArtifactVersion theVersion )
-    {
+    public static boolean containsVersion(VersionRange allowedRange, ArtifactVersion theVersion) {
         ArtifactVersion recommendedVersion = allowedRange.getRecommendedVersion();
-        if ( recommendedVersion == null )
-        {
+        if (recommendedVersion == null) {
             List<Restriction> restrictions = allowedRange.getRestrictions();
-            for ( Restriction restriction : restrictions )
-            {
-                if ( restriction.containsVersion( theVersion ) )
-                {
+            for (Restriction restriction : restrictions) {
+                if (restriction.containsVersion(theVersion)) {
                     return true;
                 }
             }
         }
 
         // only singular versions ever have a recommendedVersion
-        return recommendedVersion.compareTo( theVersion ) <= 0;
+        return recommendedVersion.compareTo(theVersion) <= 0;
     }
 }

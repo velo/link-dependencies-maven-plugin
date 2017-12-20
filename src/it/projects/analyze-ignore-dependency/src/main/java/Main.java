@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,7 +20,6 @@
 
 import org.apache.maven.model.Model;
 
-public class Main
-{
+public class Main {
     public Model model = null;
 }

@@ -47,8 +47,7 @@ import org.sonatype.aether.util.DefaultRepositorySystemSession;
  * @author brianf
  */
 public class TestClassifierTypeTranslator
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
     Set<Artifact> artifacts = new HashSet<Artifact>();
 
     ArtifactFactory artifactFactory;
@@ -64,154 +63,136 @@ public class TestClassifierTypeTranslator
     private ArtifactHandlerManager artifactHandlerManager;
 
     protected void setUp()
-        throws Exception
-    {
-        super.setUp( "classifiertype-translator", false );
+            throws Exception {
+        super.setUp("classifiertype-translator", false);
 
         artifactHandlerManager = new DefaultArtifactHandlerManager();
-        this.setVariableValueToObject( artifactHandlerManager, "artifactHandlers", new HashMap() );
+        this.setVariableValueToObject(artifactHandlerManager, "artifactHandlers", new HashMap());
 
         artifactFactory = new DefaultArtifactFactory();
-        this.setVariableValueToObject( artifactFactory, "artifactHandlerManager", artifactHandlerManager );
+        this.setVariableValueToObject(artifactFactory, "artifactHandlerManager", artifactHandlerManager);
 
-        artifactRepository = new StubArtifactRepository( null );
+        artifactRepository = new StubArtifactRepository(null);
 
-        DependencyArtifactStubFactory factory = new DependencyArtifactStubFactory( null, false );
+        DependencyArtifactStubFactory factory = new DependencyArtifactStubFactory(null, false);
         artifacts = factory.getMixedArtifacts();
 
-        repoManager = lookup( RepositoryManager.class );
+        repoManager = lookup(RepositoryManager.class);
 
-        MavenSession session = newMavenSession( new MavenProjectStub() );
+        MavenSession session = newMavenSession(new MavenProjectStub());
         buildingRequest = session.getProjectBuildingRequest();
 
         DefaultRepositorySystemSession repoSession = (DefaultRepositorySystemSession) session.getRepositorySession();
-        repoSession.setLocalRepositoryManager( new SimpleLocalRepositoryManager( stubFactory.getWorkingDir() ) );
+        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManager(stubFactory.getWorkingDir()));
 
     }
 
-    public void testNullClassifier()
-    {
-        doTestNullEmptyClassifier( null );
+    public void testNullClassifier() {
+        doTestNullEmptyClassifier(null);
     }
 
-    public void testEmptyClassifier()
-    {
-        doTestNullEmptyClassifier( "" );
+    public void testEmptyClassifier() {
+        doTestNullEmptyClassifier("");
     }
 
-    public void doTestNullEmptyClassifier( String classifier )
-    {
+    public void doTestNullEmptyClassifier(String classifier) {
         String type = "zip";
 
-        ArtifactTranslator at = new ClassifierTypeTranslator( artifactHandlerManager, classifier, type );
-        Set<ArtifactCoordinate> results = at.translate( artifacts, log );
+        ArtifactTranslator at = new ClassifierTypeTranslator(artifactHandlerManager, classifier, type);
+        Set<ArtifactCoordinate> results = at.translate(artifacts, log);
 
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
             Iterator<ArtifactCoordinate> resultIter = results.iterator();
             boolean found = false;
-            while ( resultIter.hasNext() )
-            {
+            while (resultIter.hasNext()) {
                 ArtifactCoordinate translatedArtifact = resultIter.next();
-                if ( artifact.getArtifactId().equals( translatedArtifact.getArtifactId() )
-                    && artifact.getGroupId().equals( translatedArtifact.getGroupId() )
-                /* && artifact.getScope().equals(translatedArtifact.getScope()) */ )
-                {
+                if (artifact.getArtifactId().equals(translatedArtifact.getArtifactId())
+                        && artifact.getGroupId().equals(translatedArtifact.getGroupId())
+                /* && artifact.getScope().equals(translatedArtifact.getScope()) */ ) {
                     // classifier is null, should be the same as the artifact
-                    assertEquals( artifact.getClassifier(), translatedArtifact.getClassifier() );
-                    assertEquals( type, translatedArtifact.getExtension() );
+                    assertEquals(artifact.getClassifier(), translatedArtifact.getClassifier());
+                    assertEquals(type, translatedArtifact.getExtension());
 
                     found = true;
                     break;
                 }
             }
-            assertTrue( found );
+            assertTrue(found);
         }
     }
 
-    public void testNullType()
-    {
-        doTestNullEmptyType( null );
+    public void testNullType() {
+        doTestNullEmptyType(null);
     }
 
-    public void testEmptyType()
-    {
-        doTestNullEmptyType( "" );
+    public void testEmptyType() {
+        doTestNullEmptyType("");
     }
 
-    public void doTestNullEmptyType( String type )
-    {
+    public void doTestNullEmptyType(String type) {
         String classifier = "jdk5";
 
-        ArtifactTranslator at = new ClassifierTypeTranslator( artifactHandlerManager, classifier, type );
-        Set<ArtifactCoordinate> results = at.translate( artifacts, log );
+        ArtifactTranslator at = new ClassifierTypeTranslator(artifactHandlerManager, classifier, type);
+        Set<ArtifactCoordinate> results = at.translate(artifacts, log);
 
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
             Iterator<ArtifactCoordinate> resultIter = results.iterator();
             boolean found = false;
-            while ( !found && resultIter.hasNext() )
-            {
+            while (!found && resultIter.hasNext()) {
                 ArtifactCoordinate translatedArtifact = resultIter.next();
-                if ( artifact.getArtifactId() == translatedArtifact.getArtifactId()
-                    && artifact.getGroupId() == translatedArtifact.getGroupId()
-                /* && artifact.getScope() == translatedArtifact.getScope() */ )
-                {
+                if (artifact.getArtifactId() == translatedArtifact.getArtifactId()
+                        && artifact.getGroupId() == translatedArtifact.getGroupId()
+                /* && artifact.getScope() == translatedArtifact.getScope() */ ) {
                     // classifier is null, should be the same as the artifact
-                    assertEquals( classifier, translatedArtifact.getClassifier() );
-                    assertEquals( artifact.getType(), translatedArtifact.getExtension() );
+                    assertEquals(classifier, translatedArtifact.getClassifier());
+                    assertEquals(artifact.getType(), translatedArtifact.getExtension());
 
                     found = true;
                     break;
                 }
             }
-            assertTrue( found );
+            assertTrue(found);
         }
     }
 
-    public void testClassifierAndType()
-    {
+    public void testClassifierAndType() {
         String classifier = "jdk14";
         String type = "sources";
-        ArtifactTranslator at = new ClassifierTypeTranslator( artifactHandlerManager, classifier, type );
-        Set<ArtifactCoordinate> results = at.translate( artifacts, log );
+        ArtifactTranslator at = new ClassifierTypeTranslator(artifactHandlerManager, classifier, type);
+        Set<ArtifactCoordinate> results = at.translate(artifacts, log);
 
-        for ( Artifact artifact : artifacts )
-        {
+        for (Artifact artifact : artifacts) {
             Iterator<ArtifactCoordinate> resultIter = results.iterator();
             boolean found = false;
-            while ( !found && resultIter.hasNext() )
-            {
+            while (!found && resultIter.hasNext()) {
                 ArtifactCoordinate translatedArtifact = resultIter.next();
-                if ( artifact.getArtifactId() == translatedArtifact.getArtifactId()
-                    && artifact.getGroupId() == translatedArtifact.getGroupId()
-                /* && artifact.getScope() == translatedArtifact.getScope() */ )
-                {
-                    assertEquals( translatedArtifact.getClassifier(), classifier );
-                    assertEquals( translatedArtifact.getExtension(), type );
+                if (artifact.getArtifactId() == translatedArtifact.getArtifactId()
+                        && artifact.getGroupId() == translatedArtifact.getGroupId()
+                /* && artifact.getScope() == translatedArtifact.getScope() */ ) {
+                    assertEquals(translatedArtifact.getClassifier(), classifier);
+                    assertEquals(translatedArtifact.getExtension(), type);
 
                     found = true;
                     break;
                 }
             }
-            assertTrue( found );
+            assertTrue(found);
         }
     }
 
-    public void testGetterSetter()
-    {
+    public void testGetterSetter() {
         String classifier = "class";
         String type = "type";
-        ClassifierTypeTranslator at = new ClassifierTypeTranslator( artifactHandlerManager, classifier, type );
+        ClassifierTypeTranslator at = new ClassifierTypeTranslator(artifactHandlerManager, classifier, type);
 
-        assertEquals( classifier, at.getClassifier() );
-        assertEquals( type, at.getType() );
+        assertEquals(classifier, at.getClassifier());
+        assertEquals(type, at.getType());
 
-        at.setClassifier( type );
-        at.setType( classifier );
+        at.setClassifier(type);
+        at.setType(classifier);
 
-        assertEquals( type, at.getClassifier() );
-        assertEquals( classifier, at.getType() );
+        assertEquals(type, at.getClassifier());
+        assertEquals(classifier, at.getType());
 
     }
 }

@@ -26,9 +26,8 @@ import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterExceptio
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
  * @version $Id$
  */
-public interface ArtifactItemFilter
-{
+public interface ArtifactItemFilter {
 
-    boolean isArtifactIncluded( ArtifactItem item )
-        throws ArtifactFilterException;
+    boolean isArtifactIncluded(ArtifactItem item)
+            throws ArtifactFilterException;
 }

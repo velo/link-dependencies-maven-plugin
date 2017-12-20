@@ -40,16 +40,15 @@ import org.apache.maven.project.MavenProject;
  * @since 2.2
  */
 //CHECKSTYLE_OFF: LineLength
-@Mojo( name = "properties", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.INITIALIZE, threadSafe = true )
+@Mojo(name = "properties", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.INITIALIZE, threadSafe = true)
 //CHECKSTYLE_ON: LineLength
 public class PropertiesMojo
-    extends AbstractMojo
-{
+        extends AbstractMojo {
 
     /**
      * The current Maven project
      */
-    @Parameter( defaultValue = "${project}", readonly = true, required = true )
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
     /**
@@ -57,7 +56,7 @@ public class PropertiesMojo
      *
      * @since 2.7
      */
-    @Parameter( property = "mdep.skip", defaultValue = "false" )
+    @Parameter(property = "mdep.skip", defaultValue = "false")
     private boolean skip;
 
     /**
@@ -67,25 +66,21 @@ public class PropertiesMojo
      */
     @Override
     public void execute()
-        throws MojoExecutionException
-    {
-        if ( isSkip() )
-        {
-            getLog().info( "Skipping plugin execution" );
+            throws MojoExecutionException {
+        if (isSkip()) {
+            getLog().info("Skipping plugin execution");
             return;
         }
 
         Set<Artifact> artifacts = project.getArtifacts();
 
-        for ( Artifact artifact : artifacts )
-        {
-            project.getProperties().setProperty( artifact.getDependencyConflictId(),
-                                                 artifact.getFile().getAbsolutePath() );
+        for (Artifact artifact : artifacts) {
+            project.getProperties().setProperty(artifact.getDependencyConflictId(),
+                    artifact.getFile().getAbsolutePath());
         }
     }
 
-    public boolean isSkip()
-    {
+    public boolean isSkip() {
         return skip;
     }
 }

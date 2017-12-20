@@ -30,38 +30,32 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
  * very simple stub of maven project, going to take a lot of work to make it useful as a stub though
  */
 public class DuplicateDependenciesProjectStub
-    extends MavenProjectStub
-{
-    public DuplicateDependenciesProjectStub()
-    {
-        File pom = new File( getBasedir(), "plugin-config.xml" );
+        extends MavenProjectStub {
+    public DuplicateDependenciesProjectStub() {
+        File pom = new File(getBasedir(), "plugin-config.xml");
         MavenXpp3Reader pomReader = new MavenXpp3Reader();
         Model model;
 
-        try
-        {
-            model = pomReader.read( new FileReader( pom ) );
-            setModel( model );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
+        try {
+            model = pomReader.read(new FileReader(pom));
+            setModel(model);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        setGroupId( model.getGroupId() );
-        setArtifactId( model.getArtifactId() );
-        setVersion( model.getVersion() );
-        setName( model.getName() );
-        setUrl( model.getUrl() );
-        setPackaging( model.getPackaging() );
-        setFile( pom );
+        setGroupId(model.getGroupId());
+        setArtifactId(model.getArtifactId());
+        setVersion(model.getVersion());
+        setName(model.getName());
+        setUrl(model.getUrl());
+        setPackaging(model.getPackaging());
+        setFile(pom);
     }
 
     /**
      * @see org.apache.maven.plugin.testing.stubs.MavenProjectStub#getBasedir()
      */
-    public File getBasedir()
-    {
-        return new File( super.getBasedir() + "/src/test/resources/unit/duplicate-dependencies" );
+    public File getBasedir() {
+        return new File(super.getBasedir() + "/src/test/resources/unit/duplicate-dependencies");
     }
 }

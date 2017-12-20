@@ -43,15 +43,14 @@ import org.apache.maven.shared.dependencies.resolve.DependencyResolverException;
  * @version $Id$
  */
 public abstract class AbstractResolveMojo
-    extends AbstractDependencyFilterMojo
-{
+        extends AbstractDependencyFilterMojo {
     /**
      * If specified, this parameter will cause the dependencies to be written to the path specified, instead of writing
      * to the console.
      *
      * @since 2.0
      */
-    @Parameter( property = "outputFile" )
+    @Parameter(property = "outputFile")
     protected File outputFile;
 
     /**
@@ -69,7 +68,7 @@ public abstract class AbstractResolveMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "appendOutput", defaultValue = "false" )
+    @Parameter(property = "appendOutput", defaultValue = "false")
     protected boolean appendOutput;
 
     /**
@@ -77,7 +76,7 @@ public abstract class AbstractResolveMojo
      *
      * @since 2.7
      */
-    @Parameter( property = "excludeReactor", defaultValue = "true" )
+    @Parameter(property = "excludeReactor", defaultValue = "true")
     protected boolean excludeReactor;
 
     /**
@@ -92,29 +91,23 @@ public abstract class AbstractResolveMojo
     @Parameter
     protected boolean ignorePermissions;
 
-    protected FilterArtifacts getPluginArtifactsFilter()
-    {
-        if ( excludeReactor )
-        {
+    protected FilterArtifacts getPluginArtifactsFilter() {
+        if (excludeReactor) {
             final StringBuilder exAids = new StringBuilder();
-            if ( this.excludeArtifactIds != null )
-            {
-                exAids.append( this.excludeArtifactIds );
+            if (this.excludeArtifactIds != null) {
+                exAids.append(this.excludeArtifactIds);
             }
 
-            for ( final MavenProject rp : reactorProjects )
-            {
-                if ( !"maven-plugin".equals( rp.getPackaging() ) )
-                {
+            for (final MavenProject rp : reactorProjects) {
+                if (!"maven-plugin".equals(rp.getPackaging())) {
                     continue;
                 }
 
-                if ( exAids.length() > 0 )
-                {
-                    exAids.append( "," );
+                if (exAids.length() > 0) {
+                    exAids.append(",");
                 }
 
-                exAids.append( rp.getArtifactId() );
+                exAids.append(rp.getArtifactId());
             }
 
             this.excludeArtifactIds = exAids.toString();
@@ -123,21 +116,21 @@ public abstract class AbstractResolveMojo
         final FilterArtifacts filter = new FilterArtifacts();
 
         //CHECKSTYLE_OFF: LineLength
-        filter.addFilter( new org.apache.maven.shared.artifact.filter.collection.ScopeFilter( DependencyUtil.cleanToBeTokenizedString( this.includeScope ),
-                                                                                              DependencyUtil.cleanToBeTokenizedString( this.excludeScope ) ) );
+        filter.addFilter(new org.apache.maven.shared.artifact.filter.collection.ScopeFilter(DependencyUtil.cleanToBeTokenizedString(this.includeScope),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeScope)));
         //CHECKSTYLE_ON: LineLength
 
-        filter.addFilter( new TypeFilter( DependencyUtil.cleanToBeTokenizedString( this.includeTypes ),
-                                          DependencyUtil.cleanToBeTokenizedString( this.excludeTypes ) ) );
+        filter.addFilter(new TypeFilter(DependencyUtil.cleanToBeTokenizedString(this.includeTypes),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeTypes)));
 
-        filter.addFilter( new ClassifierFilter( DependencyUtil.cleanToBeTokenizedString( this.includeClassifiers ),
-                                                DependencyUtil.cleanToBeTokenizedString( this.excludeClassifiers ) ) );
+        filter.addFilter(new ClassifierFilter(DependencyUtil.cleanToBeTokenizedString(this.includeClassifiers),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeClassifiers)));
 
-        filter.addFilter( new GroupIdFilter( DependencyUtil.cleanToBeTokenizedString( this.includeGroupIds ),
-                                             DependencyUtil.cleanToBeTokenizedString( this.excludeGroupIds ) ) );
+        filter.addFilter(new GroupIdFilter(DependencyUtil.cleanToBeTokenizedString(this.includeGroupIds),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeGroupIds)));
 
-        filter.addFilter( new ArtifactIdFilter( DependencyUtil.cleanToBeTokenizedString( this.includeArtifactIds ),
-                                                DependencyUtil.cleanToBeTokenizedString( this.excludeArtifactIds ) ) );
+        filter.addFilter(new ArtifactIdFilter(DependencyUtil.cleanToBeTokenizedString(this.includeArtifactIds),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeArtifactIds)));
 
         return filter;
     }
@@ -149,19 +142,16 @@ public abstract class AbstractResolveMojo
      * @return resolved set of dependencies
      * @throws DependencyResolverException in case of error while resolving artifacts.
      */
-    protected Set<Artifact> resolveArtifactDependencies( final DependableCoordinate artifact )
-        throws DependencyResolverException
-    {
+    protected Set<Artifact> resolveArtifactDependencies(final DependableCoordinate artifact)
+            throws DependencyResolverException {
         ProjectBuildingRequest buildingRequest = newResolveArtifactProjectBuildingRequest();
 
-        Iterable<ArtifactResult> artifactResults =
-            getDependencyResolver().resolveDependencies( buildingRequest, artifact, null );
+        Iterable<ArtifactResult> artifactResults = getDependencyResolver().resolveDependencies(buildingRequest, artifact, null);
 
         Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
 
-        for ( final ArtifactResult artifactResult : artifactResults )
-        {
-            artifacts.add( artifactResult.getArtifact() );
+        for (final ArtifactResult artifactResult : artifactResults) {
+            artifacts.add(artifactResult.getArtifact());
         }
 
         return artifacts;

@@ -27,7 +27,6 @@ package org.codehaus.plexus.util.interpolation;
  * @version $Id: ValueSource.java 12174 2010-05-16 21:04:35Z rfscholte $
  */
 public interface ValueSource
-    extends org.codehaus.plexus.interpolation.ValueSource
-{
+        extends org.codehaus.plexus.interpolation.ValueSource {
 
 }

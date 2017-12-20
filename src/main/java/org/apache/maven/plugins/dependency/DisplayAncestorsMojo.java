@@ -39,45 +39,38 @@ import java.util.Locale;
  * @author Mirko Friedenhagen
  * @since 2.9
  */
-@Mojo( name = "display-ancestors", threadSafe = true, requiresProject = true, defaultPhase = LifecyclePhase.VALIDATE )
+@Mojo(name = "display-ancestors", threadSafe = true, requiresProject = true, defaultPhase = LifecyclePhase.VALIDATE)
 public class DisplayAncestorsMojo
-    extends AbstractMojo
-{
+        extends AbstractMojo {
 
     /**
      * POM
      */
-    @Parameter( defaultValue = "${project}", readonly = true )
+    @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
 
     @Override
     public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
+            throws MojoExecutionException, MojoFailureException {
         final List<String> ancestors = collectAncestors();
 
-        if ( ancestors.isEmpty() )
-        {
-            getLog().info( "No Ancestor POMs!" );
-        }
-        else
-        {
-            getLog().info( String.format( Locale.US, "Ancestor POMs: %s", StringUtils.join( ancestors, " <- " ) ) );
+        if (ancestors.isEmpty()) {
+            getLog().info("No Ancestor POMs!");
+        } else {
+            getLog().info(String.format(Locale.US, "Ancestor POMs: %s", StringUtils.join(ancestors, " <- ")));
         }
 
     }
 
-    private ArrayList<String> collectAncestors()
-    {
+    private ArrayList<String> collectAncestors() {
         final ArrayList<String> ancestors = new ArrayList<String>();
 
         MavenProject currentAncestor = project.getParent();
-        while ( currentAncestor != null )
-        {
-            final String gav = String.format( Locale.US, "%s:%s:%s", currentAncestor.getGroupId(),
-                                              currentAncestor.getArtifactId(), currentAncestor.getVersion() );
+        while (currentAncestor != null) {
+            final String gav = String.format(Locale.US, "%s:%s:%s", currentAncestor.getGroupId(),
+                    currentAncestor.getArtifactId(), currentAncestor.getVersion());
 
-            ancestors.add( gav );
+            ancestors.add(gav);
 
             currentAncestor = currentAncestor.getParent();
         }

@@ -45,17 +45,16 @@ import java.util.ResourceBundle;
  * @version $Id$
  * @since 2.0-alpha-5
  */
-@Mojo( name = "analyze-report", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
-@Execute( phase = LifecyclePhase.TEST_COMPILE )
+@Mojo(name = "analyze-report", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
+@Execute(phase = LifecyclePhase.TEST_COMPILE)
 public class AnalyzeReportMojo
-    extends AbstractMavenReport
-{
+        extends AbstractMavenReport {
     // fields -----------------------------------------------------------------
 
     /**
      * The Maven project to analyze.
      */
-    @Parameter( defaultValue = "${project}", readonly = true, required = true )
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
     /**
@@ -75,7 +74,7 @@ public class AnalyzeReportMojo
      *
      * @since 2.0-alpha-5
      */
-    @Parameter( defaultValue = "${project.build.directory}", readonly = true )
+    @Parameter(defaultValue = "${project.build.directory}", readonly = true)
     private File outputDirectory;
 
     /**
@@ -83,7 +82,7 @@ public class AnalyzeReportMojo
      * 
      * @since 2.2
      */
-    @Parameter( property = "ignoreNonCompile", defaultValue = "false" )
+    @Parameter(property = "ignoreNonCompile", defaultValue = "false")
     private boolean ignoreNonCompile;
 
     /**
@@ -100,7 +99,7 @@ public class AnalyzeReportMojo
      *
      * @since 2.7
      */
-    @Parameter( property = "mdep.analyze.skip", defaultValue = "false" )
+    @Parameter(property = "mdep.analyze.skip", defaultValue = "false")
     private boolean skip;
 
     // Mojo methods -----------------------------------------------------------
@@ -109,57 +108,48 @@ public class AnalyzeReportMojo
      * @see org.apache.maven.plugin.Mojo#execute()
      */
     @Override
-    public void executeReport( Locale locale )
-        throws MavenReportException
-    {
-        if ( skip )
-        {
-            getLog().info( "Skipping plugin execution" );
+    public void executeReport(Locale locale)
+            throws MavenReportException {
+        if (skip) {
+            getLog().info("Skipping plugin execution");
             return;
         }
 
         // Step 0: Checking pom availability
-        if ( "pom".equals( project.getPackaging() ) )
-        {
-            getLog().info( "Skipping pom project" );
+        if ("pom".equals(project.getPackaging())) {
+            getLog().info("Skipping pom project");
             return;
         }
 
-        if ( outputDirectory == null || !outputDirectory.exists() )
-        {
-            getLog().info( "Skipping project with no Target directory" );
+        if (outputDirectory == null || !outputDirectory.exists()) {
+            getLog().info("Skipping project with no Target directory");
             return;
         }
 
         // Step 1: Analyze the project
         ProjectDependencyAnalysis analysis;
-        try
-        {
-            analysis = analyzer.analyze( project );
+        try {
+            analysis = analyzer.analyze(project);
 
-            if ( usedDependencies != null )
-            {
-                analysis = analysis.forceDeclaredDependenciesUsage( usedDependencies );
+            if (usedDependencies != null) {
+                analysis = analysis.forceDeclaredDependenciesUsage(usedDependencies);
             }
-        }
-        catch ( ProjectDependencyAnalyzerException exception )
-        {
-            throw new MavenReportException( "Cannot analyze dependencies", exception );
+        } catch (ProjectDependencyAnalyzerException exception) {
+            throw new MavenReportException("Cannot analyze dependencies", exception);
         }
 
         // remove everything that's not in the compile scope
-        if ( ignoreNonCompile )
-        {
+        if (ignoreNonCompile) {
             analysis = analysis.ignoreNonCompile();
         }
 
         // Step 2: Create sink and bundle
         Sink sink = getSink();
-        ResourceBundle bundle = getBundle( locale );
+        ResourceBundle bundle = getBundle(locale);
 
         // Step 3: Generate the report
         AnalyzeReportView analyzethis = new AnalyzeReportView();
-        analyzethis.generateReport( analysis, sink, bundle );
+        analyzethis.generateReport(analysis, sink, bundle);
     }
 
     // MavenReport methods ----------------------------------------------------
@@ -168,8 +158,7 @@ public class AnalyzeReportMojo
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputName()
      */
     @Override
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return "dependency-analysis";
     }
 
@@ -177,18 +166,16 @@ public class AnalyzeReportMojo
      * @see org.apache.maven.reporting.AbstractMavenReport#getName(java.util.Locale)
      */
     @Override
-    public String getName( Locale locale )
-    {
-        return getBundle( locale ).getString( "analyze.report.name" );
+    public String getName(Locale locale) {
+        return getBundle(locale).getString("analyze.report.name");
     }
 
     /*
      * @see org.apache.maven.reporting.AbstractMavenReport#getDescription(java.util.Locale)
      */
     @Override
-    public String getDescription( Locale locale )
-    {
-        return getBundle( locale ).getString( "analyze.report.description" );
+    public String getDescription(Locale locale) {
+        return getBundle(locale).getString("analyze.report.description");
     }
 
     // AbstractMavenReport methods --------------------------------------------
@@ -197,8 +184,7 @@ public class AnalyzeReportMojo
      * @see org.apache.maven.reporting.AbstractMavenReport#getProject()
      */
     @Override
-    protected MavenProject getProject()
-    {
+    protected MavenProject getProject() {
         return project;
     }
 
@@ -206,9 +192,8 @@ public class AnalyzeReportMojo
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
      */
     @Override
-    protected String getOutputDirectory()
-    {
-        getLog().info( outputDirectory.toString() );
+    protected String getOutputDirectory() {
+        getLog().info(outputDirectory.toString());
 
         return outputDirectory.toString();
     }
@@ -217,8 +202,7 @@ public class AnalyzeReportMojo
      * @see org.apache.maven.reporting.AbstractMavenReport#getSiteRenderer()
      */
     @Override
-    protected Renderer getSiteRenderer()
-    {
+    protected Renderer getSiteRenderer() {
         return siteRenderer;
     }
 
@@ -228,8 +212,7 @@ public class AnalyzeReportMojo
      * @param locale the current locale
      * @return The resource bundle {@link ResourceBundle}
      */
-    protected ResourceBundle getBundle( Locale locale )
-    {
-        return ResourceBundle.getBundle( "analyze-report", locale, this.getClass().getClassLoader() );
+    protected ResourceBundle getBundle(Locale locale) {
+        return ResourceBundle.getBundle("analyze-report", locale, this.getClass().getClassLoader());
     }
 }

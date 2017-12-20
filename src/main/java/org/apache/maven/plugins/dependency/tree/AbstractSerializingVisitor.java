@@ -27,8 +27,7 @@ import java.io.Writer;
  *
  * @author <a href="mailto:jerome.creignou@gmail.com">Jerome Creignou</a>
  */
-public abstract class AbstractSerializingVisitor
-{
+public abstract class AbstractSerializingVisitor {
 
     /**
      * The writer to serialize to.
@@ -43,15 +42,11 @@ public abstract class AbstractSerializingVisitor
      *
      * @param writer the writer to serialize to.
      */
-    public AbstractSerializingVisitor( Writer writer )
-    {
-        if ( writer instanceof PrintWriter )
-        {
+    public AbstractSerializingVisitor(Writer writer) {
+        if (writer instanceof PrintWriter) {
             this.writer = (PrintWriter) writer;
-        }
-        else
-        {
-            this.writer = new PrintWriter( writer, true );
+        } else {
+            this.writer = new PrintWriter(writer, true);
         }
     }
 }

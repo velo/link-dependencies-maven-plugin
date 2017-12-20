@@ -23,8 +23,7 @@ package org.apache.maven.plugins.dependency.fromConfiguration;
  * @author Olivier Lamy
  * @since 2.7
  */
-public class ProcessArtifactItemsRequest
-{
+public class ProcessArtifactItemsRequest {
     /**
      * remove the version from the filename.
      */
@@ -45,74 +44,61 @@ public class ProcessArtifactItemsRequest
      */
     private boolean useBaseVersion;
 
-    public ProcessArtifactItemsRequest()
-    {
+    public ProcessArtifactItemsRequest() {
         // no op
     }
 
-    public ProcessArtifactItemsRequest( boolean removeVersion, boolean prependGroupId, boolean useBaseVersion,
-                                        boolean removeClassifier )
-    {
+    public ProcessArtifactItemsRequest(boolean removeVersion, boolean prependGroupId, boolean useBaseVersion,
+            boolean removeClassifier) {
         this.removeVersion = removeVersion;
         this.prependGroupId = prependGroupId;
         this.useBaseVersion = useBaseVersion;
         this.removeClassifier = removeClassifier;
     }
 
-    public boolean isRemoveVersion()
-    {
+    public boolean isRemoveVersion() {
         return removeVersion;
     }
 
-    public void setRemoveVersion( boolean removeVersion )
-    {
+    public void setRemoveVersion(boolean removeVersion) {
         this.removeVersion = removeVersion;
     }
 
-    public boolean isRemoveClassifier()
-    {
+    public boolean isRemoveClassifier() {
         return removeClassifier;
     }
 
-    public void setRemoveClassifier( boolean removeClassifier )
-    {
+    public void setRemoveClassifier(boolean removeClassifier) {
         this.removeClassifier = removeClassifier;
     }
 
-    public ProcessArtifactItemsRequest removeVersion( boolean removeVersion )
-    {
+    public ProcessArtifactItemsRequest removeVersion(boolean removeVersion) {
         this.removeVersion = removeVersion;
         return this;
     }
 
-    public boolean isPrependGroupId()
-    {
+    public boolean isPrependGroupId() {
         return prependGroupId;
     }
 
-    public void setPrependGroupId( boolean prependGroupId )
-    {
+    public void setPrependGroupId(boolean prependGroupId) {
         this.prependGroupId = prependGroupId;
     }
 
-    public ProcessArtifactItemsRequest prependGroupId( boolean prependGroupId )
-    {
+    public ProcessArtifactItemsRequest prependGroupId(boolean prependGroupId) {
         this.prependGroupId = prependGroupId;
         return this;
     }
 
-    public boolean isUseBaseVersion()
-    {
+    public boolean isUseBaseVersion() {
         return useBaseVersion;
     }
 
-    public void setUseBaseVersion( boolean useBaseVersion )
-    {
+    public void setUseBaseVersion(boolean useBaseVersion) {
         this.useBaseVersion = useBaseVersion;
     }
 
-    public ProcessArtifactItemsRequest useBaseVersion( boolean useBaseVersion )
-    {
+    public ProcessArtifactItemsRequest useBaseVersion(boolean useBaseVersion) {
         this.useBaseVersion = useBaseVersion;
         return this;
     }

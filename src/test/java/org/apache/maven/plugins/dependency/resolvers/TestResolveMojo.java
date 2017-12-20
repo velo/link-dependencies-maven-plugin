@@ -30,14 +30,12 @@ import org.apache.maven.plugin.testing.SilentLog;
 import org.apache.maven.project.MavenProject;
 
 public class TestResolveMojo
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
 
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         // required for mojo lookups to work
-        super.setUp( "markers", false );
+        super.setUp("markers", false);
     }
 
     /**
@@ -46,43 +44,41 @@ public class TestResolveMojo
      * @throws Exception in case of errors.
      */
     public void testresolveTestEnvironment()
-        throws Exception
-    {
-        File testPom = new File( getBasedir(), "target/test-classes/unit/resolve-test/plugin-config.xml" );
-        ResolveDependenciesMojo mojo = (ResolveDependenciesMojo) lookupMojo( "resolve", testPom );
+            throws Exception {
+        File testPom = new File(getBasedir(), "target/test-classes/unit/resolve-test/plugin-config.xml");
+        ResolveDependenciesMojo mojo = (ResolveDependenciesMojo) lookupMojo("resolve", testPom);
 
-        assertNotNull( mojo );
-        assertNotNull( mojo.getProject() );
+        assertNotNull(mojo);
+        assertNotNull(mojo.getProject());
         MavenProject project = mojo.getProject();
 
-        mojo.setSilent( true );
+        mojo.setSilent(true);
         Set<Artifact> artifacts = this.stubFactory.getScopedArtifacts();
         Set<Artifact> directArtifacts = this.stubFactory.getReleaseAndSnapshotArtifacts();
-        artifacts.addAll( directArtifacts );
+        artifacts.addAll(directArtifacts);
 
-        project.setArtifacts( artifacts );
-        project.setDependencyArtifacts( directArtifacts );
+        project.setArtifacts(artifacts);
+        project.setDependencyArtifacts(directArtifacts);
 
         mojo.execute();
         DependencyStatusSets results = mojo.getResults();
-        assertNotNull( results );
-        assertEquals( artifacts.size(), results.getResolvedDependencies().size() );
+        assertNotNull(results);
+        assertEquals(artifacts.size(), results.getResolvedDependencies().size());
 
-        setVariableValueToObject( mojo, "excludeTransitive", Boolean.TRUE );
+        setVariableValueToObject(mojo, "excludeTransitive", Boolean.TRUE);
 
         mojo.execute();
         results = mojo.getResults();
-        assertNotNull( results );
-        assertEquals( directArtifacts.size(), results.getResolvedDependencies().size() );
+        assertNotNull(results);
+        assertEquals(directArtifacts.size(), results.getResolvedDependencies().size());
     }
 
     public void testSilent()
-        throws Exception
-    {
-        File testPom = new File( getBasedir(), "target/test-classes/unit/resolve-test/plugin-config.xml" );
-        ResolveDependenciesMojo mojo = (ResolveDependenciesMojo) lookupMojo( "resolve", testPom );
-        mojo.setSilent( false );
+            throws Exception {
+        File testPom = new File(getBasedir(), "target/test-classes/unit/resolve-test/plugin-config.xml");
+        ResolveDependenciesMojo mojo = (ResolveDependenciesMojo) lookupMojo("resolve", testPom);
+        mojo.setSilent(false);
 
-        assertFalse( mojo.getLog() instanceof SilentLog );
+        assertFalse(mojo.getLog() instanceof SilentLog);
     } // TODO: Test skipping artifacts.
 }

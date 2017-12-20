@@ -28,6 +28,5 @@ package org.codehaus.plexus.util.interpolation;
  * @version $Id: Interpolator.java 12174 2010-05-16 21:04:35Z rfscholte $
  */
 public interface Interpolator
-    extends org.codehaus.plexus.interpolation.Interpolator
-{
+        extends org.codehaus.plexus.interpolation.Interpolator {
 }

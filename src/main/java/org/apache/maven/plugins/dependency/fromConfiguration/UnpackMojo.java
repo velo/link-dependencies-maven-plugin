@@ -40,15 +40,14 @@ import java.util.List;
  * @version $Id$
  * @since 1.0
  */
-@Mojo( name = "unpack", defaultPhase = LifecyclePhase.PROCESS_SOURCES, requiresProject = false, threadSafe = true )
+@Mojo(name = "unpack", defaultPhase = LifecyclePhase.PROCESS_SOURCES, requiresProject = false, threadSafe = true)
 public class UnpackMojo
-    extends AbstractFromConfigurationMojo
-{
+        extends AbstractFromConfigurationMojo {
 
     /**
      * Directory to store flag files after unpack
      */
-    @Parameter( defaultValue = "${project.build.directory}/dependency-maven-plugin-markers" )
+    @Parameter(defaultValue = "${project.build.directory}/dependency-maven-plugin-markers")
     private File markersDirectory;
 
     /**
@@ -58,7 +57,7 @@ public class UnpackMojo
      *
      * @since 2.0-alpha-5
      */
-    @Parameter( property = "mdep.unpack.includes" )
+    @Parameter(property = "mdep.unpack.includes")
     private String includes;
 
     /**
@@ -68,7 +67,7 @@ public class UnpackMojo
      *
      * @since 2.0-alpha-5
      */
-    @Parameter( property = "mdep.unpack.excludes" )
+    @Parameter(property = "mdep.unpack.excludes")
     private String excludes;
 
     /**
@@ -76,8 +75,8 @@ public class UnpackMojo
      * <code>groupId:artifactId:version[:packaging[:classifier]]</code>. Use {@link #artifactItems} within the POM
      * configuration.
      */
-    @SuppressWarnings( "unused" ) // marker-field, setArtifact(String) does the magic
-    @Parameter( property = "artifact" )
+    @SuppressWarnings("unused") // marker-field, setArtifact(String) does the magic
+    @Parameter(property = "artifact")
     private String artifact;
 
     /**
@@ -91,25 +90,19 @@ public class UnpackMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( isSkip() )
-        {
+            throws MojoExecutionException, MojoFailureException {
+        if (isSkip()) {
             return;
         }
 
         verifyRequirements();
 
-        List<ArtifactItem> processedItems = getProcessedArtifactItems( false );
-        for ( ArtifactItem artifactItem : processedItems )
-        {
-            if ( artifactItem.isNeedsProcessing() )
-            {
-                unpackArtifact( artifactItem );
-            }
-            else
-            {
-                this.getLog().info( artifactItem.getArtifact().getFile().getName() + " already unpacked." );
+        List<ArtifactItem> processedItems = getProcessedArtifactItems(false);
+        for (ArtifactItem artifactItem : processedItems) {
+            if (artifactItem.isNeedsProcessing()) {
+                unpackArtifact(artifactItem);
+            } else {
+                this.getLog().info(artifactItem.getArtifact().getFile().getName() + " already unpacked.");
             }
         }
     }
@@ -121,39 +114,32 @@ public class UnpackMojo
      * @throws MojoExecutionException with a message if an error occurs.
      * @see #getArtifact
      */
-    private void unpackArtifact( ArtifactItem artifactItem )
-        throws MojoExecutionException
-    {
-        MarkerHandler handler = new UnpackFileMarkerHandler( artifactItem, this.markersDirectory );
+    private void unpackArtifact(ArtifactItem artifactItem)
+            throws MojoExecutionException {
+        MarkerHandler handler = new UnpackFileMarkerHandler(artifactItem, this.markersDirectory);
 
-        unpack( artifactItem.getArtifact(), artifactItem.getType(), artifactItem.getOutputDirectory(),
-                artifactItem.getIncludes(), artifactItem.getExcludes(), artifactItem.getEncoding() );
+        unpack(artifactItem.getArtifact(), artifactItem.getType(), artifactItem.getOutputDirectory(),
+                artifactItem.getIncludes(), artifactItem.getExcludes(), artifactItem.getEncoding());
         handler.setMarker();
     }
 
     @Override
-    ArtifactItemFilter getMarkedArtifactFilter( ArtifactItem item )
-    {
-        MarkerHandler handler = new UnpackFileMarkerHandler( item, this.markersDirectory );
+    ArtifactItemFilter getMarkedArtifactFilter(ArtifactItem item) {
+        MarkerHandler handler = new UnpackFileMarkerHandler(item, this.markersDirectory);
 
-        return new MarkerFileFilter( this.isOverWriteReleases(), this.isOverWriteSnapshots(), this.isOverWriteIfNewer(),
-                                     handler );
+        return new MarkerFileFilter(this.isOverWriteReleases(), this.isOverWriteSnapshots(), this.isOverWriteIfNewer(),
+                handler);
     }
 
-    protected List<ArtifactItem> getProcessedArtifactItems( boolean removeVersion )
-        throws MojoExecutionException
-    {
-        List<ArtifactItem> items =
-            super.getProcessedArtifactItems( new ProcessArtifactItemsRequest( removeVersion, false, false, false ) );
-        for ( ArtifactItem artifactItem : items )
-        {
-            if ( StringUtils.isEmpty( artifactItem.getIncludes() ) )
-            {
-                artifactItem.setIncludes( getIncludes() );
+    protected List<ArtifactItem> getProcessedArtifactItems(boolean removeVersion)
+            throws MojoExecutionException {
+        List<ArtifactItem> items = super.getProcessedArtifactItems(new ProcessArtifactItemsRequest(removeVersion, false, false, false));
+        for (ArtifactItem artifactItem : items) {
+            if (StringUtils.isEmpty(artifactItem.getIncludes())) {
+                artifactItem.setIncludes(getIncludes());
             }
-            if ( StringUtils.isEmpty( artifactItem.getExcludes() ) )
-            {
-                artifactItem.setExcludes( getExcludes() );
+            if (StringUtils.isEmpty(artifactItem.getExcludes())) {
+                artifactItem.setExcludes(getExcludes());
             }
         }
         return items;
@@ -162,48 +148,42 @@ public class UnpackMojo
     /**
      * @return Returns the markersDirectory.
      */
-    public File getMarkersDirectory()
-    {
+    public File getMarkersDirectory() {
         return this.markersDirectory;
     }
 
     /**
      * @param theMarkersDirectory The markersDirectory to set.
      */
-    public void setMarkersDirectory( File theMarkersDirectory )
-    {
+    public void setMarkersDirectory(File theMarkersDirectory) {
         this.markersDirectory = theMarkersDirectory;
     }
 
     /**
      * @return Returns a comma separated list of excluded items
      */
-    public String getExcludes()
-    {
+    public String getExcludes() {
         return this.excludes;
     }
 
     /**
      * @param excludes A comma separated list of items to exclude i.e. **\/*.xml, **\/*.properties
      */
-    public void setExcludes( String excludes )
-    {
+    public void setExcludes(String excludes) {
         this.excludes = excludes;
     }
 
     /**
      * @return Returns a comma separated list of included items
      */
-    public String getIncludes()
-    {
+    public String getIncludes() {
         return this.includes;
     }
 
     /**
      * @param includes A comma separated list of items to include i.e. **\/*.xml, **\/*.properties
      */
-    public void setIncludes( String includes )
-    {
+    public void setIncludes(String includes) {
         this.includes = includes;
     }
 }

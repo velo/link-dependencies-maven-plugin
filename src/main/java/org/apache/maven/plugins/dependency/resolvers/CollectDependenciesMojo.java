@@ -43,9 +43,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @since 3.0
  */
 //CHECKSTYLE_OFF: LineLength
-@Mojo( name = "collect", requiresDependencyCollection = ResolutionScope.TEST, defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true )
+@Mojo(name = "collect", requiresDependencyCollection = ResolutionScope.TEST, defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 //CHECKSTYLE_ON: LineLength
 public class CollectDependenciesMojo
-    extends ResolveDependenciesMojo
-{
+        extends ResolveDependenciesMojo {
 }

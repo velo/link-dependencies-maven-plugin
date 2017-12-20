@@ -25,17 +25,14 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.dependency.utils.markers.DefaultFileMarkerHandler;
 
 public class StubDefaultFileMarkerHandler
-    extends DefaultFileMarkerHandler
-{
+        extends DefaultFileMarkerHandler {
 
-    public StubDefaultFileMarkerHandler( Artifact artifact, File markerFilesDirectory )
-    {
-        super( artifact, markerFilesDirectory );
+    public StubDefaultFileMarkerHandler(Artifact artifact, File markerFilesDirectory) {
+        super(artifact, markerFilesDirectory);
         // TODO Auto-generated constructor stub
     }
 
-    protected File getMarkerFile()
-    {
-        return new StubMarkerFile( this.markerFilesDirectory, this.artifact.getId().replace( ':', '-' ) + ".marker" );
+    protected File getMarkerFile() {
+        return new StubMarkerFile(this.markerFilesDirectory, this.artifact.getId().replace(':', '-') + ".marker");
     }
 }

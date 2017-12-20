@@ -33,11 +33,10 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @since 2.0-alpha2
  */
 //CHECKSTYLE_OFF: LineLength
-@Mojo( name = "sources", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
+@Mojo(name = "sources", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
 //CHECKSTYLE_ON: LineLength
 public class ResolveDependencySourcesMojo
-    extends ResolveDependenciesMojo
-{
+        extends ResolveDependenciesMojo {
 
     private static final String SOURCE_CLASSIFIER = "sources";
 
@@ -48,10 +47,8 @@ public class ResolveDependencySourcesMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException
-    {
-        if ( StringUtils.isEmpty( this.classifier ) )
-        {
+            throws MojoExecutionException {
+        if (StringUtils.isEmpty(this.classifier)) {
             this.classifier = SOURCE_CLASSIFIER;
         }
 

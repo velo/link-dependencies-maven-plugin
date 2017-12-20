@@ -17,6 +17,5 @@
  * under the License.
  */
 
-public class Main
-{
+public class Main {
 }

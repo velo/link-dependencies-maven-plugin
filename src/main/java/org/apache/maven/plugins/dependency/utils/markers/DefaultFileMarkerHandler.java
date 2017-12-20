@@ -30,19 +30,16 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @version $Id$
  */
 public class DefaultFileMarkerHandler
-    implements MarkerHandler
-{
+        implements MarkerHandler {
     protected Artifact artifact;
 
     protected File markerFilesDirectory;
 
-    public DefaultFileMarkerHandler( File theMarkerFilesDirectory )
-    {
+    public DefaultFileMarkerHandler(File theMarkerFilesDirectory) {
         this.markerFilesDirectory = theMarkerFilesDirectory;
     }
 
-    public DefaultFileMarkerHandler( Artifact theArtifact, File theMarkerFilesDirectory )
-    {
+    public DefaultFileMarkerHandler(Artifact theArtifact, File theMarkerFilesDirectory) {
         this.artifact = theArtifact;
         this.markerFilesDirectory = theMarkerFilesDirectory;
     }
@@ -52,9 +49,8 @@ public class DefaultFileMarkerHandler
      * 
      * @return File object for marker. The file is not guaranteed to exist.
      */
-    protected File getMarkerFile()
-    {
-        return new File( this.markerFilesDirectory, this.artifact.getId().replace( ':', '-' ) + ".marker" );
+    protected File getMarkerFile() {
+        return new File(this.markerFilesDirectory, this.artifact.getId().replace(':', '-') + ".marker");
     }
 
     /**
@@ -68,23 +64,18 @@ public class DefaultFileMarkerHandler
      */
     @Override
     public boolean isMarkerSet()
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         File marker = getMarkerFile();
         return marker.exists();
     }
 
     @Override
-    public boolean isMarkerOlder( Artifact artifact1 )
-        throws MojoExecutionException
-    {
+    public boolean isMarkerOlder(Artifact artifact1)
+            throws MojoExecutionException {
         File marker = getMarkerFile();
-        if ( marker.exists() )
-        {
+        if (marker.exists()) {
             return artifact1.getFile().lastModified() > marker.lastModified();
-        }
-        else
-        {
+        } else {
             // if the marker doesn't exist, we want to copy so assume it is
             // infinitely older
             return true;
@@ -93,49 +84,35 @@ public class DefaultFileMarkerHandler
 
     @Override
     public void setMarker()
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         File marker = getMarkerFile();
         // create marker file
-        try
-        {
+        try {
             marker.getParentFile().mkdirs();
-        }
-        catch ( NullPointerException e )
-        {
+        } catch (NullPointerException e) {
             // parent is null, ignore it.
         }
-        try
-        {
+        try {
             marker.createNewFile();
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Unable to create Marker: " + marker.getAbsolutePath(), e );
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to create Marker: " + marker.getAbsolutePath(), e);
         }
 
         // update marker file timestamp
-        try
-        {
+        try {
             long ts;
-            if ( this.artifact != null && this.artifact.getFile() != null )
-            {
+            if (this.artifact != null && this.artifact.getFile() != null) {
                 ts = this.artifact.getFile().lastModified();
-            }
-            else
-            {
+            } else {
                 ts = System.currentTimeMillis();
             }
-            if ( !marker.setLastModified( ts ) )
-            {
-                throw new MojoExecutionException( "Unable to update last modified timestamp on marker file "
-                    + marker.getAbsolutePath() );
+            if (!marker.setLastModified(ts)) {
+                throw new MojoExecutionException("Unable to update last modified timestamp on marker file "
+                        + marker.getAbsolutePath());
 
             }
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( "Unable to update Marker timestamp: " + marker.getAbsolutePath(), e );
+        } catch (Exception e) {
+            throw new MojoExecutionException("Unable to update Marker timestamp: " + marker.getAbsolutePath(), e);
         }
     }
 
@@ -150,8 +127,7 @@ public class DefaultFileMarkerHandler
      */
     @Override
     public boolean clearMarker()
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         File marker = getMarkerFile();
         return marker.delete();
     }
@@ -159,8 +135,7 @@ public class DefaultFileMarkerHandler
     /**
      * @return Returns the artifact.
      */
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return this.artifact;
     }
 
@@ -168,24 +143,21 @@ public class DefaultFileMarkerHandler
      * @param artifact The artifact to set.
      */
     @Override
-    public void setArtifact( Artifact artifact )
-    {
+    public void setArtifact(Artifact artifact) {
         this.artifact = artifact;
     }
 
     /**
      * @return Returns the markerFilesDirectory.
      */
-    public File getMarkerFilesDirectory()
-    {
+    public File getMarkerFilesDirectory() {
         return this.markerFilesDirectory;
     }
 
     /**
      * @param markerFilesDirectory The markerFilesDirectory to set.
      */
-    public void setMarkerFilesDirectory( File markerFilesDirectory )
-    {
+    public void setMarkerFilesDirectory(File markerFilesDirectory) {
         this.markerFilesDirectory = markerFilesDirectory;
     }
 }

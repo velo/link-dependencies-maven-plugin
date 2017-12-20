@@ -36,11 +36,10 @@ import java.util.Set;
  * @version $Id$
  * @since 2.0
  */
-@Mojo( name = "go-offline", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
-@Execute( goal = "resolve-plugins" )
+@Mojo(name = "go-offline", requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
+@Execute(goal = "resolve-plugins")
 public class GoOfflineMojo
-    extends AbstractResolveMojo
-{
+        extends AbstractResolveMojo {
 
     /**
      * Main entry into mojo. Gets the list of dependencies and iterates through displaying the resolved version.
@@ -49,22 +48,18 @@ public class GoOfflineMojo
      */
     @Override
     protected void doExecute()
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         Set<Artifact> artifacts = getProject().getArtifacts();
 
-        if ( !isSilent() )
-        {
-            for ( Artifact artifact : artifacts )
-            {
-                this.getLog().info( "Resolved: " + DependencyUtil.getFormattedFileName( artifact, false ) );
+        if (!isSilent()) {
+            for (Artifact artifact : artifacts) {
+                this.getLog().info("Resolved: " + DependencyUtil.getFormattedFileName(artifact, false));
             }
         }
     }
 
     @Override
-    protected ArtifactsFilter getMarkedArtifactFilter()
-    {
+    protected ArtifactsFilter getMarkedArtifactFilter() {
         return null;
     }
 }

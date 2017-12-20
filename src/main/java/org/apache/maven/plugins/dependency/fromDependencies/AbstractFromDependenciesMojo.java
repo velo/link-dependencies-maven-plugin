@@ -30,26 +30,25 @@ import java.io.File;
  * @version $Id$
  */
 public abstract class AbstractFromDependenciesMojo
-    extends AbstractDependencyFilterMojo
-{
+        extends AbstractDependencyFilterMojo {
     /**
      * Output location.
      *
      * @since 1.0
      */
-    @Parameter( property = "outputDirectory", defaultValue = "${project.build.directory}/dependency" )
+    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/dependency")
     protected File outputDirectory;
 
     /**
      * Strip artifact version during copy
      */
-    @Parameter( property = "mdep.stripVersion", defaultValue = "false" )
+    @Parameter(property = "mdep.stripVersion", defaultValue = "false")
     protected boolean stripVersion = false;
 
     /**
      * Strip artifact classifier during copy
      */
-    @Parameter( property = "mdep.stripClassifier", defaultValue = "false" )
+    @Parameter(property = "mdep.stripClassifier", defaultValue = "false")
     protected boolean stripClassifier = false;
 
     /**
@@ -66,7 +65,7 @@ public abstract class AbstractFromDependenciesMojo
      *
      * @since 2.0-alpha-2
      */
-    @Parameter( property = "mdep.useRepositoryLayout", defaultValue = "false" )
+    @Parameter(property = "mdep.useRepositoryLayout", defaultValue = "false")
     protected boolean useRepositoryLayout;
 
     /**
@@ -75,7 +74,7 @@ public abstract class AbstractFromDependenciesMojo
      *
      * @since 2.2
      */
-    @Parameter( property = "mdep.useSubDirectoryPerScope", defaultValue = "false" )
+    @Parameter(property = "mdep.useSubDirectoryPerScope", defaultValue = "false")
     protected boolean useSubDirectoryPerScope;
 
     /**
@@ -83,7 +82,7 @@ public abstract class AbstractFromDependenciesMojo
      *
      * @since 2.0-alpha-1
      */
-    @Parameter( property = "mdep.useSubDirectoryPerType", defaultValue = "false" )
+    @Parameter(property = "mdep.useSubDirectoryPerType", defaultValue = "false")
     protected boolean useSubDirectoryPerType;
 
     /**
@@ -91,7 +90,7 @@ public abstract class AbstractFromDependenciesMojo
      *
      * @since 2.0-alpha-1
      */
-    @Parameter( property = "mdep.useSubDirectoryPerArtifact", defaultValue = "false" )
+    @Parameter(property = "mdep.useSubDirectoryPerArtifact", defaultValue = "false")
     protected boolean useSubDirectoryPerArtifact;
 
     /**
@@ -99,106 +98,92 @@ public abstract class AbstractFromDependenciesMojo
      *
      * @since 2.0-alpha-2
      */
-    @Parameter( property = "mdep.failOnMissingClassifierArtifact", defaultValue = "false" )
+    @Parameter(property = "mdep.failOnMissingClassifierArtifact", defaultValue = "false")
     protected boolean failOnMissingClassifierArtifact = true;
 
     /**
      * @return Returns the outputDirectory.
      */
-    public File getOutputDirectory()
-    {
+    public File getOutputDirectory() {
         return this.outputDirectory;
     }
 
     /**
      * @param theOutputDirectory The outputDirectory to set.
      */
-    public void setOutputDirectory( File theOutputDirectory )
-    {
+    public void setOutputDirectory(File theOutputDirectory) {
         this.outputDirectory = theOutputDirectory;
     }
 
     /**
      * @return Returns the useSubDirectoryPerArtifact.
      */
-    public boolean isUseSubDirectoryPerArtifact()
-    {
+    public boolean isUseSubDirectoryPerArtifact() {
         return this.useSubDirectoryPerArtifact;
     }
 
     /**
      * @param theUseSubDirectoryPerArtifact The useSubDirectoryPerArtifact to set.
      */
-    public void setUseSubDirectoryPerArtifact( boolean theUseSubDirectoryPerArtifact )
-    {
+    public void setUseSubDirectoryPerArtifact(boolean theUseSubDirectoryPerArtifact) {
         this.useSubDirectoryPerArtifact = theUseSubDirectoryPerArtifact;
     }
 
     /**
      * @return Returns the useSubDirectoryPerScope
      */
-    public boolean isUseSubDirectoryPerScope()
-    {
+    public boolean isUseSubDirectoryPerScope() {
         return this.useSubDirectoryPerScope;
     }
 
     /**
      * @param theUseSubDirectoryPerScope The useSubDirectoryPerScope to set.
      */
-    public void setUseSubDirectoryPerScope( boolean theUseSubDirectoryPerScope )
-    {
+    public void setUseSubDirectoryPerScope(boolean theUseSubDirectoryPerScope) {
         this.useSubDirectoryPerScope = theUseSubDirectoryPerScope;
     }
 
     /**
      * @return Returns the useSubDirectoryPerType.
      */
-    public boolean isUseSubDirectoryPerType()
-    {
+    public boolean isUseSubDirectoryPerType() {
         return this.useSubDirectoryPerType;
     }
 
     /**
      * @param theUseSubDirectoryPerType The useSubDirectoryPerType to set.
      */
-    public void setUseSubDirectoryPerType( boolean theUseSubDirectoryPerType )
-    {
+    public void setUseSubDirectoryPerType(boolean theUseSubDirectoryPerType) {
         this.useSubDirectoryPerType = theUseSubDirectoryPerType;
     }
 
-    public boolean isFailOnMissingClassifierArtifact()
-    {
+    public boolean isFailOnMissingClassifierArtifact() {
         return failOnMissingClassifierArtifact;
     }
 
-    public void setFailOnMissingClassifierArtifact( boolean failOnMissingClassifierArtifact )
-    {
+    public void setFailOnMissingClassifierArtifact(boolean failOnMissingClassifierArtifact) {
         this.failOnMissingClassifierArtifact = failOnMissingClassifierArtifact;
     }
 
-    public boolean isStripVersion()
-    {
+    public boolean isStripVersion() {
         return stripVersion;
     }
 
-    public void setStripVersion( boolean stripVersion )
-    {
+    public void setStripVersion(boolean stripVersion) {
         this.stripVersion = stripVersion;
     }
 
     /**
      * @return true, if dependencies must be planted in a repository layout
      */
-    public boolean isUseRepositoryLayout()
-    {
+    public boolean isUseRepositoryLayout() {
         return useRepositoryLayout;
     }
 
     /**
      * @param useRepositoryLayout - true if dependencies must be planted in a repository layout
      */
-    public void setUseRepositoryLayout( boolean useRepositoryLayout )
-    {
+    public void setUseRepositoryLayout(boolean useRepositoryLayout) {
         this.useRepositoryLayout = useRepositoryLayout;
     }
 }

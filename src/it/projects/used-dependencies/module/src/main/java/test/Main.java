@@ -22,7 +22,6 @@ package test;
 import org.apache.maven.plugins.dependency.MySourceRetentionAnnotation;
 
 @MySourceRetentionAnnotation
-public class Main
-{
+public class Main {
 
 }

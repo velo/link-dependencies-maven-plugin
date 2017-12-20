@@ -40,15 +40,9 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @since 2.0
  */
 //@formatter:off
-@Mojo( 
-    name = "analyze-only", 
-    requiresDependencyResolution = ResolutionScope.TEST, 
-    defaultPhase = LifecyclePhase.VERIFY, 
-    threadSafe = true 
-)
+@Mojo(name = "analyze-only", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 //@formatter:on
 public class AnalyzeOnlyMojo
-    extends AbstractAnalyzeMojo
-{
+        extends AbstractAnalyzeMojo {
     // subclassed to provide annotations
 }

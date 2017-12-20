@@ -32,13 +32,11 @@ import org.apache.maven.plugins.dependency.fromConfiguration.ArtifactItem;
 import org.apache.maven.plugin.testing.ArtifactStubFactory;
 
 public class DependencyArtifactStubFactory
-    extends ArtifactStubFactory
-{
+        extends ArtifactStubFactory {
     private boolean flattenedPath = true;
 
-    public DependencyArtifactStubFactory( File theWorkingDir, boolean theCreateFiles, boolean flattenedPath )
-    {
-        this( theWorkingDir, theCreateFiles );
+    public DependencyArtifactStubFactory(File theWorkingDir, boolean theCreateFiles, boolean flattenedPath) {
+        this(theWorkingDir, theCreateFiles);
         this.flattenedPath = flattenedPath;
     }
 
@@ -46,52 +44,45 @@ public class DependencyArtifactStubFactory
      * @param theWorkingDir {@link File}
      * @param theCreateFiles true/false.
      */
-    public DependencyArtifactStubFactory( File theWorkingDir, boolean theCreateFiles )
-    {
-        super( theWorkingDir, theCreateFiles );
+    public DependencyArtifactStubFactory(File theWorkingDir, boolean theCreateFiles) {
+        super(theWorkingDir, theCreateFiles);
     }
 
-    public ArtifactItem getArtifactItem( Artifact artifact )
-    {
-        ArtifactItem item = new ArtifactItem( artifact );
+    public ArtifactItem getArtifactItem(Artifact artifact) {
+        ArtifactItem item = new ArtifactItem(artifact);
         return item;
     }
 
-    public List<ArtifactItem> getArtifactItems( Collection<Artifact> artifacts )
-    {
+    public List<ArtifactItem> getArtifactItems(Collection<Artifact> artifacts) {
         List<ArtifactItem> list = new ArrayList<ArtifactItem>();
-        for ( Artifact artifact : artifacts )
-        {
-            list.add( getArtifactItem( artifact ) );
+        for (Artifact artifact : artifacts) {
+            list.add(getArtifactItem(artifact));
         }
         return list;
     }
 
     @Override
-    public Artifact createArtifact( String groupId, String artifactId, VersionRange versionRange, String scope,
-                                    String type, String classifier, boolean optional )
-        throws IOException
-    {
+    public Artifact createArtifact(String groupId, String artifactId, VersionRange versionRange, String scope,
+            String type, String classifier, boolean optional)
+            throws IOException {
         File workingDir = getWorkingDir();
 
-        if ( !flattenedPath )
-        {
-            StringBuilder path = new StringBuilder( 128 );
+        if (!flattenedPath) {
+            StringBuilder path = new StringBuilder(128);
 
-            path.append( groupId.replace( '.', '/' ) ).append( '/' );
+            path.append(groupId.replace('.', '/')).append('/');
 
-            path.append( artifactId ).append( '/' );
+            path.append(artifactId).append('/');
 
-            path.append( ArtifactUtils.toSnapshotVersion( versionRange.getRecommendedVersion().toString() ) );
+            path.append(ArtifactUtils.toSnapshotVersion(versionRange.getRecommendedVersion().toString()));
 
             // don't use flatten directories, won't happen at runtime
-            setWorkingDir( new File( workingDir, path.toString() ) );
+            setWorkingDir(new File(workingDir, path.toString()));
         }
 
-        Artifact artifact =
-            super.createArtifact( groupId, artifactId, versionRange, scope, type, classifier, optional );
+        Artifact artifact = super.createArtifact(groupId, artifactId, versionRange, scope, type, classifier, optional);
 
-        setWorkingDir( workingDir );
+        setWorkingDir(workingDir);
 
         return artifact;
     }

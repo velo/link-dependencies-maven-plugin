@@ -18,7 +18,6 @@
  */
 package bar;
 
-public class Main
-{
+public class Main {
     public foo.Main dummy = null;
 }

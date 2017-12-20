@@ -25,35 +25,31 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.dependency.AbstractDependencyMojoTestCase;
 
 public class TestArtifactItem
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
 
     protected void setUp()
-        throws Exception
-    {
-        setUp( "artifactItems", false );
+            throws Exception {
+        setUp("artifactItems", false);
     }
 
     public void testArtifactItemConstructor()
-        throws IOException
-    {
-        Artifact artifact = stubFactory.createArtifact( "g", "a", "1.0", Artifact.SCOPE_COMPILE, "jar", "one" );
+            throws IOException {
+        Artifact artifact = stubFactory.createArtifact("g", "a", "1.0", Artifact.SCOPE_COMPILE, "jar", "one");
 
-        ArtifactItem item = new ArtifactItem( artifact );
+        ArtifactItem item = new ArtifactItem(artifact);
 
-        assertEquals( item.getArtifact(), artifact );
-        assertEquals( item.getArtifactId(), artifact.getArtifactId() );
-        assertEquals( item.getGroupId(), artifact.getGroupId() );
-        assertEquals( item.getVersion(), artifact.getVersion() );
-        assertEquals( item.getClassifier(), artifact.getClassifier() );
-        assertEquals( item.getType(), artifact.getType() );
+        assertEquals(item.getArtifact(), artifact);
+        assertEquals(item.getArtifactId(), artifact.getArtifactId());
+        assertEquals(item.getGroupId(), artifact.getGroupId());
+        assertEquals(item.getVersion(), artifact.getVersion());
+        assertEquals(item.getClassifier(), artifact.getClassifier());
+        assertEquals(item.getType(), artifact.getType());
     }
 
-    public void testArtifactItemDefaultType()
-    {
+    public void testArtifactItemDefaultType() {
         ArtifactItem item = new ArtifactItem();
         // check type default
-        assertEquals( "jar", item.getType() );
+        assertEquals("jar", item.getType());
     }
 
 }

@@ -31,29 +31,26 @@ import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManager;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
 public class TestGetMojo
-    extends AbstractDependencyMojoTestCase
-{
+        extends AbstractDependencyMojoTestCase {
     GetMojo mojo;
 
     protected void setUp()
-        throws Exception
-    {
+            throws Exception {
         // required for mojo lookups to work
-        super.setUp( "markers", false );
+        super.setUp("markers", false);
 
-        File testPom = new File( getBasedir(), "target/test-classes/unit/get-test/plugin-config.xml" );
+        File testPom = new File(getBasedir(), "target/test-classes/unit/get-test/plugin-config.xml");
         assert testPom.exists();
-        mojo = (GetMojo) lookupMojo( "get", testPom );
+        mojo = (GetMojo) lookupMojo("get", testPom);
 
-        assertNotNull( mojo );
+        assertNotNull(mojo);
 
-        LegacySupport legacySupport = lookup( LegacySupport.class );
-        legacySupport.setSession( newMavenSession( new MavenProjectStub() ) );
-        DefaultRepositorySystemSession repoSession =
-            (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
-        repoSession.setLocalRepositoryManager( new SimpleLocalRepositoryManager( testDir.getAbsolutePath() ) );
+        LegacySupport legacySupport = lookup(LegacySupport.class);
+        legacySupport.setSession(newMavenSession(new MavenProjectStub()));
+        DefaultRepositorySystemSession repoSession = (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+        repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManager(testDir.getAbsolutePath()));
 
-        setVariableValueToObject( mojo, "session", legacySupport.getSession() );
+        setVariableValueToObject(mojo, "session", legacySupport.getSession());
     }
 
     /**
@@ -62,20 +59,19 @@ public class TestGetMojo
      * @throws Exception in case of errors
      */
     public void testTransitive()
-        throws Exception
-    {
+            throws Exception {
         // Set properties, transitive = default value = true
-        setVariableValueToObject( mojo, "transitive", Boolean.FALSE );
-        setVariableValueToObject( mojo, "remoteRepositories",
-                                  "central::default::http://repo1.maven.apache.org/maven2" );
-        mojo.setGroupId( "org.apache.maven" );
-        mojo.setArtifactId( "maven-model" );
-        mojo.setVersion( "2.0.9" );
+        setVariableValueToObject(mojo, "transitive", Boolean.FALSE);
+        setVariableValueToObject(mojo, "remoteRepositories",
+                "central::default::http://repo1.maven.apache.org/maven2");
+        mojo.setGroupId("org.apache.maven");
+        mojo.setArtifactId("maven-model");
+        mojo.setVersion("2.0.9");
 
         mojo.execute();
 
         // Set properties, transitive = false
-        setVariableValueToObject( mojo, "transitive", Boolean.FALSE );
+        setVariableValueToObject(mojo, "transitive", Boolean.FALSE);
         mojo.execute();
     }
 
@@ -85,13 +81,12 @@ public class TestGetMojo
      * @throws Exception in case of errors
      */
     public void testRemoteRepositories()
-        throws Exception
-    {
-        setVariableValueToObject( mojo, "remoteRepositories", "central::default::http://repo1.maven.apache.org/maven2,"
-            + "central::::http://repo1.maven.apache.org/maven2," + "http://repo1.maven.apache.org/maven2" );
-        mojo.setGroupId( "org.apache.maven" );
-        mojo.setArtifactId( "maven-model" );
-        mojo.setVersion( "2.0.9" );
+            throws Exception {
+        setVariableValueToObject(mojo, "remoteRepositories", "central::default::http://repo1.maven.apache.org/maven2,"
+                + "central::::http://repo1.maven.apache.org/maven2," + "http://repo1.maven.apache.org/maven2");
+        mojo.setGroupId("org.apache.maven");
+        mojo.setArtifactId("maven-model");
+        mojo.setVersion("2.0.9");
 
         mojo.execute();
     }
@@ -102,51 +97,41 @@ public class TestGetMojo
      * @throws Exception in case of errors
      */
     public void testParseRepository()
-        throws Exception
-    {
+            throws Exception {
         ArtifactRepository repo;
         ArtifactRepositoryPolicy policy = null;
-        repo = mojo.parseRepository( "central::default::http://repo1.maven.apache.org/maven2", policy );
-        assertEquals( "central", repo.getId() );
-        assertEquals( DefaultRepositoryLayout.class, repo.getLayout().getClass() );
-        assertEquals( "http://repo1.maven.apache.org/maven2", repo.getUrl() );
+        repo = mojo.parseRepository("central::default::http://repo1.maven.apache.org/maven2", policy);
+        assertEquals("central", repo.getId());
+        assertEquals(DefaultRepositoryLayout.class, repo.getLayout().getClass());
+        assertEquals("http://repo1.maven.apache.org/maven2", repo.getUrl());
 
-        try
-        {
-            repo = mojo.parseRepository( "central::legacy::http://repo1.maven.apache.org/maven2", policy );
-            fail( "Exception expected: legacy repository not supported anymore" );
-        }
-        catch ( MojoFailureException e )
-        {
+        try {
+            repo = mojo.parseRepository("central::legacy::http://repo1.maven.apache.org/maven2", policy);
+            fail("Exception expected: legacy repository not supported anymore");
+        } catch (MojoFailureException e) {
         }
 
-        repo = mojo.parseRepository( "central::::http://repo1.maven.apache.org/maven2", policy );
-        assertEquals( "central", repo.getId() );
-        assertEquals( DefaultRepositoryLayout.class, repo.getLayout().getClass() );
-        assertEquals( "http://repo1.maven.apache.org/maven2", repo.getUrl() );
+        repo = mojo.parseRepository("central::::http://repo1.maven.apache.org/maven2", policy);
+        assertEquals("central", repo.getId());
+        assertEquals(DefaultRepositoryLayout.class, repo.getLayout().getClass());
+        assertEquals("http://repo1.maven.apache.org/maven2", repo.getUrl());
 
-        repo = mojo.parseRepository( "http://repo1.maven.apache.org/maven2", policy );
-        assertEquals( "temp", repo.getId() );
-        assertEquals( DefaultRepositoryLayout.class, repo.getLayout().getClass() );
-        assertEquals( "http://repo1.maven.apache.org/maven2", repo.getUrl() );
+        repo = mojo.parseRepository("http://repo1.maven.apache.org/maven2", policy);
+        assertEquals("temp", repo.getId());
+        assertEquals(DefaultRepositoryLayout.class, repo.getLayout().getClass());
+        assertEquals("http://repo1.maven.apache.org/maven2", repo.getUrl());
 
-        try
-        {
-            mojo.parseRepository( "::::http://repo1.maven.apache.org/maven2", policy );
-            fail( "Exception expected" );
-        }
-        catch ( MojoFailureException e )
-        {
+        try {
+            mojo.parseRepository("::::http://repo1.maven.apache.org/maven2", policy);
+            fail("Exception expected");
+        } catch (MojoFailureException e) {
             // expected
         }
 
-        try
-        {
-            mojo.parseRepository( "central::http://repo1.maven.apache.org/maven2", policy );
-            fail( "Exception expected" );
-        }
-        catch ( MojoFailureException e )
-        {
+        try {
+            mojo.parseRepository("central::http://repo1.maven.apache.org/maven2", policy);
+            fail("Exception expected");
+        } catch (MojoFailureException e) {
             // expected
         }
     }
