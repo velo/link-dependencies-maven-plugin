@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -18,13 +17,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>maven-plugins</artifactId>
     <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-plugins</artifactId>
     <version>30</version>
     <relativePath>../../pom/maven/maven-plugins/pom.xml</relativePath>
   </parent>
@@ -40,46 +38,6 @@ under the License.
     <maven>${mavenVersion}</maven>
   </prerequisites>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-dependency-plugin/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugins/trunk/maven-dependency-plugin/</developerConnection>
-    <url>http://svn.apache.org/viewvc/maven/plugins/trunk/maven-dependency-plugin/</url>
-  </scm>
-  <issueManagement>
-    <system>JIRA</system>
-    <url>https://issues.apache.org/jira/browse/MDEP</url>
-  </issueManagement>
-  <distributionManagement>
-    <site>
-      <id>apache.website</id>
-      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/components/${maven.site.path}</url>
-    </site>
-  </distributionManagement>
-
-  <contributors>
-    <contributor>
-      <name>Bakito</name>
-    </contributor>
-    <contributor>
-      <name>Baptiste MATHUS</name>
-    </contributor>
-    <contributor>
-      <name>Kalle Korhonen</name>
-    </contributor>
-    <contributor>
-      <name>Ryan Heinen</name>
-    </contributor>
-    <contributor>
-      <name>Andreas Kuhtz</name>
-    </contributor>
-    <contributor>
-      <name>Holger Mense</name>
-    </contributor>
-    <contributor>
-      <name>Markus Karg</name>
-    </contributor>
-  </contributors>
-
   <properties>
     <mavenVersion>3.0</mavenVersion>
     <doxiaVersion>1.4</doxiaVersion>
@@ -94,7 +52,7 @@ under the License.
       <version>${mavenVersion}</version>
       <scope>test</scope>
     </dependency>
-  
+
     <!-- maven -->
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -134,20 +92,20 @@ under the License.
       <version>2.3</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.maven</groupId>
           <artifactId>maven-artifact-manager</artifactId>
-          <groupId>org.apache.maven</groupId>
         </exclusion>
         <exclusion>
+          <groupId>org.apache.maven</groupId>
           <artifactId>maven-project</artifactId>
-          <groupId>org.apache.maven</groupId>
         </exclusion>
         <exclusion>
+          <groupId>org.apache.maven</groupId>
           <artifactId>maven-profile</artifactId>
-          <groupId>org.apache.maven</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>maven-plugin-registry</artifactId>
           <groupId>org.apache.maven</groupId>
+          <artifactId>maven-plugin-registry</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -186,8 +144,8 @@ under the License.
       <version>1.2.1</version>
       <exclusions>
         <exclusion>
-          <artifactId>maven-artifact-manager</artifactId>
           <groupId>org.apache.maven</groupId>
+          <artifactId>maven-artifact-manager</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -204,8 +162,8 @@ under the License.
       <version>1.7</version>
       <exclusions>
         <exclusion>
-          <artifactId>maven-project</artifactId>
           <groupId>org.apache.maven</groupId>
+          <artifactId>maven-project</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -267,14 +225,14 @@ under the License.
       <version>${pluginTestingVersion}</version>
       <scope>test</scope>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
       <version>${pluginTestingVersion}</version>
       <scope>test</scope>
     </dependency>
 
-   <dependency>
+    <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-interpolation</artifactId>
       <version>1.24</version>
@@ -321,7 +279,7 @@ under the License.
     </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId> 
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
@@ -353,6 +311,46 @@ under the License.
       </plugin>
     </plugins>
   </build>
+
+  <contributors>
+    <contributor>
+      <name>Bakito</name>
+    </contributor>
+    <contributor>
+      <name>Baptiste MATHUS</name>
+    </contributor>
+    <contributor>
+      <name>Kalle Korhonen</name>
+    </contributor>
+    <contributor>
+      <name>Ryan Heinen</name>
+    </contributor>
+    <contributor>
+      <name>Andreas Kuhtz</name>
+    </contributor>
+    <contributor>
+      <name>Holger Mense</name>
+    </contributor>
+    <contributor>
+      <name>Markus Karg</name>
+    </contributor>
+  </contributors>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-dependency-plugin/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/plugins/trunk/maven-dependency-plugin/</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/plugins/trunk/maven-dependency-plugin/</url>
+  </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.apache.org/jira/browse/MDEP</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/components/${maven.site.path}</url>
+    </site>
+  </distributionManagement>
 
   <profiles>
     <profile>
@@ -388,14 +386,6 @@ under the License.
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>mrm-maven-plugin</artifactId>
             <version>1.0.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>start</goal>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <propertyName>repository.proxy.url</propertyName>
               <repositories>
@@ -407,9 +397,17 @@ under the License.
                   <source>src/test/resources/m2repo</source>
                 </mockRepo>
                  -->
-                <proxyRepo />
+                <proxyRepo></proxyRepo>
               </repositories>
             </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>start</goal>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
