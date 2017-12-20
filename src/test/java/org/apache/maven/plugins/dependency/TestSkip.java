@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2017 Marvin Herman Froeder (marvin@marvinformatics.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.maven.plugins.dependency;
 
 import org.apache.maven.plugin.Mojo;
@@ -28,99 +43,15 @@ import java.io.StringWriter;
 
 public class TestSkip
         extends AbstractDependencyMojoTestCase {
-    public void testSkipAnalyze()
+
+    public void testSkipLink()
             throws Exception {
-        doTest("analyze");
+        doTest("link");
     }
 
-    public void testSkipAnalyzeDepMgt()
+    public void testSkipLinkDependencies()
             throws Exception {
-        doTest("analyze-dep-mgt");
-    }
-
-    public void testSkipAnalyzeOnly()
-            throws Exception {
-        doTest("analyze-only");
-    }
-
-    public void testSkipAnalyzeReport()
-            throws Exception {
-        doSpecialTest("analyze-report");
-    }
-
-    public void testSkipAnalyzeDuplicate()
-            throws Exception {
-        doTest("analyze-duplicate");
-    }
-
-    public void testSkipBuildClasspath()
-            throws Exception {
-        doTest("build-classpath");
-    }
-
-    public void testSkipCopy()
-            throws Exception {
-        doTest("copy");
-    }
-
-    public void testSkipCopyDependencies()
-            throws Exception {
-        doTest("copy-dependencies");
-    }
-
-    public void testSkipGet()
-            throws Exception {
-        doSpecialTest("get");
-    }
-
-    public void testSkipGoOffline()
-            throws Exception {
-        doTest("go-offline");
-    }
-
-    public void testSkipList()
-            throws Exception {
-        doTest("list");
-    }
-
-    public void testSkipProperties()
-            throws Exception {
-        doTest("properties");
-    }
-
-    public void testSkipPurgeLocalRepository()
-            throws Exception {
-        doSpecialTest("purge-local-repository");
-    }
-
-    public void testSkipResolve()
-            throws Exception {
-        doTest("resolve");
-    }
-
-    public void testSkipResolvePlugins()
-            throws Exception {
-        doTest("resolve-plugins");
-    }
-
-    public void testSkipSources()
-            throws Exception {
-        doTest("sources");
-    }
-
-    public void testSkipTree()
-            throws Exception {
-        doTest("tree");
-    }
-
-    public void testSkipUnpack()
-            throws Exception {
-        doTest("unpack");
-    }
-
-    public void testSkipUnpackDependencies()
-            throws Exception {
-        doTest("unpack-dependencies");
+        doTest("link-dependencies");
     }
 
     protected void doTest(String mojoName)
@@ -135,10 +66,10 @@ public class TestSkip
 
     private void doConfigTest(String mojoName, String configFile)
             throws Exception {
-        File testPom = new File(getBasedir(), "target/test-classes/unit/skip-test/" + configFile);
-        Mojo mojo = lookupMojo(mojoName, testPom);
+        final File testPom = new File(getBasedir(), "target/test-classes/unit/skip-test/" + configFile);
+        final Mojo mojo = lookupMojo(mojoName, testPom);
         assertNotNull(mojo);
-        CapturingLog log = new CapturingLog();
+        final CapturingLog log = new CapturingLog();
         mojo.setLog(log);
         mojo.execute();
 
@@ -201,8 +132,8 @@ public class TestSkip
 
         /** {@inheritDoc} */
         public void error(CharSequence content, Throwable error) {
-            StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter(sWriter);
+            final StringWriter sWriter = new StringWriter();
+            final PrintWriter pWriter = new PrintWriter(sWriter);
 
             error.printStackTrace(pWriter);
 
@@ -213,8 +144,8 @@ public class TestSkip
          * @see org.apache.maven.plugin.logging.Log#error(java.lang.Throwable)
          */
         public void error(Throwable error) {
-            StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter(sWriter);
+            final StringWriter sWriter = new StringWriter();
+            final PrintWriter pWriter = new PrintWriter(sWriter);
 
             error.printStackTrace(pWriter);
 
@@ -255,8 +186,8 @@ public class TestSkip
         }
 
         private void print(String prefix, Throwable error) {
-            StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter(sWriter);
+            final StringWriter sWriter = new StringWriter();
+            final PrintWriter pWriter = new PrintWriter(sWriter);
 
             error.printStackTrace(pWriter);
 
@@ -264,12 +195,13 @@ public class TestSkip
         }
 
         private void print(String prefix, CharSequence content, Throwable error) {
-            StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter(sWriter);
+            final StringWriter sWriter = new StringWriter();
+            final PrintWriter pWriter = new PrintWriter(sWriter);
 
             error.printStackTrace(pWriter);
 
-            sb.append("[").append(prefix).append("] ").append(content.toString()).append("\n\n").append(sWriter.toString()).append("\n");
+            sb.append("[").append(prefix).append("] ").append(content.toString()).append("\n\n")
+                    .append(sWriter.toString()).append("\n");
         }
 
         protected String getContent() {

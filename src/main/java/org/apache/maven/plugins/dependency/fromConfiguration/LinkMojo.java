@@ -1,4 +1,24 @@
+/**
+ * Copyright (C) 2017 Marvin Herman Froeder (marvin@marvinformatics.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.maven.plugins.dependency.fromConfiguration;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
+import org.apache.maven.model.Dependency;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,86 +39,71 @@ package org.apache.maven.plugins.dependency.fromConfiguration;
  * under the License.
  */
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.handler.ArtifactHandler;
-import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.plugins.dependency.AbstractDependencyMojo;
 import org.apache.maven.plugins.dependency.utils.DependencyUtil;
 import org.apache.maven.plugins.dependency.utils.filters.ArtifactItemFilter;
+import org.apache.maven.plugins.dependency.utils.filters.DestFileFilter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.shared.artifact.DefaultArtifactCoordinate;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
-import org.apache.maven.shared.repository.RepositoryManager;
 import org.apache.maven.shared.artifact.resolve.ArtifactResolver;
 import org.apache.maven.shared.artifact.resolve.ArtifactResolverException;
+import org.apache.maven.shared.repository.RepositoryManager;
 import org.codehaus.plexus.util.StringUtils;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * Abstract parent class used by mojos that get Artifact information from the plugin configuration as an ArrayList of
- * ArtifactItems
+ * Goal that links a list of artifacts from the repository to defined locations.
  *
- * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
- * @see ArtifactItem
+ * @author marvin
  */
-public abstract class AbstractFromConfigurationMojo
+@Mojo(name = "link", defaultPhase = LifecyclePhase.PROCESS_SOURCES, requiresProject = false, threadSafe = true)
+public class LinkMojo
         extends AbstractDependencyMojo {
+
     /**
      * Default output location used for mojo, unless overridden in ArtifactItem.
-     *
-     * @since 1.0
      */
     @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/dependency")
     private File outputDirectory;
 
     /**
      * Overwrite release artifacts
-     *
-     * @since 1.0
      */
     @Parameter(property = "mdep.overWriteReleases", defaultValue = "false")
     private boolean overWriteReleases;
 
     /**
      * Overwrite snapshot artifacts
-     *
-     * @since 1.0
      */
     @Parameter(property = "mdep.overWriteSnapshots", defaultValue = "false")
     private boolean overWriteSnapshots;
 
     /**
      * Overwrite if newer
-     *
-     * @since 2.0
      */
     @Parameter(property = "mdep.overIfNewer", defaultValue = "true")
     private boolean overWriteIfNewer;
 
     /**
-     * Collection of ArtifactItems to work on. (ArtifactItem contains groupId, artifactId, version, type, classifier,
-     * outputDirectory, destFileName, overWrite and encoding.) See <a href="./usage.html">Usage</a> for details.
-     *
-     * @since 1.0
+     * Collection of ArtifactItems to work on. (ArtifactItem contains groupId, artifactId, version,
+     * type, classifier, outputDirectory, destFileName, overWrite and encoding.) See
+     * <a href="./usage.html">Usage</a> for details.
      */
     @Parameter
     private List<ArtifactItem> artifactItems;
 
     /**
-     * Path to override default local repository during plugin's execution. To remove all downloaded artifacts as part
-     * of the build, set this value to a location under your project's target directory
-     *
-     * @since 2.2
+     * Path to override default local repository during plugin's execution. To remove all downloaded
+     * artifacts as part of the build, set this value to a location under your project's target
+     * directory
      */
     @Parameter
     private File localRepositoryDirectory;
@@ -112,7 +117,50 @@ public abstract class AbstractFromConfigurationMojo
     @Component
     private ArtifactHandlerManager artifactHandlerManager;
 
-    abstract ArtifactItemFilter getMarkedArtifactFilter(ArtifactItem item);
+    /**
+     * Strip artifact version during link
+     */
+    @Parameter(property = "mdep.stripVersion", defaultValue = "false")
+    private boolean stripVersion = false;
+
+    /**
+     * Strip artifact classifier during link
+     */
+    @Parameter(property = "mdep.stripClassifier", defaultValue = "false")
+    private boolean stripClassifier = false;
+
+    /**
+     * Prepend artifact groupId during link
+     */
+    @Parameter(property = "mdep.prependGroupId", defaultValue = "false")
+    private final boolean prependGroupId = false;
+
+    /**
+     * Use artifact baseVersion during link
+     */
+    @Parameter(property = "mdep.useBaseVersion", defaultValue = "false")
+    private boolean useBaseVersion = false;
+
+    /**
+     * The artifact to link from command line. A string of the form
+     * groupId:artifactId:version[:packaging[:classifier]]. Use {@link #artifactItems} within the
+     * POM configuration.
+     */
+    @SuppressWarnings("unused") // marker-field, setArtifact(String) does the magic
+    @Parameter(property = "artifact")
+    private String artifact;
+
+    /**
+     * <i>not used in this goal</i>
+     */
+    @Parameter
+    protected boolean useJvmChmod = true;
+
+    /**
+     * <i>not used in this goal</i>
+     */
+    @Parameter
+    protected boolean ignorePermissions;
 
     // artifactItems is filled by either field injection or by setArtifact()
     protected void verifyRequirements()
@@ -123,8 +171,8 @@ public abstract class AbstractFromConfigurationMojo
     }
 
     /**
-     * Preprocesses the list of ArtifactItems. This method defaults the outputDirectory if not set and creates the
-     * output Directory if it doesn't exist.
+     * Preprocesses the list of ArtifactItems. This method defaults the outputDirectory if not set
+     * and creates the output Directory if it doesn't exist.
      *
      * @param processArtifactItemsRequest preprocessing instructions
      * @return An ArrayList of preprocessed ArtifactItems
@@ -134,17 +182,17 @@ public abstract class AbstractFromConfigurationMojo
     protected List<ArtifactItem> getProcessedArtifactItems(ProcessArtifactItemsRequest processArtifactItemsRequest)
             throws MojoExecutionException {
 
-        boolean removeVersion = processArtifactItemsRequest.isRemoveVersion(),
+        final boolean removeVersion = processArtifactItemsRequest.isRemoveVersion(),
                 prependGroupId = processArtifactItemsRequest.isPrependGroupId(),
                 useBaseVersion = processArtifactItemsRequest.isUseBaseVersion();
 
-        boolean removeClassifier = processArtifactItemsRequest.isRemoveClassifier();
+        final boolean removeClassifier = processArtifactItemsRequest.isRemoveClassifier();
 
         if (artifactItems == null || artifactItems.size() < 1) {
             throw new MojoExecutionException("There are no artifactItems configured.");
         }
 
-        for (ArtifactItem artifactItem : artifactItems) {
+        for (final ArtifactItem artifactItem : artifactItems) {
             this.getLog().info("Configured Artifact: " + artifactItem.toString());
 
             if (artifactItem.getOutputDirectory() == null) {
@@ -167,7 +215,7 @@ public abstract class AbstractFromConfigurationMojo
 
             try {
                 artifactItem.setNeedsProcessing(checkIfProcessingNeeded(artifactItem));
-            } catch (ArtifactFilterException e) {
+            } catch (final ArtifactFilterException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
         }
@@ -181,12 +229,14 @@ public abstract class AbstractFromConfigurationMojo
     }
 
     /**
-     * Resolves the Artifact from the remote repository if necessary. If no version is specified, it will be retrieved
-     * from the dependency list or from the DependencyManagement section of the pom.
+     * Resolves the Artifact from the remote repository if necessary. If no version is specified, it
+     * will be retrieved from the dependency list or from the DependencyManagement section of the
+     * pom.
      *
      * @param artifactItem containing information about artifact from plugin configuration.
      * @return Artifact object representing the specified file.
-     * @throws MojoExecutionException with a message if the version can't be found in DependencyManagement.
+     * @throws MojoExecutionException with a message if the version can't be found in
+     *             DependencyManagement.
      */
     protected Artifact getArtifact(ArtifactItem artifactItem)
             throws MojoExecutionException {
@@ -196,28 +246,30 @@ public abstract class AbstractFromConfigurationMojo
             // mdep-50 - rolledback for now because it's breaking some functionality.
             /*
              * List listeners = new ArrayList(); Set theSet = new HashSet(); theSet.add( artifact );
-             * ArtifactResolutionResult artifactResolutionResult = artifactCollector.collect( theSet, project
-             * .getArtifact(), managedVersions, this.local, project.getRemoteArtifactRepositories(),
-             * artifactMetadataSource, null, listeners ); Iterator iter =
-             * artifactResolutionResult.getArtifactResolutionNodes().iterator(); while ( iter.hasNext() ) {
-             * ResolutionNode node = (ResolutionNode) iter.next(); artifact = node.getArtifact(); }
+             * ArtifactResolutionResult artifactResolutionResult = artifactCollector.collect(
+             * theSet, project .getArtifact(), managedVersions, this.local,
+             * project.getRemoteArtifactRepositories(), artifactMetadataSource, null, listeners );
+             * Iterator iter = artifactResolutionResult.getArtifactResolutionNodes().iterator();
+             * while ( iter.hasNext() ) { ResolutionNode node = (ResolutionNode) iter.next();
+             * artifact = node.getArtifact(); }
              */
 
             ProjectBuildingRequest buildingRequest = newResolveArtifactProjectBuildingRequest();
 
             if (localRepositoryDirectory != null) {
-                buildingRequest = repositoryManager.setLocalRepositoryBasedir(buildingRequest, localRepositoryDirectory);
+                buildingRequest = repositoryManager.setLocalRepositoryBasedir(buildingRequest,
+                        localRepositoryDirectory);
             }
 
             // Map dependency to artifact coordinate
-            DefaultArtifactCoordinate coordinate = new DefaultArtifactCoordinate();
+            final DefaultArtifactCoordinate coordinate = new DefaultArtifactCoordinate();
             coordinate.setGroupId(artifactItem.getGroupId());
             coordinate.setArtifactId(artifactItem.getArtifactId());
             coordinate.setVersion(artifactItem.getVersion());
             coordinate.setClassifier(artifactItem.getClassifier());
 
             final String extension;
-            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler(artifactItem.getType());
+            final ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler(artifactItem.getType());
             if (artifactHandler != null) {
                 extension = artifactHandler.getExtension();
             } else {
@@ -226,7 +278,7 @@ public abstract class AbstractFromConfigurationMojo
             coordinate.setExtension(extension);
 
             artifact = artifactResolver.resolveArtifact(buildingRequest, coordinate).getArtifact();
-        } catch (ArtifactResolverException e) {
+        } catch (final ArtifactResolverException e) {
             throw new MojoExecutionException("Unable to find/resolve artifact.", e);
         }
 
@@ -234,18 +286,19 @@ public abstract class AbstractFromConfigurationMojo
     }
 
     /**
-     * Tries to find missing version from dependency list and dependency management. If found, the artifact is updated
-     * with the correct version. It will first look for an exact match on artifactId/groupId/classifier/type and if it
-     * doesn't find a match, it will try again looking for artifactId and groupId only.
+     * Tries to find missing version from dependency list and dependency management. If found, the
+     * artifact is updated with the correct version. It will first look for an exact match on
+     * artifactId/groupId/classifier/type and if it doesn't find a match, it will try again looking
+     * for artifactId and groupId only.
      *
      * @param artifact representing configured file.
      * @throws MojoExecutionException
      */
     private void fillMissingArtifactVersion(ArtifactItem artifact)
             throws MojoExecutionException {
-        MavenProject project = getProject();
-        List<Dependency> deps = project.getDependencies();
-        List<Dependency> depMngt = project.getDependencyManagement() == null ? Collections.<Dependency> emptyList()
+        final MavenProject project = getProject();
+        final List<Dependency> deps = project.getDependencies();
+        final List<Dependency> depMngt = project.getDependencyManagement() == null ? Collections.<Dependency> emptyList()
                 : project.getDependencyManagement().getDependencies();
 
         if (!findDependencyVersion(artifact, deps, false)
@@ -258,8 +311,8 @@ public abstract class AbstractFromConfigurationMojo
     }
 
     /**
-     * Tries to find missing version from a list of dependencies. If found, the artifact is updated with the correct
-     * version.
+     * Tries to find missing version from a list of dependencies. If found, the artifact is updated
+     * with the correct version.
      *
      * @param artifact representing configured file.
      * @param dependencies list of dependencies to search.
@@ -267,7 +320,7 @@ public abstract class AbstractFromConfigurationMojo
      * @return the found dependency
      */
     private boolean findDependencyVersion(ArtifactItem artifact, List<Dependency> dependencies, boolean looseMatch) {
-        for (Dependency dependency : dependencies) {
+        for (final Dependency dependency : dependencies) {
             if (StringUtils.equals(dependency.getArtifactId(), artifact.getArtifactId())
                     && StringUtils.equals(dependency.getGroupId(), artifact.getGroupId())
                     && (looseMatch || StringUtils.equals(dependency.getClassifier(), artifact.getClassifier()))
@@ -360,14 +413,14 @@ public abstract class AbstractFromConfigurationMojo
         if (artifact != null) {
             String packaging = "jar";
             String classifier;
-            String[] tokens = StringUtils.split(artifact, ":");
+            final String[] tokens = StringUtils.split(artifact, ":");
             if (tokens.length < 3 || tokens.length > 5) {
                 throw new MojoFailureException("Invalid artifact, "
                         + "you must specify groupId:artifactId:version[:packaging[:classifier]] " + artifact);
             }
-            String groupId = tokens[0];
-            String artifactId = tokens[1];
-            String version = tokens[2];
+            final String groupId = tokens[0];
+            final String artifactId = tokens[1];
+            final String version = tokens[2];
             if (tokens.length >= 4) {
                 packaging = tokens[3];
             }
@@ -377,7 +430,7 @@ public abstract class AbstractFromConfigurationMojo
                 classifier = null;
             }
 
-            ArtifactItem artifactItem = new ArtifactItem();
+            final ArtifactItem artifactItem = new ArtifactItem();
             artifactItem.setGroupId(groupId);
             artifactItem.setArtifactId(artifactId);
             artifactItem.setVersion(version);
@@ -386,5 +439,88 @@ public abstract class AbstractFromConfigurationMojo
 
             setArtifactItems(Collections.singletonList(artifactItem));
         }
+    }
+
+    /**
+     * Main entry into mojo. This method gets the ArtifactItems and iterates through each one
+     * passing it to linkArtifact.
+     *
+     * @throws MojoExecutionException with a message if an error occurs.
+     * @see ArtifactItem
+     * @see #getArtifactItems
+     * @see #linkArtifact(ArtifactItem)
+     */
+    @Override
+    protected void doExecute()
+            throws MojoExecutionException, MojoFailureException {
+        verifyRequirements();
+
+        final List<ArtifactItem> theArtifactItems = getProcessedArtifactItems(
+                new ProcessArtifactItemsRequest(stripVersion, prependGroupId, useBaseVersion,
+                        stripClassifier));
+        for (final ArtifactItem artifactItem : theArtifactItems) {
+            if (artifactItem.isNeedsProcessing()) {
+                linkArtifact(artifactItem);
+            } else {
+                this.getLog().info(artifactItem + " already exists in " + artifactItem.getOutputDirectory());
+            }
+        }
+    }
+
+    /**
+     * Resolves the artifact from the repository and copies it to the specified location.
+     *
+     * @param artifactItem containing the information about the Artifact to link.
+     * @throws MojoExecutionException with a message if an error occurs.
+     * @see #linkFile(File, File)
+     */
+    protected void linkArtifact(ArtifactItem artifactItem)
+            throws MojoExecutionException {
+        final File destFile = new File(artifactItem.getOutputDirectory(), artifactItem.getDestFileName());
+
+        linkFile(artifactItem.getArtifact().getFile(), destFile);
+    }
+
+    protected ArtifactItemFilter getMarkedArtifactFilter(ArtifactItem item) {
+        final ArtifactItemFilter destinationNameOverrideFilter = new DestFileFilter(this.isOverWriteReleases(),
+                this.isOverWriteSnapshots(), this.isOverWriteIfNewer(),
+                false, false, false, false, this.stripVersion, prependGroupId, useBaseVersion,
+                item.getOutputDirectory());
+        return destinationNameOverrideFilter;
+    }
+
+    /**
+     * @return Returns the stripVersion.
+     */
+    public boolean isStripVersion() {
+        return this.stripVersion;
+    }
+
+    /**
+     * @param stripVersion The stripVersion to set.
+     */
+    public void setStripVersion(boolean stripVersion) {
+        this.stripVersion = stripVersion;
+    }
+
+    /**
+     * @return Returns the stripClassifier.
+     */
+    public boolean isStripClassifier() {
+        return this.stripClassifier;
+    }
+
+    /**
+     * @param stripClassifier The stripClassifier to set.
+     */
+    public void setStripClassifier(boolean stripClassifier) {
+        this.stripClassifier = stripClassifier;
+    }
+
+    /**
+     * @param useBaseVersion The useBaseVersion to set.
+     */
+    public void setUseBaseVersion(boolean useBaseVersion) {
+        this.useBaseVersion = useBaseVersion;
     }
 }

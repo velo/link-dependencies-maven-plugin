@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2017 Marvin Herman Froeder (marvin@marvinformatics.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.maven.plugins.dependency.fromDependencies;
 
 /*
@@ -48,18 +63,18 @@ import org.codehaus.plexus.util.StringUtils;
 import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManager;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
-public class TestCopyDependenciesMojo2
+public class TestLinkDependenciesMojo2
         extends AbstractDependencyMojoTestCase {
 
-    CopyDependenciesMojo mojo;
+    LinkDependenciesMojo mojo;
 
     protected void setUp()
             throws Exception {
         // required for mojo lookups to work
-        super.setUp("copy-dependencies", true);
+        super.setUp("link-dependencies", true);
 
-        File testPom = new File(getBasedir(), "target/test-classes/unit/copy-dependencies-test/plugin-config.xml");
-        mojo = (CopyDependenciesMojo) lookupMojo("copy-dependencies", testPom);
+        File testPom = new File(getBasedir(), "target/test-classes/unit/link-dependencies-test/plugin-config.xml");
+        mojo = (LinkDependenciesMojo) lookupMojo("link-dependencies", testPom);
         mojo.outputDirectory = new File(this.testDir, "outputDirectory");
         // mojo.silent = true;
 
@@ -80,7 +95,8 @@ public class TestCopyDependenciesMojo2
         setVariableValueToObject(mojo, "session", session);
 
         legacySupport.setSession(session);
-        DefaultRepositorySystemSession repoSession = (DefaultRepositorySystemSession) legacySupport.getRepositorySession();
+        DefaultRepositorySystemSession repoSession = (DefaultRepositorySystemSession) legacySupport
+                .getRepositorySession();
         repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManager(testDir.getAbsolutePath()));
     }
 
@@ -94,7 +110,7 @@ public class TestCopyDependenciesMojo2
 
     }
 
-    public void testCopyDependenciesMojoIncludeCompileScope()
+    public void testLinkDependenciesMojoIncludeCompileScope()
             throws Exception {
         mojo.getProject().setArtifacts(stubFactory.getScopedArtifacts());
         mojo.getProject().setDependencyArtifacts(new HashSet<Artifact>());
@@ -113,7 +129,7 @@ public class TestCopyDependenciesMojo2
         }
     }
 
-    public void testCopyDependenciesMojoIncludeTestScope()
+    public void testLinkDependenciesMojoIncludeTestScope()
             throws Exception {
         mojo.getProject().setArtifacts(stubFactory.getScopedArtifacts());
         mojo.getProject().setDependencyArtifacts(new HashSet<Artifact>());
@@ -132,7 +148,7 @@ public class TestCopyDependenciesMojo2
         }
     }
 
-    public void testCopyDependenciesMojoIncludeRuntimeScope()
+    public void testLinkDependenciesMojoIncludeRuntimeScope()
             throws Exception {
         mojo.getProject().setArtifacts(stubFactory.getScopedArtifacts());
         mojo.getProject().setDependencyArtifacts(new HashSet<Artifact>());
@@ -151,7 +167,7 @@ public class TestCopyDependenciesMojo2
         }
     }
 
-    public void testCopyDependenciesMojoIncludeprovidedScope()
+    public void testLinkDependenciesMojoIncludeprovidedScope()
             throws Exception {
         mojo.getProject().setArtifacts(stubFactory.getScopedArtifacts());
         mojo.getProject().setDependencyArtifacts(new HashSet<Artifact>());
@@ -168,7 +184,7 @@ public class TestCopyDependenciesMojo2
         }
     }
 
-    public void testCopyDependenciesMojoIncludesystemScope()
+    public void testLinkDependenciesMojoIncludesystemScope()
             throws Exception {
         mojo.getProject().setArtifacts(stubFactory.getScopedArtifacts());
         mojo.getProject().setDependencyArtifacts(new HashSet<Artifact>());
@@ -245,12 +261,14 @@ public class TestCopyDependenciesMojo2
         String groupId = "testGroupId";
         String artifactId = "expanded-snapshot";
 
-        Artifact expandedSnapshot = createExpandedVersionArtifact(baseVersion, groupId, artifactId, "compile", "jar", null);
+        Artifact expandedSnapshot = createExpandedVersionArtifact(baseVersion, groupId, artifactId, "compile", "jar",
+                null);
 
         mojo.getProject().getArtifacts().add(expandedSnapshot);
         mojo.getProject().getDependencyArtifacts().add(expandedSnapshot);
 
-        Artifact pomExpandedSnapshot = createExpandedVersionArtifact(baseVersion, groupId, artifactId, "compile", "pom", null);
+        Artifact pomExpandedSnapshot = createExpandedVersionArtifact(baseVersion, groupId, artifactId, "compile", "pom",
+                null);
         mojo.getProject().getArtifacts().add(pomExpandedSnapshot);
         mojo.getProject().getDependencyArtifacts().add(pomExpandedSnapshot);
 
@@ -260,7 +278,8 @@ public class TestCopyDependenciesMojo2
         ArtifactFactory artifactFactory = lookup(ArtifactFactory.class);
 
         File outputDirectory = mojo.outputDirectory;
-        ArtifactRepository targetRepository = new MavenArtifactRepository("local", outputDirectory.toURL().toExternalForm(),
+        ArtifactRepository targetRepository = new MavenArtifactRepository("local",
+                outputDirectory.toURL().toExternalForm(),
                 new DefaultRepositoryLayout(), new ArtifactRepositoryPolicy(),
                 new ArtifactRepositoryPolicy());
 
@@ -281,7 +300,8 @@ public class TestCopyDependenciesMojo2
     private Artifact createExpandedVersionArtifact(String baseVersion, String groupId, String artifactId, String scope,
             String type, String classifier)
             throws IOException {
-        Artifact expandedSnapshot = this.stubFactory.createArtifact(groupId, artifactId, VersionRange.createFromVersion(baseVersion), scope,
+        Artifact expandedSnapshot = this.stubFactory.createArtifact(groupId, artifactId,
+                VersionRange.createFromVersion(baseVersion), scope,
                 type, classifier, false);
 
         Snapshot snapshot = new Snapshot();

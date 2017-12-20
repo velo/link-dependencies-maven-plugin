@@ -34,7 +34,8 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <groupId>com.marvinformatics</groupId>
+        <artifactId>link-dependencies-maven-plugin</artifactId>
         <configuration>
           <project implementation="org.apache.maven.plugins.dependency.testUtils.stubs.DuplicateDependenciesProjectStub"/>
           <skip>true</skip>

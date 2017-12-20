@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2017 Marvin Herman Froeder (marvin@marvinformatics.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.maven.plugins.dependency;
 
 /*
@@ -59,7 +74,7 @@ public abstract class AbstractDependencyMojoTestCase
         if (testDir != null) {
             try {
                 DependencyTestUtils.removeDirectory(testDir);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
                 fail("Trying to remove directory:" + testDir + "\r\n" + e.toString());
@@ -72,8 +87,8 @@ public abstract class AbstractDependencyMojoTestCase
         stubFactory = null;
     }
 
-    protected void copyFile(AbstractDependencyMojo mojo, File artifact, File destFile)
+    protected void linkFile(AbstractDependencyMojo mojo, File artifact, File destFile)
             throws MojoExecutionException {
-        mojo.copyFile(artifact, destFile);
+        mojo.linkFile(artifact, destFile);
     }
 }

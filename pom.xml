@@ -101,8 +101,8 @@
           <artifactId>maven-artifact-manager</artifactId>
         </exclusion>
         <exclusion>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-container-default</artifactId>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-container-default</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -121,7 +121,7 @@
     <dependency>
       <groupId>org.sonatype.sisu</groupId>
       <artifactId>sisu-inject-plexus</artifactId>
-       <version>1.4.2</version>
+      <version>1.4.2</version>
     </dependency>
 
     <!-- dependencies to annotations -->
@@ -164,10 +164,10 @@
       <version>1.7</version>
       <scope>provided</scope>
       <exclusions>
-          <exclusion>
-              <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-container-default</artifactId>
-          </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-container-default</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

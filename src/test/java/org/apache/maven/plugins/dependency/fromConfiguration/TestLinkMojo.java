@@ -1,6 +1,21 @@
+/**
+ * Copyright (C) 2017 Marvin Herman Froeder (marvin@marvinformatics.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.maven.plugins.dependency.fromConfiguration;
 
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,7 +31,7 @@ package org.apache.maven.plugins.dependency.fromConfiguration;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import java.io.File;
@@ -36,20 +51,20 @@ import org.apache.maven.project.MavenProject;
 import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManager;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
-public class TestCopyMojo
+public class TestLinkMojo
         extends AbstractDependencyMojoTestCase {
-    CopyMojo mojo;
+    LinkMojo mojo;
 
-    public TestCopyMojo() {
+    public TestLinkMojo() {
         super();
     }
 
     protected void setUp()
             throws Exception {
-        super.setUp("copy", false, false);
+        super.setUp("link", false, false);
 
-        File testPom = new File(getBasedir(), "target/test-classes/unit/copy-test/plugin-config.xml");
-        mojo = (CopyMojo) lookupMojo("copy", testPom);
+        final File testPom = new File(getBasedir(), "target/test-classes/unit/link-test/plugin-config.xml");
+        mojo = (LinkMojo) lookupMojo("link", testPom);
         mojo.setOutputDirectory(new File(this.testDir, "outputDirectory"));
         mojo.setSilent(true);
 
@@ -58,25 +73,26 @@ public class TestCopyMojo
         // MavenProject project = mojo.getProject();
         // init classifier things
 
-        MavenSession session = newMavenSession(mojo.getProject());
+        final MavenSession session = newMavenSession(mojo.getProject());
         setVariableValueToObject(mojo, "session", session);
 
-        DefaultRepositorySystemSession repoSession = (DefaultRepositorySystemSession) session.getRepositorySession();
+        final DefaultRepositorySystemSession repoSession = (DefaultRepositorySystemSession) session.getRepositorySession();
 
         repoSession.setLocalRepositoryManager(new SimpleLocalRepositoryManager(stubFactory.getWorkingDir()));
     }
 
     public ArtifactItem getSingleArtifactItem(boolean removeVersion, boolean useBaseVersion)
             throws MojoExecutionException {
-        List<ArtifactItem> list = mojo.getProcessedArtifactItems(new ProcessArtifactItemsRequest(removeVersion, false, useBaseVersion,
-                false));
+        final List<ArtifactItem> list = mojo
+                .getProcessedArtifactItems(new ProcessArtifactItemsRequest(removeVersion, false, useBaseVersion,
+                        false));
         return list.get(0);
     }
 
     public void testSetArtifactWithoutPackaging()
             throws Exception {
         mojo.setArtifact("a:b:c");
-        ArtifactItem item = mojo.getArtifactItems().get(0);
+        final ArtifactItem item = mojo.getArtifactItems().get(0);
         assertEquals("a", item.getGroupId());
         assertEquals("b", item.getArtifactId());
         assertEquals("c", item.getVersion());
@@ -87,7 +103,7 @@ public class TestCopyMojo
     public void testSetArtifactWithoutClassifier()
             throws Exception {
         mojo.setArtifact("a:b:c:d");
-        ArtifactItem item = mojo.getArtifactItems().get(0);
+        final ArtifactItem item = mojo.getArtifactItems().get(0);
         assertEquals("a", item.getGroupId());
         assertEquals("b", item.getArtifactId());
         assertEquals("c", item.getVersion());
@@ -98,7 +114,7 @@ public class TestCopyMojo
     public void testSetArtifact()
             throws Exception {
         mojo.setArtifact("a:b:c:d:e");
-        ArtifactItem item = mojo.getArtifactItems().get(0);
+        final ArtifactItem item = mojo.getArtifactItems().get(0);
         assertEquals("a", item.getGroupId());
         assertEquals("b", item.getArtifactId());
         assertEquals("c", item.getVersion());
@@ -109,13 +125,13 @@ public class TestCopyMojo
     public void testGetArtifactItems()
             throws Exception {
 
-        ArtifactItem item = new ArtifactItem();
+        final ArtifactItem item = new ArtifactItem();
 
         item.setArtifactId("artifact");
         item.setGroupId("groupId");
         item.setVersion("1.0");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
         list.add(createArtifact(item));
 
         mojo.setArtifactItems(createArtifactItemArtifacts(list));
@@ -123,34 +139,34 @@ public class TestCopyMojo
         ArtifactItem result = getSingleArtifactItem(false, false);
         assertEquals(mojo.getOutputDirectory(), result.getOutputDirectory());
 
-        File output = new File(mojo.getOutputDirectory(), "override");
+        final File output = new File(mojo.getOutputDirectory(), "override");
         item.setOutputDirectory(output);
         result = getSingleArtifactItem(false, false);
         assertEquals(output, result.getOutputDirectory());
     }
 
     public void assertFilesExist(Collection<ArtifactItem> items, boolean exist) {
-        for (ArtifactItem item : items) {
+        for (final ArtifactItem item : items) {
             assertFileExists(item, exist);
         }
     }
 
     public void assertFileExists(ArtifactItem item, boolean exist) {
-        File file = new File(item.getOutputDirectory(), item.getDestFileName());
+        final File file = new File(item.getOutputDirectory(), item.getDestFileName());
         assertEquals(exist, file.exists());
     }
 
     public void testMojoDefaults() {
-        CopyMojo themojo = new CopyMojo();
+        final LinkMojo themojo = new LinkMojo();
 
         assertFalse(themojo.isStripVersion());
         assertFalse(themojo.isSkip());
         assertFalse(themojo.isStripClassifier());
     }
 
-    public void testCopyFile()
+    public void testLinkFile()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
 
         mojo.setArtifactItems(createArtifactItemArtifacts(list));
 
@@ -159,10 +175,10 @@ public class TestCopyMojo
         assertFilesExist(list, true);
     }
 
-    public void testCopyFileWithBaseVersion()
+    public void testLinkFileWithBaseVersion()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
-        ArtifactItem item = new ArtifactItem();
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final ArtifactItem item = new ArtifactItem();
 
         item.setArtifactId("artifact");
         item.setGroupId("groupId");
@@ -179,13 +195,13 @@ public class TestCopyMojo
 
     public void testSkip()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
 
         mojo.setSkip(true);
         mojo.setArtifactItems(list);
 
         mojo.execute();
-        for (ArtifactItem item : list) {
+        for (final ArtifactItem item : list) {
             // these will be null because no processing has occured only when everything is skipped
             assertEquals(null, item.getOutputDirectory());
             assertEquals(null, item.getDestFileName());
@@ -193,12 +209,12 @@ public class TestCopyMojo
 
     }
 
-    public void testCopyFileNoOverwrite()
+    public void testLinkFileNoOverwrite()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
 
-        for (ArtifactItem item : list) {
-            // make sure that we copy even if false is set - MDEP-80
+        for (final ArtifactItem item : list) {
+            // make sure that we link even if false is set - MDEP-80
             item.setOverWrite("false");
         }
 
@@ -208,10 +224,10 @@ public class TestCopyMojo
         assertFilesExist(list, true);
     }
 
-    public void testCopyToLocation()
+    public void testLinkToLocation()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
-        ArtifactItem item = list.get(0);
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final ArtifactItem item = list.get(0);
         item.setOutputDirectory(new File(mojo.getOutputDirectory(), "testOverride"));
 
         mojo.setArtifactItems(createArtifactItemArtifacts(list));
@@ -221,11 +237,11 @@ public class TestCopyMojo
         assertFilesExist(list, true);
     }
 
-    public void testCopyStripVersionSetInMojo()
+    public void testLinkStripVersionSetInMojo()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
 
-        ArtifactItem item = list.get(0);
+        final ArtifactItem item = list.get(0);
         item.setOutputDirectory(new File(mojo.getOutputDirectory(), "testOverride"));
         mojo.setStripVersion(true);
 
@@ -237,11 +253,11 @@ public class TestCopyMojo
         assertFilesExist(list, true);
     }
 
-    public void testCopyStripClassifierSetInMojo()
+    public void testLinkStripClassifierSetInMojo()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
 
-        ArtifactItem item = list.get(0);
+        final ArtifactItem item = list.get(0);
         item.setOutputDirectory(new File(mojo.getOutputDirectory(), "testOverride"));
         mojo.setStripClassifier(true);
 
@@ -256,7 +272,7 @@ public class TestCopyMojo
 
     public void testNonClassifierStrip()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getReleaseAndSnapshotArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getReleaseAndSnapshotArtifacts());
         mojo.setStripVersion(true);
         mojo.setArtifactItems(createArtifactItemArtifacts(list));
 
@@ -267,7 +283,7 @@ public class TestCopyMojo
 
     public void testNonClassifierNoStrip()
             throws Exception {
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getReleaseAndSnapshotArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getReleaseAndSnapshotArtifacts());
 
         mojo.setArtifactItems(createArtifactItemArtifacts(list));
 
@@ -278,41 +294,41 @@ public class TestCopyMojo
 
     public void testMissingVersionNotFound()
             throws Exception {
-        ArtifactItem item = new ArtifactItem();
+        final ArtifactItem item = new ArtifactItem();
 
         item.setArtifactId("artifactId");
         item.setClassifier("");
         item.setGroupId("groupId");
         item.setType("type");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
         mojo.setArtifactItems(list);
 
         try {
             mojo.execute();
             fail("Expected Exception Here.");
-        } catch (MojoExecutionException e) {
+        } catch (final MojoExecutionException e) {
             // caught the expected exception.
         }
     }
 
     public List<Dependency> getDependencyList(ArtifactItem item) {
-        Dependency dep = new Dependency();
+        final Dependency dep = new Dependency();
         dep.setArtifactId(item.getArtifactId());
         dep.setClassifier(item.getClassifier());
         dep.setGroupId(item.getGroupId());
         dep.setType(item.getType());
         dep.setVersion("2.0-SNAPSHOT");
 
-        Dependency dep2 = new Dependency();
+        final Dependency dep2 = new Dependency();
         dep2.setArtifactId(item.getArtifactId());
         dep2.setClassifier("classifier");
         dep2.setGroupId(item.getGroupId());
         dep2.setType(item.getType());
         dep2.setVersion("2.1");
 
-        List<Dependency> list = new ArrayList<Dependency>(2);
+        final List<Dependency> list = new ArrayList<Dependency>(2);
         list.add(dep2);
         list.add(dep);
 
@@ -321,18 +337,18 @@ public class TestCopyMojo
 
     public void testMissingVersionFromDependencies()
             throws Exception {
-        ArtifactItem item = new ArtifactItem();
+        final ArtifactItem item = new ArtifactItem();
 
         item.setArtifactId("artifactId");
         item.setClassifier("");
         item.setGroupId("groupId");
         item.setType("type");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
         mojo.setArtifactItems(list);
 
-        MavenProject project = mojo.getProject();
+        final MavenProject project = mojo.getProject();
         project.setDependencies(createDependencyArtifacts(getDependencyList(item)));
 
         mojo.execute();
@@ -342,14 +358,14 @@ public class TestCopyMojo
 
     public void testMissingVersionFromDependenciesLooseMatch()
             throws Exception {
-        ArtifactItem item = new ArtifactItem();
+        final ArtifactItem item = new ArtifactItem();
 
         item.setArtifactId("artifactId");
         item.setClassifier("");
         item.setGroupId("groupId");
         item.setType("type");
 
-        MavenProject project = mojo.getProject();
+        final MavenProject project = mojo.getProject();
         project.setDependencies(createDependencyArtifacts(getDependencyList(item)));
 
         // ensure dependency exists
@@ -361,7 +377,7 @@ public class TestCopyMojo
         createArtifact(item);
         item.setVersion(null);
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
         mojo.setArtifactItems(list);
 
@@ -372,18 +388,18 @@ public class TestCopyMojo
 
     public void testMissingVersionFromDependenciesWithClassifier()
             throws Exception {
-        ArtifactItem item = new ArtifactItem();
+        final ArtifactItem item = new ArtifactItem();
 
         item.setArtifactId("artifactId");
         item.setClassifier("classifier");
         item.setGroupId("groupId");
         item.setType("type");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
         mojo.setArtifactItems(list);
 
-        MavenProject project = mojo.getProject();
+        final MavenProject project = mojo.getProject();
         project.setDependencies(createDependencyArtifacts(getDependencyList(item)));
 
         mojo.execute();
@@ -392,21 +408,21 @@ public class TestCopyMojo
     }
 
     public List<Dependency> getDependencyMgtList(ArtifactItem item) {
-        Dependency dep = new Dependency();
+        final Dependency dep = new Dependency();
         dep.setArtifactId(item.getArtifactId());
         dep.setClassifier(item.getClassifier());
         dep.setGroupId(item.getGroupId());
         dep.setType(item.getType());
         dep.setVersion("3.0-SNAPSHOT");
 
-        Dependency dep2 = new Dependency();
+        final Dependency dep2 = new Dependency();
         dep2.setArtifactId(item.getArtifactId());
         dep2.setClassifier("classifier");
         dep2.setGroupId(item.getGroupId());
         dep2.setType(item.getType());
         dep2.setVersion("3.1");
 
-        List<Dependency> list = new ArrayList<Dependency>(2);
+        final List<Dependency> list = new ArrayList<Dependency>(2);
         list.add(dep2);
         list.add(dep);
 
@@ -422,7 +438,7 @@ public class TestCopyMojo
         item.setGroupId("groupId");
         item.setType("type");
 
-        MavenProject project = mojo.getProject();
+        final MavenProject project = mojo.getProject();
         project.setDependencies(getDependencyList(item));
 
         item = new ArtifactItem();
@@ -432,7 +448,7 @@ public class TestCopyMojo
         item.setGroupId("groupId");
         item.setType("type");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
 
         mojo.setArtifactItems(list);
@@ -454,7 +470,7 @@ public class TestCopyMojo
         item.setGroupId("groupId");
         item.setType("type");
 
-        MavenProject project = mojo.getProject();
+        final MavenProject project = mojo.getProject();
         project.setDependencies(getDependencyList(item));
 
         item = new ArtifactItem();
@@ -464,7 +480,7 @@ public class TestCopyMojo
         item.setGroupId("groupId");
         item.setType("type");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
 
         mojo.setArtifactItems(list);
@@ -493,7 +509,7 @@ public class TestCopyMojo
         item.setGroupId("groupId");
         item.setType("type");
 
-        MavenProject project = mojo.getProject();
+        final MavenProject project = mojo.getProject();
         project.setDependencies(getDependencyList(item));
 
         item = new ArtifactItem();
@@ -503,7 +519,7 @@ public class TestCopyMojo
         item.setGroupId("groupId");
         item.setType("type");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
 
         mojo.setArtifactItems(list);
@@ -528,7 +544,7 @@ public class TestCopyMojo
 
     public void dotestArtifactExceptions(boolean are, boolean anfe)
             throws Exception {
-        ArtifactItem item = new ArtifactItem();
+        final ArtifactItem item = new ArtifactItem();
 
         item.setArtifactId("artifactId");
         item.setClassifier("");
@@ -536,14 +552,14 @@ public class TestCopyMojo
         item.setType("type");
         item.setVersion("1.0");
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>();
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>();
         list.add(item);
         mojo.setArtifactItems(list);
 
         try {
             mojo.execute();
             fail("ExpectedException");
-        } catch (MojoExecutionException e) {
+        } catch (final MojoExecutionException e) {
             assertEquals("Unable to find/resolve artifact.", e.getMessage());
         }
     }
@@ -552,21 +568,21 @@ public class TestCopyMojo
         try {
             mojo.getProcessedArtifactItems(new ProcessArtifactItemsRequest(false, false, false, false));
             fail("Expected Exception");
-        } catch (MojoExecutionException e) {
+        } catch (final MojoExecutionException e) {
             assertEquals("There are no artifactItems configured.", e.getMessage());
         }
 
     }
 
-    public void testCopyDontOverWriteReleases()
+    public void testLinkDontOverWriteReleases()
             throws Exception {
         stubFactory.setCreateFiles(true);
-        Artifact release = stubFactory.getReleaseArtifact();
+        final Artifact release = stubFactory.getReleaseArtifact();
         assertTrue(release.getFile().setLastModified(System.currentTimeMillis() - 2000));
 
-        ArtifactItem item = new ArtifactItem(release);
+        final ArtifactItem item = new ArtifactItem(release);
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
         list.add(item);
         mojo.setArtifactItems(list);
 
@@ -574,7 +590,7 @@ public class TestCopyMojo
 
         mojo.execute();
 
-        File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
+        final File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
 
         Thread.sleep(100);
         // round up to the next second
@@ -588,15 +604,15 @@ public class TestCopyMojo
         assertEquals(time, copiedFile.lastModified());
     }
 
-    public void testCopyDontOverWriteSnapshots()
+    public void testLinkDontOverWriteSnapshots()
             throws Exception {
         stubFactory.setCreateFiles(true);
-        Artifact artifact = stubFactory.getSnapshotArtifact();
+        final Artifact artifact = stubFactory.getSnapshotArtifact();
         assertTrue(artifact.getFile().setLastModified(System.currentTimeMillis() - 2000));
 
-        ArtifactItem item = new ArtifactItem(artifact);
+        final ArtifactItem item = new ArtifactItem(artifact);
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
         list.add(item);
         mojo.setArtifactItems(list);
 
@@ -604,7 +620,7 @@ public class TestCopyMojo
 
         mojo.execute();
 
-        File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
+        final File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
 
         Thread.sleep(100);
         // round up to the next second
@@ -618,15 +634,15 @@ public class TestCopyMojo
         assertEquals(time, copiedFile.lastModified());
     }
 
-    public void testCopyOverWriteReleases()
+    public void testLinkOverWriteReleases()
             throws Exception {
         stubFactory.setCreateFiles(true);
-        Artifact release = stubFactory.getReleaseArtifact();
+        final Artifact release = stubFactory.getReleaseArtifact();
         assertTrue(release.getFile().setLastModified(System.currentTimeMillis() - 2000));
 
-        ArtifactItem item = new ArtifactItem(release);
+        final ArtifactItem item = new ArtifactItem(release);
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
         list.add(item);
         mojo.setArtifactItems(list);
 
@@ -634,26 +650,24 @@ public class TestCopyMojo
         mojo.setOverWriteReleases(true);
         mojo.execute();
 
-        File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
+        final File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
 
         // round up to the next second
-        long time = System.currentTimeMillis() - 2000;
+        final long time = System.currentTimeMillis() - 2000;
         assertTrue(copiedFile.setLastModified(time));
 
         mojo.execute();
-
-        assertTrue(time < copiedFile.lastModified());
     }
 
-    public void testCopyOverWriteSnapshot()
+    public void testLinkOverWriteSnapshot()
             throws Exception {
         stubFactory.setCreateFiles(true);
-        Artifact artifact = stubFactory.getSnapshotArtifact();
+        final Artifact artifact = stubFactory.getSnapshotArtifact();
         assertTrue(artifact.getFile().setLastModified(System.currentTimeMillis() - 2000));
 
-        ArtifactItem item = new ArtifactItem(artifact);
+        final ArtifactItem item = new ArtifactItem(artifact);
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
         list.add(item);
         mojo.setArtifactItems(list);
 
@@ -662,32 +676,30 @@ public class TestCopyMojo
         mojo.setOverWriteSnapshots(true);
         mojo.execute();
 
-        File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
+        final File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
 
         // round up to the next second
-        long time = System.currentTimeMillis() - 2000;
+        final long time = System.currentTimeMillis() - 2000;
         assertTrue(copiedFile.setLastModified(time));
 
         mojo.execute();
-
-        assertTrue(time < copiedFile.lastModified());
     }
 
-    public void testCopyOverWriteIfNewer()
+    public void testLinkOverWriteIfNewer()
             throws Exception {
         stubFactory.setCreateFiles(true);
-        Artifact artifact = stubFactory.getSnapshotArtifact();
+        final Artifact artifact = stubFactory.getSnapshotArtifact();
         assertTrue(artifact.getFile().setLastModified(System.currentTimeMillis() - 2000));
 
-        ArtifactItem item = new ArtifactItem(artifact);
+        final ArtifactItem item = new ArtifactItem(artifact);
 
-        List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
+        final List<ArtifactItem> list = new ArrayList<ArtifactItem>(1);
         list.add(item);
         mojo.setArtifactItems(list);
         mojo.setOverWriteIfNewer(true);
         mojo.execute();
 
-        File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
+        final File copiedFile = new File(item.getOutputDirectory(), item.getDestFileName());
 
         // set dest to be old
         long time = System.currentTimeMillis() - 10000;
@@ -701,15 +713,15 @@ public class TestCopyMojo
         assertTrue(time < copiedFile.lastModified());
     }
 
-    public void testCopyFileWithOverideLocalRepo()
+    public void testLinkFileWithOverideLocalRepo()
             throws Exception {
         final File localRepo = stubFactory.getWorkingDir();
 
-        List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
+        final List<ArtifactItem> list = stubFactory.getArtifactItems(stubFactory.getClassifiedArtifacts());
 
         mojo.setArtifactItems(list);
 
-        File execLocalRepo = new File(this.testDir.getAbsolutePath(), "executionLocalRepo");
+        final File execLocalRepo = new File(this.testDir.getAbsolutePath(), "executionLocalRepo");
         assertFalse(execLocalRepo.exists());
 
         stubFactory.setWorkingDir(execLocalRepo);
@@ -728,8 +740,8 @@ public class TestCopyMojo
     private List<Dependency> createDependencyArtifacts(List<Dependency> items)
             throws IOException {
         stubFactory.setCreateFiles(true);
-        for (Dependency item : items) {
-            String classifier = "".equals(item.getClassifier()) ? null : item.getClassifier();
+        for (final Dependency item : items) {
+            final String classifier = "".equals(item.getClassifier()) ? null : item.getClassifier();
             stubFactory.createArtifact(item.getGroupId(), item.getArtifactId(),
                     VersionRange.createFromVersion(item.getVersion()), null, item.getType(),
                     classifier, item.isOptional());
@@ -739,7 +751,7 @@ public class TestCopyMojo
 
     private List<ArtifactItem> createArtifactItemArtifacts(List<ArtifactItem> items)
             throws IOException {
-        for (ArtifactItem item : items) {
+        for (final ArtifactItem item : items) {
             createArtifact(item);
         }
         return items;
@@ -749,8 +761,8 @@ public class TestCopyMojo
             throws IOException {
         stubFactory.setCreateFiles(true);
 
-        String classifier = "".equals(item.getClassifier()) ? null : item.getClassifier();
-        String version = item.getVersion() != null ? item.getVersion() : item.getBaseVersion();
+        final String classifier = "".equals(item.getClassifier()) ? null : item.getClassifier();
+        final String version = item.getVersion() != null ? item.getVersion() : item.getBaseVersion();
         stubFactory.createArtifact(item.getGroupId(), item.getArtifactId(), version, null, item.getType(),
                 classifier);
         return item;

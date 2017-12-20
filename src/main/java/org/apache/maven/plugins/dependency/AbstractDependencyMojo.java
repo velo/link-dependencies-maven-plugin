@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2017 Marvin Herman Froeder (marvin@marvinformatics.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.maven.plugins.dependency;
 
 /*
@@ -22,6 +37,7 @@ package org.apache.maven.plugins.dependency;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
@@ -152,28 +168,36 @@ public abstract class AbstractDependencyMojo
     }
 
     /**
-     * Does the actual copy of the file and logging.
+     * Does the actual link of the file and logging.
      *
-     * @param artifact represents the file to copy.
+     * @param artifact represents the file to link.
      * @param destFile file name of destination file.
      * @throws MojoExecutionException with a message if an error occurs.
      */
-    protected void copyFile(File artifact, File destFile)
+    protected void linkFile(File artifact, File destFile)
             throws MojoExecutionException {
         try {
-            getLog().info("Copying "
+            getLog().info("Linking "
                     + (this.outputAbsoluteArtifactFilename ? artifact.getAbsolutePath() : artifact.getName()) + " to "
                     + destFile);
 
-            if (artifact.isDirectory()) {
-                // usual case is a future jar packaging, but there are special cases: classifier and other packaging
+            if (!artifact.isFile()) {
+                // usual case is a future jar packaging, but there are special cases: classifier and
+                // other packaging
                 throw new MojoExecutionException("Artifact has not been packaged yet. When used on reactor artifact, "
-                        + "copy should be executed after packaging: see MDEP-187.");
+                        + "link should be executed after packaging: see MDEP-187.");
             }
 
-            FileUtils.copyFile(artifact, destFile);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error copying artifact from " + artifact + " to " + destFile, e);
+            if (destFile.exists()) {
+                destFile.delete();
+            } else {
+                destFile.getParentFile().mkdirs();
+            }
+
+            // reverse order target, source
+            Files.createLink(destFile.toPath(), artifact.toPath());
+        } catch (final IOException e) {
+            throw new MojoExecutionException("Error linking artifact from " + artifact + " to " + destFile, e);
         }
     }
 
@@ -214,6 +238,7 @@ public abstract class AbstractDependencyMojo
 
             if (file.isDirectory()) {
                 // usual case is a future jar packaging, but there are special cases: classifier and other packaging
+                // other packaging
                 throw new MojoExecutionException("Artifact has not been packaged yet. When used on reactor artifact, "
                         + "unpack should be executed after packaging: see MDEP-98.");
             }
