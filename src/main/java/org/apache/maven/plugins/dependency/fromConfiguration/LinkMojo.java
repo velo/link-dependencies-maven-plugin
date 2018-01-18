@@ -77,19 +77,19 @@ public class LinkMojo
     /**
      * Overwrite release artifacts
      */
-    @Parameter(property = "mdep.overWriteReleases", defaultValue = "false")
+    @Parameter(property = "link.overWriteReleases", defaultValue = "false")
     private boolean overWriteReleases;
 
     /**
      * Overwrite snapshot artifacts
      */
-    @Parameter(property = "mdep.overWriteSnapshots", defaultValue = "false")
+    @Parameter(property = "link.overWriteSnapshots", defaultValue = "false")
     private boolean overWriteSnapshots;
 
     /**
      * Overwrite if newer
      */
-    @Parameter(property = "mdep.overIfNewer", defaultValue = "true")
+    @Parameter(property = "link.overIfNewer", defaultValue = "true")
     private boolean overWriteIfNewer;
 
     /**
@@ -120,25 +120,25 @@ public class LinkMojo
     /**
      * Strip artifact version during link
      */
-    @Parameter(property = "mdep.stripVersion", defaultValue = "false")
+    @Parameter(property = "link.stripVersion", defaultValue = "false")
     private boolean stripVersion = false;
 
     /**
      * Strip artifact classifier during link
      */
-    @Parameter(property = "mdep.stripClassifier", defaultValue = "false")
+    @Parameter(property = "link.stripClassifier", defaultValue = "false")
     private boolean stripClassifier = false;
 
     /**
      * Prepend artifact groupId during link
      */
-    @Parameter(property = "mdep.prependGroupId", defaultValue = "false")
+    @Parameter(property = "link.prependGroupId", defaultValue = "false")
     private final boolean prependGroupId = false;
 
     /**
      * Use artifact baseVersion during link
      */
-    @Parameter(property = "mdep.useBaseVersion", defaultValue = "false")
+    @Parameter(property = "link.useBaseVersion", defaultValue = "false")
     private boolean useBaseVersion = false;
 
     /**

@@ -75,7 +75,7 @@ public class LinkDependenciesMojo
     /**
      * Also link the pom of each artifact.
      */
-    @Parameter(property = "mdep.linkPom", defaultValue = "false")
+    @Parameter(property = "link.linkPom", defaultValue = "false")
     protected boolean linkPom = true;
 
     /**
@@ -94,14 +94,14 @@ public class LinkDependenciesMojo
      * Either append the artifact's baseVersion or uniqueVersion to the filename. Will only be used
      * if {@link #isStripVersion()} is {@code false}.
      */
-    @Parameter(property = "mdep.useBaseVersion", defaultValue = "true")
+    @Parameter(property = "link.useBaseVersion", defaultValue = "true")
     protected boolean useBaseVersion = true;
 
     /**
      * Add parent poms to the list of copied dependencies (both current project pom parents and
      * dependencies parents).
      */
-    @Parameter(property = "mdep.addParentPoms", defaultValue = "false")
+    @Parameter(property = "link.addParentPoms", defaultValue = "false")
     protected boolean addParentPoms;
 
     /**
@@ -125,13 +125,13 @@ public class LinkDependenciesMojo
     /**
      * Strip artifact version during link
      */
-    @Parameter(property = "mdep.stripVersion", defaultValue = "false")
+    @Parameter(property = "link.stripVersion", defaultValue = "false")
     protected boolean stripVersion = false;
 
     /**
      * Strip artifact classifier during link
      */
-    @Parameter(property = "mdep.stripClassifier", defaultValue = "false")
+    @Parameter(property = "link.stripClassifier", defaultValue = "false")
     protected boolean stripClassifier = false;
 
     /**
@@ -146,34 +146,34 @@ public class LinkDependenciesMojo
      *   /outputDirectory/junit/junit/3.8.1/junit-3.8.1.jar
      * </pre>
      */
-    @Parameter(property = "mdep.useRepositoryLayout", defaultValue = "false")
+    @Parameter(property = "link.useRepositoryLayout", defaultValue = "false")
     protected boolean useRepositoryLayout;
 
     /**
      * Place each type of file in a separate subdirectory. (example /outputDirectory/runtime
      * /outputDirectory/provided etc)
      */
-    @Parameter(property = "mdep.useSubDirectoryPerScope", defaultValue = "false")
+    @Parameter(property = "link.useSubDirectoryPerScope", defaultValue = "false")
     protected boolean useSubDirectoryPerScope;
 
     /**
      * Place each type of file in a separate subdirectory. (example /outputDirectory/jars
      * /outputDirectory/wars etc)
      */
-    @Parameter(property = "mdep.useSubDirectoryPerType", defaultValue = "false")
+    @Parameter(property = "link.useSubDirectoryPerType", defaultValue = "false")
     protected boolean useSubDirectoryPerType;
 
     /**
      * Place each file in a separate subdirectory. (example
      * <code>/outputDirectory/junit-3.8.1-jar</code>)
      */
-    @Parameter(property = "mdep.useSubDirectoryPerArtifact", defaultValue = "false")
+    @Parameter(property = "link.useSubDirectoryPerArtifact", defaultValue = "false")
     protected boolean useSubDirectoryPerArtifact;
 
     /**
      * This only applies if the classifier parameter is used.
      */
-    @Parameter(property = "mdep.failOnMissingClassifierArtifact", defaultValue = "false")
+    @Parameter(property = "link.failOnMissingClassifierArtifact", defaultValue = "false")
     protected boolean failOnMissingClassifierArtifact = true;
     @Component
     private ArtifactResolver artifactResolver;
@@ -304,7 +304,7 @@ public class LinkDependenciesMojo
     /**
      * Prepend the groupId during link.
      */
-    @Parameter(property = "mdep.prependGroupId", defaultValue = "false")
+    @Parameter(property = "link.prependGroupId", defaultValue = "false")
     protected boolean prependGroupId = false;
 
     @Component

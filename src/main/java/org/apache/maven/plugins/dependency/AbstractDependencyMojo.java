@@ -110,13 +110,13 @@ public abstract class AbstractDependencyMojo
     /**
      * Skip plugin execution completely.
      */
-    @Parameter(property = "mdep.skip", defaultValue = "false")
+    @Parameter(property = "link.skip", defaultValue = "false")
     private boolean skip;
 
     /**
      * Fallback action when it's not possible to create a hardlink
      */
-    @Parameter(property = "mdep.fallback", defaultValue = "warn_and_copy")
+    @Parameter(property = "link.fallback", defaultValue = "warn_and_copy")
     private InvalidCrossDeviceLinkFallback fallbackAction;
 
     // Mojo methods -----------------------------------------------------------
