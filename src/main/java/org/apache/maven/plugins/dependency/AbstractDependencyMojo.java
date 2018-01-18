@@ -36,6 +36,7 @@ package org.apache.maven.plugins.dependency;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -124,6 +125,12 @@ public abstract class AbstractDependencyMojo
     @Parameter(property = "mdep.skip", defaultValue = "false")
     private boolean skip;
 
+    /**
+     * Fallback action when it's not possible to create a hardlink
+     */
+    @Parameter(property = "mdep.fallback", defaultValue = "warn_and_copy")
+    private InvalidCrossDeviceLinkFallback fallbackAction;
+
     // Mojo methods -----------------------------------------------------------
 
     /*
@@ -170,8 +177,12 @@ public abstract class AbstractDependencyMojo
                 destFile.getParentFile().mkdirs();
             }
 
-            // reverse order target, source
-            Files.createLink(destFile.toPath(), artifact.toPath());
+            try {
+                // reverse order target, source
+                Files.createLink(destFile.toPath(), artifact.toPath());
+            } catch (final FileSystemException e) {
+                fallbackAction.fallback(getLog(), artifact.toPath(), destFile.toPath(), e);
+            }
         } catch (final IOException e) {
             throw new MojoExecutionException("Error linking artifact from " + artifact + " to " + destFile, e);
         }

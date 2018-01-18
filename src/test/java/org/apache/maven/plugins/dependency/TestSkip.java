@@ -76,7 +76,7 @@ public class TestSkip
         assertTrue(log.getContent().contains("Skipping plugin execution"));
     }
 
-    class CapturingLog
+    static class CapturingLog
             implements Log {
         StringBuilder sb = new StringBuilder();
 
@@ -127,29 +127,19 @@ public class TestSkip
 
         /** {@inheritDoc} */
         public void error(CharSequence content) {
-            System.err.println("[error] " + content.toString());
+            print("error", content);
         }
 
         /** {@inheritDoc} */
         public void error(CharSequence content, Throwable error) {
-            final StringWriter sWriter = new StringWriter();
-            final PrintWriter pWriter = new PrintWriter(sWriter);
-
-            error.printStackTrace(pWriter);
-
-            System.err.println("[error] " + content.toString() + "\n\n" + sWriter.toString());
+            print("error", content, error);
         }
 
         /**
          * @see org.apache.maven.plugin.logging.Log#error(java.lang.Throwable)
          */
         public void error(Throwable error) {
-            final StringWriter sWriter = new StringWriter();
-            final PrintWriter pWriter = new PrintWriter(sWriter);
-
-            error.printStackTrace(pWriter);
-
-            System.err.println("[error] " + sWriter.toString());
+            print("error", error);
         }
 
         /**
