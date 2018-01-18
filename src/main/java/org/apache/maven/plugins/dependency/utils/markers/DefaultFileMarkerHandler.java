@@ -31,7 +31,7 @@ package org.apache.maven.plugins.dependency.utils.markers;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import java.io.File;
@@ -42,7 +42,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public class DefaultFileMarkerHandler
         implements MarkerHandler {
@@ -61,7 +60,7 @@ public class DefaultFileMarkerHandler
 
     /**
      * Returns properly formatted File
-     * 
+     *
      * @return File object for marker. The file is not guaranteed to exist.
      */
     protected File getMarkerFile() {
@@ -70,24 +69,24 @@ public class DefaultFileMarkerHandler
 
     /**
      * Tests whether the file or directory denoted by this abstract pathname exists.
-     * 
-     * @return <code>true</code> if and only if the file or directory denoted by this abstract pathname exists;
-     *         <code>false</code> otherwise
+     *
+     * @return <code>true</code> if and only if the file or directory denoted by this abstract
+     *         pathname exists; <code>false</code> otherwise
      * @throws SecurityException If a security manager exists and its <code>{@link
-     *          java.lang.SecurityManager#checkRead(java.lang.String)}</code> method denies read access to the file or
-     *             directory
+     *          java.lang.SecurityManager#checkRead(java.lang.String)}</code> method denies read
+     *             access to the file or directory
      */
     @Override
     public boolean isMarkerSet()
             throws MojoExecutionException {
-        File marker = getMarkerFile();
+        final File marker = getMarkerFile();
         return marker.exists();
     }
 
     @Override
     public boolean isMarkerOlder(Artifact artifact1)
             throws MojoExecutionException {
-        File marker = getMarkerFile();
+        final File marker = getMarkerFile();
         if (marker.exists()) {
             return artifact1.getFile().lastModified() > marker.lastModified();
         } else {
@@ -100,16 +99,16 @@ public class DefaultFileMarkerHandler
     @Override
     public void setMarker()
             throws MojoExecutionException {
-        File marker = getMarkerFile();
+        final File marker = getMarkerFile();
         // create marker file
         try {
             marker.getParentFile().mkdirs();
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             // parent is null, ignore it.
         }
         try {
             marker.createNewFile();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new MojoExecutionException("Unable to create Marker: " + marker.getAbsolutePath(), e);
         }
 
@@ -126,24 +125,25 @@ public class DefaultFileMarkerHandler
                         + marker.getAbsolutePath());
 
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new MojoExecutionException("Unable to update Marker timestamp: " + marker.getAbsolutePath(), e);
         }
     }
 
     /**
-     * Deletes the file or directory denoted by this abstract pathname. If this pathname denotes a directory, then the
-     * directory must be empty in order to be deleted.
-     * 
-     * @return <code>true</code> if and only if the file or directory is successfully deleted; <code>false</code>
-     *         otherwise
+     * Deletes the file or directory denoted by this abstract pathname. If this pathname denotes a
+     * directory, then the directory must be empty in order to be deleted.
+     *
+     * @return <code>true</code> if and only if the file or directory is successfully deleted;
+     *         <code>false</code> otherwise
      * @throws SecurityException If a security manager exists and its <code>{@link
-     *          java.lang.SecurityManager#checkDelete}</code> method denies delete access to the file
+     *          java.lang.SecurityManager#checkDelete}</code> method denies delete access to the
+     *             file
      */
     @Override
     public boolean clearMarker()
             throws MojoExecutionException {
-        File marker = getMarkerFile();
+        final File marker = getMarkerFile();
         return marker.delete();
     }
 

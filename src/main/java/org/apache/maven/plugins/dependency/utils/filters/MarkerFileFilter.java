@@ -46,7 +46,6 @@ import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterExceptio
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public class MarkerFileFilter
         extends AbstractArtifactsFilter
@@ -76,9 +75,9 @@ public class MarkerFileFilter
     @Override
     public Set<Artifact> filter(Set<Artifact> artifacts)
             throws ArtifactFilterException {
-        Set<Artifact> result = new LinkedHashSet<Artifact>();
+        final Set<Artifact> result = new LinkedHashSet<Artifact>();
 
-        for (Artifact artifact : artifacts) {
+        for (final Artifact artifact : artifacts) {
             if (isArtifactIncluded(new ArtifactItem(artifact))) {
                 result.add(artifact);
             }
@@ -89,16 +88,16 @@ public class MarkerFileFilter
     @Override
     public boolean isArtifactIncluded(ArtifactItem item)
             throws ArtifactFilterException {
-        Artifact artifact = item.getArtifact();
+        final Artifact artifact = item.getArtifact();
 
-        boolean overWrite = (artifact.isSnapshot() && this.overWriteSnapshots)
+        final boolean overWrite = (artifact.isSnapshot() && this.overWriteSnapshots)
                 || (!artifact.isSnapshot() && this.overWriteReleases);
 
         handler.setArtifact(artifact);
 
         try {
             return overWrite || !handler.isMarkerSet() || (overWriteIfNewer && handler.isMarkerOlder(artifact));
-        } catch (MojoExecutionException e) {
+        } catch (final MojoExecutionException e) {
             throw new ArtifactFilterException(e.getMessage(), e);
         }
     }

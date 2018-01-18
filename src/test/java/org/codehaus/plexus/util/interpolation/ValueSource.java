@@ -23,9 +23,9 @@ package org.codehaus.plexus.util.interpolation;
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -39,7 +39,6 @@ package org.codehaus.plexus.util.interpolation;
  *
  * @author jdcasey
  * @deprecated Use plexus-interpolation APIs instead.
- * @version $Id: ValueSource.java 12174 2010-05-16 21:04:35Z rfscholte $
  */
 public interface ValueSource
         extends org.codehaus.plexus.interpolation.ValueSource {

@@ -31,7 +31,7 @@ package org.apache.maven.plugins.dependency.utils;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import org.apache.maven.plugin.logging.Log;
@@ -39,9 +39,8 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * This logger implements both types of logs currently in use and turns off logs.
- * 
+ *
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public class DependencySilentLog
         implements Log, Logger {

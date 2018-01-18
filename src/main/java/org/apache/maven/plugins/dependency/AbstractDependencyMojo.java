@@ -53,7 +53,6 @@ import org.apache.maven.project.ProjectBuildingRequest;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public abstract class AbstractDependencyMojo
         extends AbstractMojo {
@@ -62,17 +61,12 @@ public abstract class AbstractDependencyMojo
      * <p>
      * will use the jvm chmod, this is available for user and all level group level will be ignored
      * </p>
-     * <b>since 2.6 is on by default</b>
-     *
-     * @since 2.5.1
      */
     @Parameter(property = "dependency.useJvmChmod", defaultValue = "true")
     private boolean useJvmChmod = true;
 
     /**
      * ignore to set file permissions when unpacking a dependency
-     *
-     * @since 2.7
      */
     @Parameter(property = "dependency.ignorePermissions", defaultValue = "false")
     private boolean ignorePermissions;
@@ -103,24 +97,18 @@ public abstract class AbstractDependencyMojo
 
     /**
      * If the plugin should be silent.
-     *
-     * @since 2.0
      */
     @Parameter(property = "silent", defaultValue = "false")
     private boolean silent;
 
     /**
      * Output absolute filename for resolved artifacts
-     *
-     * @since 2.0
      */
     @Parameter(property = "outputAbsoluteArtifactFilename", defaultValue = "false")
     protected boolean outputAbsoluteArtifactFilename;
 
     /**
      * Skip plugin execution completely.
-     *
-     * @since 2.7
      */
     @Parameter(property = "mdep.skip", defaultValue = "false")
     private boolean skip;

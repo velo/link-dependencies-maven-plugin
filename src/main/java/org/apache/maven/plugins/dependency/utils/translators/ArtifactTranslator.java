@@ -15,7 +15,7 @@
  */
 package org.apache.maven.plugins.dependency.utils.translators;
 
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,7 +31,7 @@ package org.apache.maven.plugins.dependency.utils.translators;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import java.util.Set;
@@ -42,7 +42,6 @@ import org.apache.maven.shared.artifact.ArtifactCoordinate;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public interface ArtifactTranslator {
     Set<ArtifactCoordinate> translate(Set<Artifact> artifacts, Log log);

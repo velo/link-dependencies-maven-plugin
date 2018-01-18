@@ -47,11 +47,10 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public class ClassifierTypeTranslator
         implements ArtifactTranslator {
-    private ArtifactHandlerManager artifactHandlerManager;
+    private final ArtifactHandlerManager artifactHandlerManager;
 
     private String classifier;
 
@@ -80,7 +79,7 @@ public class ClassifierTypeTranslator
 
         log.debug("Translating Artifacts using Classifier: " + this.classifier + " and Type: " + this.type);
         results = new LinkedHashSet<ArtifactCoordinate>();
-        for (Artifact artifact : artifacts) {
+        for (final Artifact artifact : artifacts) {
             // this translator must pass both type and classifier here so we
             // will use the
             // base artifact value if null comes in
@@ -91,7 +90,7 @@ public class ClassifierTypeTranslator
                 useType = artifact.getType();
             }
 
-            ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler(useType);
+            final ArtifactHandler artifactHandler = artifactHandlerManager.getArtifactHandler(useType);
 
             final String extension;
             if (artifactHandler != null) {
@@ -107,7 +106,7 @@ public class ClassifierTypeTranslator
                 useClassifier = artifact.getClassifier();
             }
 
-            DefaultArtifactCoordinate coordinate = new DefaultArtifactCoordinate();
+            final DefaultArtifactCoordinate coordinate = new DefaultArtifactCoordinate();
             coordinate.setGroupId(artifact.getGroupId());
             coordinate.setArtifactId(artifact.getArtifactId());
             coordinate.setVersion(artifact.getVersion());

@@ -36,7 +36,6 @@ package org.apache.maven.plugins.dependency.fromConfiguration;
 
 /**
  * @author Olivier Lamy
- * @since 2.7
  */
 public class ProcessArtifactItemsRequest {
     /**

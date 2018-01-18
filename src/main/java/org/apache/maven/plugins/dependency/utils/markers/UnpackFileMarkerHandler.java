@@ -41,7 +41,6 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:dbradicich@comcast.net">Damian Bradicich</a>
- * @version $Id$
  */
 public class UnpackFileMarkerHandler
         extends DefaultFileMarkerHandler {

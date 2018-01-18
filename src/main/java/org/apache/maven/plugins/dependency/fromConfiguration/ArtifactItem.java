@@ -45,9 +45,7 @@ import org.codehaus.plexus.util.StringUtils;
 /**
  * ArtifactItem represents information specified in the plugin configuration section for each artifact.
  *
- * @since 1.0
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public class ArtifactItem
         implements DependableCoordinate {
@@ -300,7 +298,6 @@ public class ArtifactItem
 
     /**
      * @return Returns the encoding.
-     * @since 3.0
      */
     public String getEncoding() {
         return this.encoding;
@@ -308,7 +305,6 @@ public class ArtifactItem
 
     /**
      * @param encoding The encoding to set.
-     * @since 3.0
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;

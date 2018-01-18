@@ -31,7 +31,7 @@ package org.apache.maven.plugins.dependency.utils.markers;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import org.apache.maven.artifact.Artifact;
@@ -39,7 +39,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public interface MarkerHandler {
     boolean isMarkerSet()

@@ -31,7 +31,7 @@ package org.apache.maven.plugins.dependency.utils.filters;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -41,7 +41,6 @@ import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterExceptio
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public class ResolveFileFilter
         extends MarkerFileFilter {
@@ -56,7 +55,7 @@ public class ResolveFileFilter
         handler.setArtifact(item.getArtifact());
         try {
             return (!handler.isMarkerSet());
-        } catch (MojoExecutionException e) {
+        } catch (final MojoExecutionException e) {
             throw new ArtifactFilterException(e.getMessage(), e);
         }
     }

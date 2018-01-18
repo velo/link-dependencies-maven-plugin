@@ -47,7 +47,6 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
- * @version $Id$
  */
 public class DestFileFilter
         extends AbstractArtifactsFilter
@@ -62,7 +61,7 @@ public class DestFileFilter
 
     private boolean useSubDirectoryPerType;
 
-    private boolean useSubDirectoryPerScope;
+    private final boolean useSubDirectoryPerScope;
 
     private boolean useRepositoryLayout;
 
@@ -70,9 +69,9 @@ public class DestFileFilter
 
     private boolean removeClassifier;
 
-    private boolean prependGroupId;
+    private final boolean prependGroupId;
 
-    private boolean useBaseVersion;
+    private final boolean useBaseVersion;
 
     private File outputFileDirectory;
 
@@ -105,9 +104,9 @@ public class DestFileFilter
     @Override
     public Set<Artifact> filter(Set<Artifact> artifacts)
             throws ArtifactFilterException {
-        Set<Artifact> result = new LinkedHashSet<Artifact>();
+        final Set<Artifact> result = new LinkedHashSet<Artifact>();
 
-        for (Artifact artifact : artifacts) {
+        for (final Artifact artifact : artifacts) {
             if (isArtifactIncluded(new ArtifactItem(artifact))) {
                 result.add(artifact);
             }
@@ -243,9 +242,9 @@ public class DestFileFilter
 
     @Override
     public boolean isArtifactIncluded(ArtifactItem item) {
-        Artifact artifact = item.getArtifact();
+        final Artifact artifact = item.getArtifact();
 
-        boolean overWrite = (artifact.isSnapshot() && this.overWriteSnapshots)
+        final boolean overWrite = (artifact.isSnapshot() && this.overWriteSnapshots)
                 || (!artifact.isSnapshot() && this.overWriteReleases);
 
         File destFolder = item.getOutputDirectory();
@@ -257,7 +256,7 @@ public class DestFileFilter
 
         File destFile;
         if (StringUtils.isEmpty(item.getDestFileName())) {
-            String formattedFileName = DependencyUtil.getFormattedFileName(artifact, removeVersion, prependGroupId,
+            final String formattedFileName = DependencyUtil.getFormattedFileName(artifact, removeVersion, prependGroupId,
                     useBaseVersion, removeClassifier);
             destFile = new File(destFolder, formattedFileName);
         } else {
